@@ -1,9 +1,27 @@
-void setup() {
-  // put your setup code here, to run once:
+/* Einbinden von ibliotheken */
 
+/* Anlegen von globalen Variablen */
+
+void setup()
+{
+  /* Initialisierung des WLAN Moduls */
+
+  /* Initialisierung der RTC */
+  
+  /* Initialisierung der LED Streifen */
+
+  /* Ausgabe von Debug-Nachtichten über die serielle Schnittstelle */
+  
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  /* Einlesen der Uhrzeit aus NTP Server oder App*/
 
+  /* Speichern der Uhrzeit auf RTC */
+
+  /* Ausgabe der Buchstaben auf LEDs */
+
+  /* Ausgabe von Debug-Nachrichten über die serielle Schnittstelle */
+  
 }
