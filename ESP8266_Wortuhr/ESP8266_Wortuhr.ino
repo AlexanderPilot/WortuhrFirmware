@@ -1,4 +1,5 @@
-/* Einbinden von ibliotheken */
+/* Einbinden von Bibliotheken */
+#include "Configuration.h"
 
 /* Anlegen von globalen Variablen */
 
