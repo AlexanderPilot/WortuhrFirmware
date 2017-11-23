@@ -3,6 +3,9 @@
 
 /* Anlegen von globalen Variablen */
 
+/* Matrix als Bildschirmspeicher */
+word Matrix[11];
+
 void setup()
 {
   /* Initialisieren der seriellen Schnittstelle */
