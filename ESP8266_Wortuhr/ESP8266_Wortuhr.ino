@@ -15,14 +15,23 @@ void setup()
   Serial.println("");
   
   /* Initialisierung des WLAN Moduls */
+  
+  #if DEBUG == true
+  Serial.println("Initialisierung des WLAN Moduls abgeschlossen"); 
+  #endif
 
   /* Initialisierung der RTC */
+  #if DEBUG == true
+  Serial.println("Initialisierung der RTC abgeschlossen"); 
+  #endif
   
   /* Initialisierung der LED Streifen */
-
-  /* Ausgabe von Debug-Nachtichten über die serielle Schnittstelle */
   #if DEBUG == true
-  Serial.println("Initialisierung abgeschlossen"); 
+  Serial.println("Initialisierung der WS2812B LED Streifen abgeschlossen"); 
+  #endif
+  
+  #if DEBUG == true
+  Serial.println("Initialisierung der Wortuhr abgeschlossen"); 
   #endif
 }
 
