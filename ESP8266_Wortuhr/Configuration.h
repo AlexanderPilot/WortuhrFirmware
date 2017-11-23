@@ -8,7 +8,7 @@
 #define SERIAL_SPEED 115200
 
 /* Versionsstand */
-#define VERSION "1.0"
+#define FIRMWARE_VERSION "1.0"
 
 /* Debug Botschaften */
 #define DEBUG false
