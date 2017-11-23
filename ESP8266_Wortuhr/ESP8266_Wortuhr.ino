@@ -5,6 +5,15 @@
 
 void setup()
 {
+  /* Initialisieren der seriellen Schnittstelle */
+  Serial.begin(SERIAL_SPEED);     //Öffnen der seriellen Verbindung mit der Geschwindigkeit SERIAL_SPEED
+  delay(10);                      //warten, dass serielle Verbindung sicher hergestellt ist
+  Serial.println("ESP8266 Wortuhr");
+  Serial.println("");
+  Serial.print("Version: ");
+  Serial.println(VERSION);
+  Serial.println("");
+  
   /* Initialisierung des WLAN Moduls */
 
   /* Initialisierung der RTC */
