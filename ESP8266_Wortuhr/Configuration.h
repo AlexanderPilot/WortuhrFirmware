@@ -15,6 +15,8 @@
 
 /* WiFi Mode */
 #define WIFI_MODE WIFI_AP
+//#define WIFI_MODE WIFI_STA
+//#define WIFI_MODE WIFI_AP_STA
 
 /* WiFi AP Name */
 #define AP_SSID "Wordclock"
