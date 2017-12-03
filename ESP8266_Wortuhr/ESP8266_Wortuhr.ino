@@ -27,20 +27,48 @@ void setup()
   Serial.print("Version: ");
   Serial.println(FIRMWARE_VERSION);
   Serial.println("");
+  Serial.println("Starte Initialisierung");
+  Serial.println("");
 
   /* Initialisierung des WLAN Moduls */
-  WiFi.softAP(ssid);
-  IPAddress myIP = WiFi.softAPIP();
+  WiFi.mode(WIFI_MODE);
+//-----------------------------------------
+#if WIFI_MODE == WIFI_AP
 #if DEBUG == true
-  Serial.println("Initialisierung des WLAN Moduls abgeschlossen");
+  Serial.println("WiFi Acccess Point");
 #endif
-
-  /* Initialisierung des Telnet Servers */
+  //Settings for AP Mode
+  WiFi.softAP(ssid,password);
+  IPAddress myIP = WiFi.softAPIP();
   server.begin();
   server.setNoDelay(true);
+  
 #if DEBUG == true
-  Serial.println("Initialisierung des Telnet Servers abgeschlossen");
+  Serial.println("WiFi Acccess Point");
 #endif
+//-----------------------------------------
+#elif WIFI_MODE == WIFI_STA
+#if DEBUG == true
+  Serial.println("WiFi Stationary");
+#endif
+  //Settings for STA Mode
+
+//-----------------------------------------
+#elif WIFI_MODE == WIFI_AP_STA
+#if DEBUG == true
+  Serial.println("WiFi Dual Mode");
+#endif
+  //Settings for Dual Mode
+  
+#endif
+//-----------------------------------------
+  
+#if DEBUG == true
+  Serial.println("Initialisierung des WLAN Moduls abgeschlossen");
+  Serial.print("IP-Adresse: ");
+  Serial.println(myIP);
+#endif
+
 
 
   /* Initialisierung der RTC */
@@ -55,38 +83,29 @@ void setup()
 
   /* Initialisierung der GPIO Pins */
   pinMode(LED_SVR_HAS_CLNT, OUTPUT);
+  digitalWrite(LED_SVR_HAS_CLNT, HIGH);
+  delay(500);
   digitalWrite(LED_SVR_HAS_CLNT, LOW);
-  Serial.println("Initialisierung der GPIO Ports abgeschlossen");
 
+  pinMode(D7, OUTPUT);
+  digitalWrite(D7, HIGH);
+  
 #if DEBUG == true
-  Serial.println("Initialisierung der Wortuhr abgeschlossen");
+  Serial.println("Initialisierung der GPIO Ports abgeschlossen");
 #endif
+
+  Serial.println("Initialisierung der Wortuhr abgeschlossen");
+
 }
 
-void loop()
-{
-  /* Anlegen von Variablen */
+void loop() {
   uint8_t i;
-
-  /* Wenn Client verbunden ist, soll LED angehen */
-  if (server.hasClient())
-  {
-    digitalWrite(LED_SVR_HAS_CLNT, HIGH);
-  }
-  else
-  {
-    digitalWrite(LED_SVR_HAS_CLNT, LOW);
-  }
-
-  /* Prüfen ob neuer Client verfügbar */
-  if (server.hasClient())
-  {
-    for (i = 0; i < MAX_SRV_CLIENTS; i++)
-    {
+  //check if there are any new clients
+  if (server.hasClient()){
+    for(i = 0; i < MAX_SRV_CLIENTS; i++){
       //find free/disconnected spot
-      if (!serverClients[i] || !serverClients[i].connected())
-      {
-        if (serverClients[i]) serverClients[i].stop();
+      if (!serverClients[i] || !serverClients[i].connected()){
+        if(serverClients[i]) serverClients[i].stop();
         serverClients[i] = server.available();
         continue;
       }
@@ -95,62 +114,50 @@ void loop()
     WiFiClient serverClient = server.available();
     serverClient.stop();
   }
-
-  /* prüfen ob der Client neue Daten versendet hat */
-  for (i = 0; i < MAX_SRV_CLIENTS; i++)
-  {
-    if (serverClients[i] && serverClients[i].connected())
-    {
-      if (serverClients[i].available())
-      {
+  //check clients for data
+  for(i = 0; i < MAX_SRV_CLIENTS; i++){
+    if (serverClients[i] && serverClients[i].connected()){
+      if(serverClients[i].available()){
         //get data from the telnet client and push it to the UART
-        while (serverClients[i].available())
+        while(serverClients[i].available())
         {
-          Buffer = serverClients[i].read();
-          Serial.write(Buffer);
-          if (Buffer == 'a')
-          {
-            digitalWrite(LED_SVR_HAS_CLNT, HIGH);
-          }
-          else if (Buffer == 'b')
-          {
-            digitalWrite(LED_SVR_HAS_CLNT, LOW);
-          }
-          else
-          {
-            //nop
-          }
-        }
-      }
-    }
-    //check UART for data
-    if (Serial.available()) {
-      size_t len = Serial.available();
-      uint8_t sbuf[len];
-      Serial.readBytes(sbuf, len);
-      //push UART data to all connected telnet clients
-      for (i = 0; i < MAX_SRV_CLIENTS; i++) {
-        if (serverClients[i] && serverClients[i].connected()) {
-          serverClients[i].write(sbuf, len);
-          delay(1);
-          if (serverClients[i].read() == 1)
-          {
-            digitalWrite(D6, HIGH);
-          }
-          else
-          {
-            digitalWrite(D6, LOW);
-          }
+            Buffer=serverClients[i].read();
+            Serial.write(Buffer);
+            if(Buffer=='a')
+            {
+              digitalWrite(D6,HIGH);
+            }
+            else if(Buffer=='b')
+            {
+              digitalWrite(D6,LOW);
+            }
+            else
+            {
+              //nop
+            }
         }
       }
     }
   }
-  /* Einlesen der Uhrzeit aus NTP Server oder App*/
-
-  /* Speichern der Uhrzeit auf RTC */
-
-  /* Ausgabe der Buchstaben auf LEDs */
-
-  /* Ausgabe von Debug-Nachrichten über die serielle Schnittstelle */
-
+  //check UART for data
+  if(Serial.available()){
+    size_t len = Serial.available();
+    uint8_t sbuf[len];
+    Serial.readBytes(sbuf, len);
+    //push UART data to all connected telnet clients
+    for(i = 0; i < MAX_SRV_CLIENTS; i++){
+      if (serverClients[i] && serverClients[i].connected()){
+        serverClients[i].write(sbuf, len);
+        delay(1);
+        if(serverClients[i].read()==1)
+        {
+          digitalWrite(D6,HIGH);
+        }
+        else
+        {
+          digitalWrite(D6,LOW);
+        }
+      }
+    }
+  }
 }

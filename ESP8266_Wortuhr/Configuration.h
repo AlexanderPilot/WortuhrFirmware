@@ -11,13 +11,16 @@
 #define FIRMWARE_VERSION "1.0"
 
 /* Debug Botschaften */
-#define DEBUG false
+#define DEBUG true
+
+/* WiFi Mode */
+#define WIFI_MODE WIFI_AP
 
 /* WiFi AP Name */
-#define AP_SSID "karl"
+#define AP_SSID "Wordclock"
 
 /* WiFi AP Passwort */
-#define AP_PW ""
+#define AP_PW "Wordclock"
 
 /* WiFi AP IP-Addresse */
 #define AP_IP_ADDR ""
