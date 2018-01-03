@@ -4,6 +4,7 @@
 #ifndef WOERTER_DE_H
 #define WOERTER_DE_H
 
+/* Wörterdefinitionen */
 #define DE_ESIST        Matrix[0] |= 0b1101110000000000
 #define DE_FUENF        Matrix[0] |= 0b0000000111100000
 

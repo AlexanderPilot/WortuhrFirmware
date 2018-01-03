@@ -1,9 +1,5 @@
 /* Einbinden von Headerdateien */
-#include "Settings.h"
+#include "Server.h"
 
 /* Funktionen der Datei */
-Settings::Settings()
-{
-  
-}
 
