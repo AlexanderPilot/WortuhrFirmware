@@ -7,7 +7,9 @@
 #include "LED_Ausgabe.h"
 #include "Renderer.h"
 #include "Settings.h"
-//#include "Server.h"
+#include "Server.h"
+#include <stddef.h>
+#include <Arduino.h>
 
 /* Anlegen der Objekte*/
 Settings settings;
@@ -21,8 +23,8 @@ WiFiClient serverClients[MAX_SRV_CLIENTS];
 word Matrix[11];
 
 /* WiFi Configurations */
-const char *sta_ssid     = "ASUS";
-const char *sta_password = "Br8#Pojg56";
+const char *sta_ssid     = "heikach";
+const char *sta_password = "1990augsburGMHVD!";
 //const char *sta_ssid     = "UPC68EE18B";
 //const char *sta_password = "Tw11tYbolz@#";
 //const char *sta_ssid     = "heikach";
@@ -40,42 +42,29 @@ void setup()
   uint8_t maxValCntWiFi = 50;
 
   //-----------------------------------------------------------
-  //Öffnen der UART Ausgabe(aktivierte oder deaktivierte Debugschnittstelle)
+  //Oeffnen der UART Ausgabe(aktivierte oder deaktivierte Debugschnittstelle)
   Serial.begin(SERIAL_SPEED);
   _DEBUG_BEGIN(SERIAL_SPEED);
   //Zeitverzug um serielle Kommunikation sicher aufgebaut zu haben
   delay(10);
-  //Begrüßungstext inkl. Versionsnummer
-  Serial.println("");
-  Serial.println("ESP8266 Wortuhr");
-  Serial.print("Version: ");
-  Serial.println(FIRMWARE_VERSION);
-  _DEBUG_PRINTLN("");
+  //Begruessungstext inkl. Versionsnummer
   _DEBUG_PRINTLN("Starte Initialisierung");
   _DEBUG_PRINTLN("");
 
   //-----------------------------------------------------------
-  //Initialisierung Dual Modus  
-  WiFi.mode(WIFI_AP_STA);
-  _DEBUG_PRINTLN("Starte Wifi Dual Mode");
-  _DEBUG_PRINTLN("");
-  
+  //Initialisierung Dual Modus
+  WiFi.mode(WIFI_STA); //Zuvor: WIFI_AP_STA
+  WiFi.begin(sta_ssid,sta_password);
+  _DEBUG_PRINTLN("Starte Wifi STA Mode");
+
   //-----------------------------------------------------------
   //Initialisierung Access Point Modus
-  _DEBUG_PRINTLN("");
-  _DEBUG_PRINTLN("1 - AP mode");
-  WiFi.softAPConfig(ap_ip, ap_gateway, ap_subnet);
-  WiFi.softAP(ap_ssid, ap_password);
-  _DEBUG_PRINT("IP-Adresse: ");
-  _DEBUG_PRINTLN(ap_ip);
-  _DEBUG_PRINTLN("AP mode initialisiert");
-  
+  WiFi.config( ip, gateway, subnet);
+  //WiFi.softAP(ap_ssid, ap_password);
+  _DEBUG_PRINT("IP-Adresse: ");  _DEBUG_PRINTLN( ip );
+
   //-----------------------------------------------------------
-  //Initialisierung Stationärer Modus
-  _DEBUG_PRINTLN("2 - STA mode");
-  //Starten der WiFi Verbindung zum stationären Netz
-  WiFi.begin(sta_ssid, sta_password);
-  //Konfiguration der IP-Adresse
+
   //WiFi.config(ip, gateway, subnet);
   _DEBUG_PRINT("Connecting to ");
   _DEBUG_PRINT(sta_ssid);
@@ -93,40 +82,28 @@ void setup()
     _DEBUG_PRINT(sta_ssid);
     while (1)
     {
-      //Reaktion, da sich nicht ins WLAN eingewählt werden kann
+      //Reaktion, da sich nicht ins WLAN eingewaehlt werden kann
       //ggfs Meldung an App falls diese Verbunden ist
-      //Ausgabe einer Fehlermeldung über die Apps
+      //Ausgabe einer Fehlermeldung ueber die Apps
     }
   }
   _DEBUG_PRINTLN("finished");
   _DEBUG_PRINTLN("STA mode initialisiert");
 
   //-----------------------------------------------------------
-  //Starten des Servers
-  _DEBUG_PRINTLN("");
-  _DEBUG_PRINTLN("Starte den Telnet Server");
-  server.begin();
-  server.setNoDelay(true);
-  _DEBUG_PRINTLN("Server läuft");
-
-  _DEBUG_PRINTLN("");
-  _DEBUG_PRINTLN("Verbindungsaufbau über:");
-  _DEBUG_PRINT("SSID: ");
-  _DEBUG_PRINTLN(ap_ssid);
-  _DEBUG_PRINT("IP-Adresse: ");
-  _DEBUG_PRINTLN(ap_ip);
-  _DEBUG_PRINT("Port: ");
-  _DEBUG_PRINTLN("23");
-
-  //-----------------------------------------------------------
   //I2C initialisieren
-  _DEBUG_PRINTLN("");
-  _DEBUG_PRINTLN("I2C Bus aktivieren");
-  
-  Wire.begin(D1, D2); //SDA, SCL
-  ds3231.printRTCTime();
+  //_DEBUG_PRINTLN("");
+  //_DEBUG_PRINTLN("I2C Bus aktivieren");
+
+  //Wire.begin(D1, D2); //SDA, SCL
+  //ds3231.printRTCTime();
 
   //-----------------------------------------------------------
+
+  //start server
+    server.begin();
+    server.setNoDelay(true);
+
   //GPIOs konfigurieren
   pinMode(D6, OUTPUT);
   pinMode(D7, OUTPUT);
@@ -142,10 +119,10 @@ void loop()
   //Variablendefinition
   char myChar;
   uint8_t i;
-  ds3231.printRTCTime();
+  //ds3231.printRTCTime();
 
   //-----------------------------------------------------------
-  //Prüfen ob neuer Client vorhanden
+  //Pruefen ob neuer Client vorhanden
   if (server.hasClient())
   {
     for (i = 0; i < MAX_SRV_CLIENTS; i++)

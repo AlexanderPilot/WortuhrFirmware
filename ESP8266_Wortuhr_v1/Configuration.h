@@ -1,4 +1,4 @@
-/* Headerdatei für Konfigurationen */
+/* Headerdatei fer Konfigurationen */
 
 /* Vermeidung Doppeldefinitionen */
 #ifndef CONFIGURATION_H
@@ -49,19 +49,20 @@
 /* Clients auf Server */
 #define MAX_SRV_CLIENTS 2
 
-/* LED für Client-Verbindung zum Server */
+/* LED fuer Client-Verbindung zum Server */
 #define LED_SVR_HAS_CLNT D4
 
-/* Pin für WS2812B Streifen */
+/* Pin fuer WS2812B Streifen */
 #define WS2812B_PIN 15
 
-/* Adresse für DS3231 */
+/* Adresse fuer DS3231 */
 #define DS3231_ADDRESS 0x68
 
 /* AP Konfiguration */
-IPAddress ap_ip(192,168,1,200);
-IPAddress ap_gateway(192,168,1,254);
-IPAddress ap_subnet(255,255,255,0);
+IPAddress ip(192,168,1,200);
+IPAddress gateway(192,168,1,254);
+IPAddress subnet(255,255,255,0);
+
 
 /* WiFi Settings*/
 const char *ap_ssid = "Wordclock";
