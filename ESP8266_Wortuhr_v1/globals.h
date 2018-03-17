@@ -16,6 +16,6 @@ extern colorRGB farbanteile;
 // Platz für Ideen
 extern char befehl[6];
 // Zum einlesen von neuen Befehlen
-extern char bufferReader[7];
+extern char bufferReader[8];
 
 #endif

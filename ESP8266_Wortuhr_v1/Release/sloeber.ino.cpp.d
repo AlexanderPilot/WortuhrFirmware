@@ -79,8 +79,9 @@ sloeber.ino.cpp.o: ..\sloeber.ino.cpp \
  C:\sl\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.1\libraries\ESP8266WiFi\src/WiFiClientSecure.h \
  C:\sl\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.1\libraries\ESP8266WiFi\src/include/ssl.h \
  C:\sl\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.1\libraries\Wire/Wire.h \
- ..\DS3231.h ..\App_Interpreter.h ..\LED_Ausgabe.h ..\Renderer.h \
- ..\Woerter_DE.h ..\Settings.h ..\Server.h ..\ESP8266_Wortuhr.ino
+ ..\DS3231.h ..\Renderer.h ..\Woerter_DE.h \
+ C:\sl\arduinoPlugin\libraries\Adafruit_NeoPixel\1.1.6/Adafruit_NeoPixel.h \
+ ..\globals.h ..\Lights.h ..\ESP8266_Wortuhr.ino
 
 C:\sl\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.1\cores\esp8266/Arduino.h:
 
@@ -244,16 +245,14 @@ C:\sl\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.1\libraries\Wire/Wire.
 
 ..\DS3231.h:
 
-..\App_Interpreter.h:
-
-..\LED_Ausgabe.h:
-
 ..\Renderer.h:
 
 ..\Woerter_DE.h:
 
-..\Settings.h:
+C:\sl\arduinoPlugin\libraries\Adafruit_NeoPixel\1.1.6/Adafruit_NeoPixel.h:
 
-..\Server.h:
+..\globals.h:
+
+..\Lights.h:
 
 ..\ESP8266_Wortuhr.ino:

@@ -10,9 +10,6 @@
 /* Serielle Geschwindigkeit */
 #define SERIAL_SPEED 74880
 
-/* Versionsstand */
-#define FIRMWARE_VERSION "1.0"
-
 /* Debug Botschaften */
 #define DEBUG_PRINT
 

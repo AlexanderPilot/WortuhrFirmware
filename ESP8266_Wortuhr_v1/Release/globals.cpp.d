@@ -1,5 +1,5 @@
-globals.cpp.o: ..\globals.cpp ..\globals.h ..\comevatiation.h
+globals.cpp.o: ..\globals.cpp ..\globals.h ..\Lights.h
 
 ..\globals.h:
 
-..\comevatiation.h:
+..\Lights.h:

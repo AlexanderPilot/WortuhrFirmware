@@ -1,6 +1,6 @@
-using namespace std;
 #include "globals.h"
-#include "comevatiation.h"
+
+#include "Lights.h"
 
 /**
  * +-------------------------------------------------------------------------------------------+
@@ -16,8 +16,8 @@ using namespace std;
 // Farben aufgelöst nach einzelnen Anteilen --> Rot, Grün, Blau
 
 // Variablendeklaration:
-unsigned int helligkeit = 0;
+unsigned int helligkeit = 100;
 char farbe[6];
 colorRGB farbanteile;
 char befehl[6];
-char bufferReader[7];
+char bufferReader[8];

@@ -1,6 +1,6 @@
-using namespace std;
+
 #include "globals.h"
-#include "comevatiation.h"
+#include "Lights.h"
 /** =======================================================
  *  | Befehlsstruktur:                                    |
  *  |-----------------+----------------------------+------|
@@ -30,7 +30,7 @@ using namespace std;
 */
 
 #define START_SIGN '+'
-#define END_SIGN '\n'
+#define END_SIGN '$'
 
 // Loeschen eines Strings
 void deleteString(char a[]){
@@ -45,7 +45,7 @@ void deleteString(char a[]){
  * in:  je ein Zeichen aus der WiFi-Kommunikation
  * out: boolean zur Anzeige wenn ein neues Kommando angekommen ist
  **************************************************************************/
-bool comevatiation(char getChar){
+bool Lights::comevatiation(char getChar){
 
   // Indikator ob ein Kommando vollstaendig angekommen ist
   static bool newComAv = false;
@@ -172,11 +172,18 @@ void setUpColor( void ){
  * Globale Variable: farbe[6]; (in HTML Farbcodes)	-> '#'
  * Globale Variable: befehl[6]; (tbd.)				-> '%'
  ********************************************************************/
-void setUpCommand( void ){
+void Lights::setUpCommand( void ){
 	switch ( bufferReader[0] ){
 	case '!': helligkeit = charToInt(); break;
 	case '#': setUpColor(); break;
 	case '%': break;
 	default: break;
 	}
+}
+
+void Lights::setup( void ){
+	farbanteile.red = 0;
+	farbanteile.green = 0;
+	farbanteile.blue = 0;
+	helligkeit = 100;
 }

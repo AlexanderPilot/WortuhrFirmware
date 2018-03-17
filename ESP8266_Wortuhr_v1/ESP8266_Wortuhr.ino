@@ -3,18 +3,16 @@
 #include <ESP8266WiFi.h>
 #include <Wire.h>
 #include "DS3231.h"
-#include "App_Interpreter.h"
-#include "LED_Ausgabe.h"
 #include "Renderer.h"
-#include "Settings.h"
-#include "Server.h"
 #include <stddef.h>
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
+#include "globals.h"
+#include "Lights.h"
 
 /* Anlegen der Objekte*/
-Settings settings;
 Renderer renderer;
-LED_Ausgabe led_ausgabe;
+Lights lights;
 DS3231 ds3231(DS3231_ADDRESS);
 WiFiServer server(TELNET_PORT);
 WiFiClient serverClients[MAX_SRV_CLIENTS];
@@ -32,6 +30,18 @@ const char *sta_password = "1990augsburGMHVD!";
 
 /* Globale Variablen */
 int Buffer;
+
+// Which pin on the Arduino is connected to the NeoPixels?
+// On a Trinket or Gemma we suggest changing this to 1
+#define PIN            14
+
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS      10
+
+// When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
+// Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
+// example for more information on possible values.
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 
 void setup()
@@ -111,6 +121,10 @@ void setup()
   digitalWrite(D6, HIGH);
   digitalWrite(D7, HIGH);
   digitalWrite(LED_SVR_HAS_CLNT, HIGH);
+
+  // This initializes the NeoPixel library.
+  // ----------------------------------------------------------
+  pixels.begin();
 }
 
 void loop()
@@ -159,28 +173,17 @@ void loop()
         {
           myChar = serverClients[i].read();
           _SRVCOMM_WRITE(myChar);
-          if (myChar == 'X')
-          {
-            if (digitalRead(D6))
-            {
-              digitalWrite(D6, LOW);
-            }
-            else
-            {
-              digitalWrite(D6, HIGH);
-            }
+
+          // Hauptteil zum Einstellen der LEDs
+          if( lights.comevatiation( myChar ) ){
+        	  lights.setUpCommand();
+        	  // Test muss spaetergeloescht werden!
+        	  for(int i=0;i<NUMPIXELS;i++){
+        	    pixels.setPixelColor(i, pixels.Color(farbanteile.red,farbanteile.green,farbanteile.blue)); // Moderately bright green color.
+        	    pixels.show(); // This sends the updated pixel color to the hardware.
+        	  }
           }
-          if (myChar == 'Y')
-          {
-            if (digitalRead(D7))
-            {
-              digitalWrite(D7, LOW);
-            }
-            else
-            {
-              digitalWrite(D7, HIGH);
-            }
-          }
+
         }
       }
     }
@@ -201,4 +204,5 @@ void loop()
       }
     }
   }
+
 }
