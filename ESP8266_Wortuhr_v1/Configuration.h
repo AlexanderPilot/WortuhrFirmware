@@ -40,6 +40,9 @@
   #define _SRVCOMM_WRITE(x)
 #endif
 
+//-------------------------------------------------------------------
+// WiFi-Config!!!
+
 /* Telnet Server Port */
 #define TELNET_PORT 23
 
@@ -47,22 +50,30 @@
 #define MAX_SRV_CLIENTS 2
 
 /* LED fuer Client-Verbindung zum Server */
-#define LED_SVR_HAS_CLNT D4
-
-/* Pin fuer WS2812B Streifen */
-#define WS2812B_PIN 15
+//#define LED_SVR_HAS_CLNT D4
 
 /* Adresse fuer DS3231 */
 #define DS3231_ADDRESS 0x68
 
 /* AP Konfiguration */
-IPAddress ip(192,168,1,200);
-IPAddress gateway(192,168,1,254);
-IPAddress subnet(255,255,255,0);
-
+IPAddress serv_ip(192,168,1,200);
+IPAddress serv_gateway(192,168,1,254);
+IPAddress serv_subnet(255,255,255,0);
 
 /* WiFi Settings*/
 const char *ap_ssid = "Wordclock";
 const char *ap_password = "Wordclock";
+
+
+//-------------------------------------------------------------------------
+// Pixel Config
+
+// Which pin on the Arduino is connected to the NeoPixels?
+// On a Trinket or Gemma we suggest changing this to 1
+#define WS2812B_PIN    14
+
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS      10
+
 
 #endif

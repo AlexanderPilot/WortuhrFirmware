@@ -29,11 +29,8 @@
  *  
 */
 
-#define START_SIGN '+'
-#define END_SIGN '$'
-
 // Loeschen eines Strings
-void deleteString(char a[]){
+void Lights::deleteString(char a[]){
   unsigned int i = 0;
   while( sizeof(*a) < i ){
     a = '\0';
@@ -109,6 +106,9 @@ bool Lights::comevatiation(char getChar){
 
   }
   // ist "true" wenn neues Kommando erkannt wurde
+  if(newComAv){
+	  setUpCommand( );
+  }
   return newComAv;
 }
 

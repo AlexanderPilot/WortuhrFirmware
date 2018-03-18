@@ -1,11 +1,10 @@
 /* Einbinden von Bibliotheken */
 #include "Configuration.h"
-#include <ESP8266WiFi.h>
 #include <Wire.h>
 #include "DS3231.h"
 #include "Renderer.h"
 #include <stddef.h>
-#include <Arduino.h>
+#include "Arduino.h"
 #include <Adafruit_NeoPixel.h>
 #include "globals.h"
 #include "Lights.h"
@@ -28,20 +27,11 @@ const char *sta_password = "1990augsburGMHVD!";
 //const char *sta_ssid     = "heikach";
 //const char *sta_password = "";
 
-/* Globale Variablen */
-int Buffer;
-
-// Which pin on the Arduino is connected to the NeoPixels?
-// On a Trinket or Gemma we suggest changing this to 1
-#define PIN            14
-
-// How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS      10
 
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
 // example for more information on possible values.
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, WS2812B_PIN, NEO_GRB + NEO_KHZ800);
 
 
 void setup()
@@ -69,9 +59,8 @@ void setup()
 
   //-----------------------------------------------------------
   //Initialisierung Access Point Modus
-  WiFi.config( ip, gateway, subnet);
+  WiFi.config(serv_ip,serv_gateway,serv_subnet);
   //WiFi.softAP(ap_ssid, ap_password);
-  _DEBUG_PRINT("IP-Adresse: ");  _DEBUG_PRINTLN( ip );
 
   //-----------------------------------------------------------
 
@@ -117,10 +106,8 @@ void setup()
   //GPIOs konfigurieren
   pinMode(D6, OUTPUT);
   pinMode(D7, OUTPUT);
-  pinMode(LED_SVR_HAS_CLNT, OUTPUT);
   digitalWrite(D6, HIGH);
   digitalWrite(D7, HIGH);
-  digitalWrite(LED_SVR_HAS_CLNT, HIGH);
 
   // This initializes the NeoPixel library.
   // ----------------------------------------------------------
@@ -131,7 +118,7 @@ void loop()
 {
   //-----------------------------------------------------------
   //Variablendefinition
-  char myChar;
+  char resChar;
   uint8_t i;
   //ds3231.printRTCTime();
 
@@ -149,9 +136,8 @@ void loop()
           serverClients[i].stop();
         }
         serverClients[i] = server.available();
-        _DEBUG_PRINT("New client: ");
-        _DEBUG_PRINTLN(i);
-        digitalWrite(LED_SVR_HAS_CLNT, LOW);
+        _DEBUG_PRINT("New client: " + i);
+        delay(1);
         continue;
       }
     }
@@ -169,21 +155,20 @@ void loop()
       if (serverClients[i].available())
       {
         //get data from the telnet client and push it to the UART
-        while (serverClients[i].available())
+        while ( serverClients[i].available())
         {
-          myChar = serverClients[i].read();
-          _SRVCOMM_WRITE(myChar);
 
-          // Hauptteil zum Einstellen der LEDs
-          if( lights.comevatiation( myChar ) ){
-        	  lights.setUpCommand();
-        	  // Test muss spaetergeloescht werden!
-        	  for(int i=0;i<NUMPIXELS;i++){
-        	    pixels.setPixelColor(i, pixels.Color(farbanteile.red,farbanteile.green,farbanteile.blue)); // Moderately bright green color.
-        	    pixels.show(); // This sends the updated pixel color to the hardware.
-        	  }
-          }
+        	resChar = serverClients[i].read();
+        	_SRVCOMM_WRITE( resChar );
 
+        	// Hauptteil zum Einstellen der LEDs
+        	if( lights.comevatiation( resChar ) ){
+        		// TODO: Hier muss die endgueltige Steuerung der LEDs eingefuegt werden
+        		for(int i=0;i<NUMPIXELS;i++){
+        			pixels.setPixelColor(i, pixels.Color(farbanteile.red,farbanteile.green,farbanteile.blue));
+        			pixels.show(); // This sends the updated pixel color to the hardware.
+        		}
+        	}
         }
       }
     }
