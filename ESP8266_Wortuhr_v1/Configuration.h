@@ -52,9 +52,6 @@
 /* LED fuer Client-Verbindung zum Server */
 //#define LED_SVR_HAS_CLNT D4
 
-/* Adresse fuer DS3231 */
-#define DS3231_ADDRESS 0x68
-
 /* AP Konfiguration */
 IPAddress serv_ip(192,168,1,200);
 IPAddress serv_gateway(192,168,1,254);
@@ -62,7 +59,12 @@ IPAddress serv_subnet(255,255,255,0);
 
 /* WiFi Settings*/
 const char *ap_ssid = "Wordclock";
-const char *ap_password = "Wordclock";
+const char *ap_password = "";
+
+/*AP Config */
+IPAddress ap_ip(192,168,1,201);
+IPAddress ap_gateway(192,168,1,254);
+IPAddress ap_subnet(255,255,255,0);
 
 
 //-------------------------------------------------------------------------

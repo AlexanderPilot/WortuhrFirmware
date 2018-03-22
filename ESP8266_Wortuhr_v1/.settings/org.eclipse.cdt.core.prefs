@@ -34,7 +34,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_F
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_FREQ/value=40
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_LD/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_LD/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_LD/value=eagle.flash.4m1m.ld
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_LD/value=eagle.flash.4m.ld
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_MODE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_MODE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.FLASH_MODE/value=dio
@@ -55,13 +55,13 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LED/ope
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LED/value=
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_FLAGS/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_FLAGS/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_FLAGS/value=-DLWIP_OPEN_SRC -DTCP_MSS\=536
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_FLAGS/value=-DLWIP_OPEN_SRC -DTCP_MSS\=1460
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_INCLUDE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_INCLUDE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_INCLUDE/value=lwip2/include
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_LIB/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_LIB/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_LIB/value=-llwip2
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.LWIP_LIB/value=-llwip2_1460
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.MCU/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.MCU/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.MCU/value=esp8266
@@ -85,13 +85,13 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SPIFFS_
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SPIFFS_PAGESIZE/value=256
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SPIFFS_START/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SPIFFS_START/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SPIFFS_START/value=0x300000
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SPIFFS_START/value=0x100000
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SYSTEM.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SYSTEM.PATH/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.SYSTEM.PATH/value=${A.RUNTIME.PLATFORM.PATH}/system
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT.PATH/value=C\:\\sl\\arduinoPlugin\\packages\\esp8266\\hardware\\esp8266\\2.4.1\\variants\\nodemcu
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT.PATH/value=C\:\\se\\arduinoPlugin\\packages\\esp8266\\hardware\\esp8266\\2.4.1\\variants\\nodemcu
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.BUILD.VARIANT/value=nodemcu
@@ -199,10 +199,10 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.DT
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.DTS/value=0
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/value=1521337274
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/value=1521753861
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/value=1521333674
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/value=1521750261
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.ZONE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.ZONE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.ZONE/value=3600
@@ -223,7 +223,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.PACKAGES/oper
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.PACKAGES/value=${eclipse_home}/arduinoPlugin/packages
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-ar" cru "C\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/arduino.ar" 
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-ar" cru "D\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/arduino.ar" 
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN.2/value=
@@ -232,16 +232,16 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PAT
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.AR.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.AR.CMD}" ${A.COMPILER.AR.FLAGS} ${A.COMPILER.AR.EXTRA_FLAGS} "${A.BUILD.PATH}/arduino.ar" "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -g -Wall -Wextra -Os -nostdlib -Wl,--no-check-sections -u call_user_start -u _printf_float -u _scanf_float -Wl,-static "-LC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lib" "-LC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/ld" "-LC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/lib" "-Teagle.flash.4m1m.ld" -Wl,--gc-sections -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read -o "C\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.elf" -Wl,--start-group 
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -g -Wall -Wextra -Os -nostdlib -Wl,--no-check-sections -u call_user_start -u _printf_float -u _scanf_float -Wl,-static "-LC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lib" "-LC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/ld" "-LC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/lib" "-Teagle.flash.4m.ld" -Wl,--gc-sections -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read -o "D\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.elf" -Wl,--start-group 
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.2/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.2/value=\ "C\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/arduino.ar" -lhal -lphy -lpp -lnet80211 -llwip2 -lwpa -lcrypto -lmain -lwps -laxtls -lespnow -lsmartconfig -lairkiss -lwpa2 -lstdc++ -lm -lc -lgcc -Wl,--end-group "-LC\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release"
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN.2/value=\ "D\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/arduino.ar" -lhal -lphy -lpp -lnet80211 -llwip2_1460 -lwpa -lcrypto -lmain -lwps -laxtls -lespnow -lsmartconfig -lairkiss -lwpa2 -lstdc++ -lm -lc -lgcc -Wl,--end-group "-LD\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release"
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.COMBINE.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.ELF.CMD}" ${A.COMPILER.C.ELF.FLAGS} ${A.COMPILER.C.ELF.EXTRA_FLAGS} -o "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" -Wl,--start-group ${A.OBJECT_FILES} "${A.BUILD.PATH}/arduino.ar" ${A.COMPILER.C.ELF.LIBS} -Wl,--end-group "-L${A.BUILD.PATH}"
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/include" "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lwip2/include" "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/include" "-IC\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/core" -c -Wall -Wextra -Os -g -Wpointer-arith -Wno-implicit-function-declaration -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals -falign-functions\=4 -std\=gnu99 -ffunction-sections -fdata-sections -DF_CPU\=80000000L -DLWIP_OPEN_SRC -DTCP_MSS\=536  -DARDUINO\=10802 -DARDUINO_ESP8266_NODEMCU -DARDUINO_ARCH_ESP8266 "-DARDUINO_BOARD\=\\"ESP8266_NODEMCU\\""  -DESP8266 
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/include" "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lwip2/include" "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/include" "-ID\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/core" -c -Wall -Wextra -Os -g -Wpointer-arith -Wno-implicit-function-declaration -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals -falign-functions\=4 -std\=gnu99 -ffunction-sections -fdata-sections -DF_CPU\=80000000L -DLWIP_OPEN_SRC -DTCP_MSS\=1460  -DARDUINO\=10802 -DARDUINO_ESP8266_NODEMCU -DARDUINO_ARCH_ESP8266 "-DARDUINO_BOARD\=\\"ESP8266_NODEMCU\\""  -DESP8266 
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN.2/value=\ -o 
@@ -253,7 +253,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PA
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.C.O.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.CMD}" ${A.COMPILER.CPREPROCESSOR.FLAGS} ${A.COMPILER.C.FLAGS} -DF_CPU\=${A.BUILD.F_CPU} ${A.BUILD.LWIP_FLAGS} ${A.BUILD.DEBUG_PORT} ${A.BUILD.DEBUG_LEVEL} -DARDUINO\=${A.RUNTIME.IDE.VERSION} -DARDUINO_${A.BUILD.BOARD} -DARDUINO_ARCH_${A.BUILD.ARCH} "-DARDUINO_BOARD\=\\"${A.BUILD.BOARD}\\"" ${A.BUILD.LED} ${A.COMPILER.C.EXTRA_FLAGS} ${A.BUILD.EXTRA_FLAGS} ${A.INCLUDES} "${A.SOURCE_FILE}" -o "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/include" "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lwip2/include" "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/include" "-IC\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/core" -c -Wall -Wextra -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions\=4 -std\=c++11 -ffunction-sections -fdata-sections -DF_CPU\=80000000L -DLWIP_OPEN_SRC -DTCP_MSS\=536  -DARDUINO\=10802 -DARDUINO_ESP8266_NODEMCU -DARDUINO_ARCH_ESP8266 "-DARDUINO_BOARD\=\\"ESP8266_NODEMCU\\""  -DESP8266 
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/include" "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lwip2/include" "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/include" "-ID\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/core" -c -Wall -Wextra -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions\=4 -std\=c++11 -ffunction-sections -fdata-sections -DF_CPU\=80000000L -DLWIP_OPEN_SRC -DTCP_MSS\=1460  -DARDUINO\=10802 -DARDUINO_ESP8266_NODEMCU -DARDUINO_ARCH_ESP8266 "-DARDUINO_BOARD\=\\"ESP8266_NODEMCU\\""  -DESP8266 
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.CPP.O.PATTERN.2/value=\ -o 
@@ -271,7 +271,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOP
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.EEP.PATTERN/value=
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/esptool/0.4.13/esptool.exe" -eo "C\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/bootloaders/eboot/eboot.elf" -bo "C\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.bin" -bm dio -bf 40 -bz 4M -bs .text -bp 4096 -ec -eo "C\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.elf" -bs .irom0.text -bs .text -bs .data -bs .rodata -bc -ec
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/esptool/0.4.13/esptool.exe" -eo "C\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/bootloaders/eboot/eboot.elf" -bo "D\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.bin" -bm dio -bf 40 -bz 4M -bs .text -bp 4096 -ec -eo "D\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.elf" -bs .irom0.text -bs .text -bs .data -bs .rodata -bc -ec
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OBJCOPY.HEX.PATTERN/value="${A.RUNTIME.TOOLS.ESPTOOL.PATH}/${A.COMPILER.ESPTOOL.CMD}" -eo "${A.RUNTIME.PLATFORM.PATH}/bootloaders/eboot/eboot.elf" -bo "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.bin" -bm ${A.BUILD.FLASH_MODE} -bf ${A.BUILD.FLASH_FREQ} -bz ${A.BUILD.FLASH_SIZE} -bs .text -bp 4096 -ec -eo "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" -bs .irom0.text -bs .text -bs .data -bs .rodata -bc -ec
@@ -283,7 +283,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OUTPUT
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.OUTPUT.TMP_FILE/value=${A.BUILD.PROJECT_NAME}.bin
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/include" "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lwip2/include" "-IC\:\\sl\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/include" "-IC\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/core" -c -g -x assembler-with-cpp -mlongcalls -DF_CPU\=80000000L -DLWIP_OPEN_SRC -DTCP_MSS\=536  -DARDUINO\=10802 -DARDUINO_ESP8266_NODEMCU -DARDUINO_ARCH_ESP8266 "-DARDUINO_BOARD\=\\"ESP8266_NODEMCU\\""  -DESP8266 
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/include" "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/lwip2/include" "-IC\:\\se\\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/tools/sdk/libc/xtensa-lx106-elf/include" "-ID\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/core" -c -g -x assembler-with-cpp -mlongcalls -DF_CPU\=80000000L -DLWIP_OPEN_SRC -DTCP_MSS\=1460  -DARDUINO\=10802 -DARDUINO_ESP8266_NODEMCU -DARDUINO_ARCH_ESP8266 "-DARDUINO_BOARD\=\\"ESP8266_NODEMCU\\""  -DESP8266 
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN.2/value=\ -o 
@@ -295,7 +295,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PA
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.S.O.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.CMD}" ${A.COMPILER.CPREPROCESSOR.FLAGS} ${A.COMPILER.S.FLAGS} -DF_CPU\=${A.BUILD.F_CPU} ${A.BUILD.LWIP_FLAGS} ${A.BUILD.DEBUG_PORT} ${A.BUILD.DEBUG_LEVEL} -DARDUINO\=${A.RUNTIME.IDE.VERSION} -DARDUINO_${A.BUILD.BOARD} -DARDUINO_ARCH_${A.BUILD.ARCH} "-DARDUINO_BOARD\=\\"${A.BUILD.BOARD}\\"" ${A.BUILD.LED} ${A.COMPILER.C.EXTRA_FLAGS} ${A.BUILD.EXTRA_FLAGS} ${A.INCLUDES} "${A.SOURCE_FILE}" -o "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN.1/value="C\:\\sl\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-size" -A "C\:\\vl_e\\WordClock\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.elf"
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN.1/value="C\:\\se\\/arduinoPlugin/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-size" -A "D\:\\Wortuhr\\Firmware\\ESP8266_Wortuhr_v1/Release/ESP8266_Wortuhr.elf"
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.RECIPE.SIZE.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.SIZE.CMD}" -A "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf"
@@ -433,7 +433,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ALTID/
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ALTID/value=no_altID
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/value=-ca 0x0 -cz "${A.BUILD.FLASH_SIZE_BYTES}"
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/value=
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.MAXIMUM_DATA_SIZE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.MAXIMUM_DATA_SIZE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.MAXIMUM_DATA_SIZE/value=81920
@@ -466,7 +466,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.ARCHITEC
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.ARCHITECTURE_ID/value=esp8266
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARDS_FILE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARDS_FILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARDS_FILE/value=C\:\\sl\\arduinoPlugin\\packages\\esp8266\\hardware\\esp8266\\2.4.1\\boards.txt
+environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARDS_FILE/value=C\:\\se\\arduinoPlugin\\packages\\esp8266\\hardware\\esp8266\\2.4.1\\boards.txt
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARD_ID/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARD_ID/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARD_ID/value=nodemcuv2
@@ -475,7 +475,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARD_NA
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.BOARD_NAME/value=NodeMCU 1.0 (ESP-12E Module)
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.COM_PORT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.COM_PORT/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.COM_PORT/value=COM28
+environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.COM_PORT/value=COM9
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.ECLIPSE_LOCATION/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.ECLIPSE_LOCATION/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.ECLIPSE_LOCATION/value=C\:\\sloeber\\
@@ -505,7 +505,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MAKE_LOC
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MAKE_LOCATION/value=${eclipse_home}/arduinoPlugin/tools/make/
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/value=CpuFrequency\=80\nDebug\=Disabled\nDebugLevel\=None____\nFlashErase\=all\nFlashSize\=4M1M\nLwIPVariant\=v2mss536\nUploadSpeed\=115200.upload.speed
+environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/value=CpuFrequency\=80\nDebug\=Disabled\nDebugLevel\=None____\nFlashErase\=none\nFlashSize\=4M3M\nLwIPVariant\=v2mss1460\nUploadSpeed\=115200.upload.speed
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.OBJCOPY/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.OBJCOPY/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.OBJCOPY/value=${A.RECIPE.OBJCOPY.HEX.PATTERN}
