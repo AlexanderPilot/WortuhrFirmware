@@ -1,7 +1,7 @@
 /* Einbinden von Bibliotheken */
 #include "Configuration.h"
 #include <Wire.h>
-#include "DS3231.h"
+#include <RtcDS3231.h>
 #include "Renderer.h"
 #include <stddef.h>
 #include "Arduino.h"
@@ -12,9 +12,9 @@
 /* Anlegen der Objekte*/
 Renderer renderer;
 Lights lights;
-DS3231 ds3231(DS3231_ADDRESS);
 WiFiServer server(TELNET_PORT);
 WiFiClient serverClients[MAX_SRV_CLIENTS];
+RtcDS3231<TwoWire> rtcObject(Wire);
 
 /* Matrix als Bildschirmspeicher */
 word Matrix[11];
@@ -53,14 +53,16 @@ void setup()
 
   //-----------------------------------------------------------
   //Initialisierung Dual Modus
-  WiFi.mode(WIFI_STA); //Zuvor: WIFI_AP_STA
+  WiFi.mode(WIFI_STA); //TODO: WIFI_AP_STA einbinden
   WiFi.begin(sta_ssid,sta_password);
-  _DEBUG_PRINTLN("Starte Wifi STA Mode");
+  WiFi.config(serv_ip,serv_gateway,serv_subnet);
+  _DEBUG_PRINTLN("STA Mode initialisiert");
 
   //-----------------------------------------------------------
   //Initialisierung Access Point Modus
-  WiFi.config(serv_ip,serv_gateway,serv_subnet);
+  //_DEBUG_PRINTLN("Starte Wifi AP Mode");
   //WiFi.softAP(ap_ssid, ap_password);
+  //WiFi.softAPConfig(ap_ip, ap_gateway, ap_subnet);
 
   //-----------------------------------------------------------
 
@@ -87,15 +89,15 @@ void setup()
     }
   }
   _DEBUG_PRINTLN("finished");
-  _DEBUG_PRINTLN("STA mode initialisiert");
 
   //-----------------------------------------------------------
-  //I2C initialisieren
-  //_DEBUG_PRINTLN("");
-  //_DEBUG_PRINTLN("I2C Bus aktivieren");
-
-  //Wire.begin(D1, D2); //SDA, SCL
-  //ds3231.printRTCTime();
+  //RTC initialisieren
+  _DEBUG_PRINTLN("");
+  _DEBUG_PRINTLN("RTC wird aktiviert");
+  rtcObject.Begin();
+  //TODO: Uhrzeit direkt vom Server einbinden
+  RtcDateTime currentTime = RtcDateTime(16, 05, 18, 21, 20, 0);
+  rtcObject.SetDateTime(currentTime);
 
   //-----------------------------------------------------------
 
@@ -120,7 +122,19 @@ void loop()
   //Variablendefinition
   char resChar;
   uint8_t i;
-  //ds3231.printRTCTime();
+  RtcDateTime currentTime = rtcObject.GetDateTime();
+  char str[20];   //declare a string as an array of chars
+
+    sprintf(str, "%d/%d/%d %d:%d:%d",     //%d allows to print an integer to the string
+            currentTime.Year(),   //get year method
+            currentTime.Month(),  //get month method
+            currentTime.Day(),    //get day method
+            currentTime.Hour(),   //get hour method
+            currentTime.Minute(), //get minute method
+            currentTime.Second()  //get second method
+           );
+
+
 
   //-----------------------------------------------------------
   //Pruefen ob neuer Client vorhanden
@@ -164,6 +178,7 @@ void loop()
         	// Hauptteil zum Einstellen der LEDs
         	if( lights.comevatiation( resChar ) ){
         		// TODO: Hier muss die endgueltige Steuerung der LEDs eingefuegt werden
+        		Serial.println(str); //TODO: Ausgabe der RTC Uhrzeit hier weider entfernen
         		for(int i=0;i<NUMPIXELS;i++){
         			pixels.setPixelColor(i, pixels.Color(farbanteile.red,farbanteile.green,farbanteile.blue));
         			pixels.show(); // This sends the updated pixel color to the hardware.

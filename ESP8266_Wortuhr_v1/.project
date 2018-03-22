@@ -52,6 +52,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/libraries/ESP8266WiFi</locationURI>
 		</link>
 		<link>
+			<name>libraries/Rtc_by_Makuna</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/Rtc_by_Makuna/2.0.2</locationURI>
+		</link>
+		<link>
 			<name>libraries/Wire</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.1/libraries/Wire</locationURI>
