@@ -20,8 +20,8 @@ WiFiClient serverClients[MAX_SRV_CLIENTS];
 word Matrix[11];
 
 /* WiFi Configurations */
-const char *sta_ssid     = "heikach";
-const char *sta_password = "1990augsburGMHVD!";
+const char *sta_ssid     = "ASUS";
+const char *sta_password = "Br8#Pojg56";
 //const char *sta_ssid     = "UPC68EE18B";
 //const char *sta_password = "Tw11tYbolz@#";
 //const char *sta_ssid     = "heikach";
