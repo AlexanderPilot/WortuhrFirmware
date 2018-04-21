@@ -35,8 +35,7 @@ const char *sta_password = "1990augsburGMHVD!";
 // example for more information on possible values.
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, WS2812B_PIN, NEO_GRB + NEO_KHZ800);
 
-// Persistenter Speicher
-eepromData configData;
+
 
 void setup()
 {
@@ -46,11 +45,12 @@ void setup()
   uint8_t maxValCntWiFi = 50;
 
   //-----------------------------------------------------------
-  //Oeffnen der UART Ausgabe(aktivierte oder deaktivierte Debugschnittstelle)
+  //Oeffnen der UART Ausgabe(aktivierte odear deaktivierte Debugschnittstelle)
   Serial.begin(SERIAL_SPEED);
   _DEBUG_BEGIN(SERIAL_SPEED);
   //Zeitverzug um serielle Kommunikation sicher aufgebaut zu haben
   delay(10);
+
   //Begruessungstext inkl. Versionsnummer
   _DEBUG_PRINTLN("Starte Initialisierung");
   _DEBUG_PRINTLN("");
@@ -116,12 +116,6 @@ void setup()
   // This initializes the NeoPixel library.
   // ----------------------------------------------------------
   pixels.begin();
-
-
-  loadConfig ( configData );
-    Serial.print( "Red: " ); Serial.println( configData.colorRed );
-    Serial.println( "Green: " + configData.colorGreen );
-    Serial.println( "Blue: " + configData.colorBlue );
 }
 
 void loop()
@@ -178,12 +172,6 @@ void loop()
         			pixels.setPixelColor(i, pixels.Color(farbanteile.red,farbanteile.green,farbanteile.blue));
         			pixels.show(); // This sends the updated pixel color to the hardware.
         		}
-        		// TODO: Nur ein test bitte löschen!
-        		configData.colorRed = farbanteile.red;
-        		Serial.print( "Rot: "); Serial.println( farbanteile.red );
-        		configData.colorGreen = farbanteile.green;
-				configData.colorBlue = farbanteile.blue;
-        		saveConfig ( configData );
         	}
         }
       }

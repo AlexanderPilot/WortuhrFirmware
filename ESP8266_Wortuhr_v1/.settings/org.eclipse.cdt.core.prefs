@@ -196,13 +196,13 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.ESP8266.NETWO
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.ESP8266.NETWORK.UPLOAD.TOOL/value=esp8266OTA
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.DTS/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.DTS/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.DTS/value=0
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.DTS/value=3600
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/value=1521752892
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.LOCAL/value=1524335341
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/value=1521749292
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.UTC/value=1524328141
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.ZONE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.ZONE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.EXTRA.TIME.ZONE/value=3600
@@ -433,7 +433,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ALTID/
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ALTID/value=no_altID
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/value=-ca 0x0 -cz "${A.BUILD.FLASH_SIZE_BYTES}"
+environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.ERASE_CMD/value=
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.MAXIMUM_DATA_SIZE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.MAXIMUM_DATA_SIZE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/A.UPLOAD.MAXIMUM_DATA_SIZE/value=81920
@@ -505,7 +505,7 @@ environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MAKE_LOC
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MAKE_LOCATION/value=${eclipse_home}/arduinoPlugin/tools/make/
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/value=CpuFrequency\=80\nDebug\=Disabled\nDebugLevel\=None____\nFlashErase\=all\nFlashSize\=4M1M\nLwIPVariant\=v2mss1460\nUploadSpeed\=115200.upload.speed
+environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.MENU/value=CpuFrequency\=80\nDebug\=Disabled\nDebugLevel\=None____\nFlashErase\=none\nFlashSize\=4M1M\nLwIPVariant\=v2mss1460\nUploadSpeed\=115200.upload.speed
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.OBJCOPY/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.OBJCOPY/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1537961126/JANTJE.OBJCOPY/value=${A.RECIPE.OBJCOPY.HEX.PATTERN}

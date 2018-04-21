@@ -10,11 +10,12 @@
 #include "Arduino.h"
 
 int cfgStart = 0;
+int FlashSize = 4095;
 
-void eraseConfig( eepromData cfg ) {
-  // Reset EEPROM bytes to '0' for the length of the data structure
-  EEPROM.begin(4095);
-  for (int i = cfgStart ; i < (int) sizeof(cfg) ; i++) {
+// Reset EEPROM bytes to '0' for the length of the data structure
+void eraseConfig(  ) {
+  EEPROM.begin(FlashSize);
+  for (int i = cfgStart ; i < (int) sizeof(configData) ; i++) {
     EEPROM.write(i, 0);
   }
   delay(200);
@@ -23,18 +24,19 @@ void eraseConfig( eepromData cfg ) {
 }
 
 
-void saveConfig( eepromData cfg ) {
+void saveConfig(  ) {
   // Save configuration from RAM into EEPROM
-  EEPROM.begin(4095);
-  EEPROM.put( cfgStart, cfg );
+  EEPROM.begin(FlashSize);
+  EEPROM.put( cfgStart, configData );
   delay(200);
-  EEPROM.commit();                      // Only needed for ESP8266 to get data written
-  EEPROM.end();                         // Free RAM copy of structure
+  EEPROM.commit();
+  EEPROM.end();
 }
 
-void loadConfig( eepromData cfg ) {
+void loadConfig(  ) {
   // Loads configuration from EEPROM into RAM
-  EEPROM.begin(4095);
-  EEPROM.get( cfgStart, cfg );
+  EEPROM.begin(FlashSize);
+  EEPROM.get( cfgStart, configData );
+  delay(100);
   EEPROM.end();
 }

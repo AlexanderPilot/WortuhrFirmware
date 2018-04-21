@@ -12,9 +12,9 @@
 #include "globals.h"
 
 
-	void eraseConfig( eepromData cfg );
-	void saveConfig ( eepromData cfg );
-	void loadConfig ( eepromData cfg );
+	void eraseConfig(  );
+	void saveConfig (  );
+	void loadConfig (  );
 
 
 
