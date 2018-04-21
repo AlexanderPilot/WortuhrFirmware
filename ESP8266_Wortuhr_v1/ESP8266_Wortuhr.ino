@@ -8,6 +8,8 @@
 #include <Adafruit_NeoPixel.h>
 #include "globals.h"
 #include "Lights.h"
+#include <EEPROM.h>
+#include "StorageData.h"
 
 /* Anlegen der Objekte*/
 Renderer renderer;
@@ -20,8 +22,8 @@ WiFiClient serverClients[MAX_SRV_CLIENTS];
 word Matrix[11];
 
 /* WiFi Configurations */
-const char *sta_ssid     = "ASUS";
-const char *sta_password = "Br8#Pojg56";
+const char *sta_ssid     = "heikach";
+const char *sta_password = "1990augsburGMHVD!";
 //const char *sta_ssid     = "UPC68EE18B";
 //const char *sta_password = "Tw11tYbolz@#";
 //const char *sta_ssid     = "heikach";
@@ -33,6 +35,8 @@ const char *sta_password = "Br8#Pojg56";
 // example for more information on possible values.
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, WS2812B_PIN, NEO_GRB + NEO_KHZ800);
 
+// Persistenter Speicher
+eepromData configData;
 
 void setup()
 {
@@ -112,6 +116,12 @@ void setup()
   // This initializes the NeoPixel library.
   // ----------------------------------------------------------
   pixels.begin();
+
+
+  loadConfig ( configData );
+    Serial.print( "Red: " ); Serial.println( configData.colorRed );
+    Serial.println( "Green: " + configData.colorGreen );
+    Serial.println( "Blue: " + configData.colorBlue );
 }
 
 void loop()
@@ -168,6 +178,12 @@ void loop()
         			pixels.setPixelColor(i, pixels.Color(farbanteile.red,farbanteile.green,farbanteile.blue));
         			pixels.show(); // This sends the updated pixel color to the hardware.
         		}
+        		// TODO: Nur ein test bitte löschen!
+        		configData.colorRed = farbanteile.red;
+        		Serial.print( "Rot: "); Serial.println( farbanteile.red );
+        		configData.colorGreen = farbanteile.green;
+				configData.colorBlue = farbanteile.blue;
+        		saveConfig ( configData );
         	}
         }
       }
