@@ -8,6 +8,8 @@
 #include <Adafruit_NeoPixel.h>
 #include "globals.h"
 #include "Lights.h"
+#include <EEPROM.h>
+#include "StorageData.h"
 
 /* Anlegen der Objekte*/
 Renderer renderer;
@@ -20,8 +22,8 @@ RtcDS3231<TwoWire> rtcObject(Wire);
 word Matrix[11];
 
 /* WiFi Configurations */
-const char *sta_ssid     = "ASUS";
-const char *sta_password = "Br8#Pojg56";
+const char *sta_ssid     = "heikach";
+const char *sta_password = "1990augsburGMHVD!";
 //const char *sta_ssid     = "UPC68EE18B";
 //const char *sta_password = "Tw11tYbolz@#";
 //const char *sta_ssid     = "heikach";
@@ -34,6 +36,7 @@ const char *sta_password = "Br8#Pojg56";
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, WS2812B_PIN, NEO_GRB + NEO_KHZ800);
 
 
+
 void setup()
 {
   //-----------------------------------------------------------
@@ -42,11 +45,12 @@ void setup()
   uint8_t maxValCntWiFi = 50;
 
   //-----------------------------------------------------------
-  //Oeffnen der UART Ausgabe(aktivierte oder deaktivierte Debugschnittstelle)
+  //Oeffnen der UART Ausgabe(aktivierte odear deaktivierte Debugschnittstelle)
   Serial.begin(SERIAL_SPEED);
   _DEBUG_BEGIN(SERIAL_SPEED);
   //Zeitverzug um serielle Kommunikation sicher aufgebaut zu haben
   delay(10);
+
   //Begruessungstext inkl. Versionsnummer
   _DEBUG_PRINTLN("Starte Initialisierung");
   _DEBUG_PRINTLN("");

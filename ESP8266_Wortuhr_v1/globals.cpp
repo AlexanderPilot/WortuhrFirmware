@@ -21,3 +21,4 @@ char farbe[6];
 colorRGB farbanteile;
 char befehl[6];
 char bufferReader[8];
+eepromData configData;
