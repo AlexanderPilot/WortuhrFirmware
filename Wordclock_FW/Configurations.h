@@ -88,8 +88,8 @@ const int   daylightOffset_sec = 3600;
 //---------------------------------------------------------------------------------
 // LED Settings
 
-#define LEDSTRIP_PIN  19
-#define LEDNUM        144
+#define LEDSTRIP_PIN    19
+#define LED_NUM            8
 
 
 
