@@ -3,6 +3,7 @@
  */
 
 #include "Configurations.h"
+#include "WS2812B.h"
 
 xQueueHandle msgq_ntpTime;
 xQueueHandle msgq_rtcTime;
@@ -10,6 +11,8 @@ xQueueHandle msgq_matrix;
 
 SemaphoreHandle_t sema_1;
 SemaphoreHandle_t sema_i2c;
+
+WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 
 void printLocalTime()
 {
@@ -175,127 +178,140 @@ void showMatrix(void *arg)
 
 void setup()
 {
-        //---------------------------------------------------------------------------------
-        // starting of serial communication
-        Serial.begin(SERIAL_SPEED);
-        _DEBUG_BEGIN(SERIAL_SPEED);
-        delay(10);
+      //---------------------------------------------------------------------------------
+      // starting of serial communication
+      Serial.begin(SERIAL_SPEED);
+      _DEBUG_BEGIN(SERIAL_SPEED);
+      delay(10);
       
-        //---------------------------------------------------------------------------------
-        // output of version number
-        Serial.println();
-        Serial.print(PRINT_SEPARATOR);
-        Serial.println(PRINT_SEPARATOR);
-        Serial.println();
-        Serial.print("\tWordclock v");
-        Serial.println(VERSION);
-        Serial.println();
-        Serial.print(PRINT_SEPARATOR);
-        Serial.println(PRINT_SEPARATOR);
+      //---------------------------------------------------------------------------------
+      // output of version number
+      Serial.println();
+      Serial.print(PRINT_SEPARATOR);
+      Serial.println(PRINT_SEPARATOR);
+      Serial.println();
+      Serial.print("\tWordclock v");
+      Serial.println(VERSION);
+      Serial.println();
+      Serial.print(PRINT_SEPARATOR);
+      Serial.println(PRINT_SEPARATOR);
       
-        //---------------------------------------------------------------------------------
-        // initializing peripherals
-        _DEBUG_PRINTLN("");
-        _DEBUG_PRINTLN("Starting initialization of all peripherals ");
+      //---------------------------------------------------------------------------------
+      // initializing peripherals
+      _DEBUG_PRINTLN("");
+      _DEBUG_PRINTLN("Starting initialization of all peripherals ");
       
-        //---------------------------------------------------------------------------------
-        // starting WiFi in stationary modus
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        WiFi.mode(WIFI_STA);
-        WiFi.begin(STA_SSID, STA_PASSWORD);
-        WiFi.setHostname("Name");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("WiFi STA mode started");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINT("Connecting to SSID: ");
-        _DEBUG_PRINT(STA_SSID);
+      //---------------------------------------------------------------------------------
+      // starting WiFi in stationary modus
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      WiFi.mode(WIFI_STA);
+      WiFi.begin(STA_SSID, STA_PASSWORD);
+      WiFi.setHostname("Name");
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("WiFi STA mode started");
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINT("Connecting to SSID: ");
+      _DEBUG_PRINT(STA_SSID);
       
-        while ((WiFi.status() != WL_CONNECTED))
-        {
-                delay(500);
-                _DEBUG_PRINT(".");
-                counterWiFiConnection++;
-        }
-        _DEBUG_PRINTLN("finished");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("STA mode initialized");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("receive NTP time for first time");
-        configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER_NAME);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        printLocalTime();
-        //---------------------------------------------------------------------------------
-        //starting of bluetooth
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("starting bluetooth - not yet implemented");
-        
-        //---------------------------------------------------------------------------------
-        //starting of I2C
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("starting I2C - not yet implemented");
-        
-        //---------------------------------------------------------------------------------
-        //starting of other peripherals
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("starting other peripherals - not yet implemented");
-        
-        //---------------------------------------------------------------------------------
-        //definition of inouts / outputs
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("defining input / output - not yet implemented");
-        
-        //---------------------------------------------------------------------------------
-        //intialization of perifpherals finished
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINTLN("initialization of peripherals finished");
+      while ((WiFi.status() != WL_CONNECTED))
+      {
+            delay(500);
+            _DEBUG_PRINT(".");
+            counterWiFiConnection++;
+      }
+      _DEBUG_PRINTLN("finished");
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("STA mode initialized");
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("receive NTP time for first time");
+      configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER_NAME);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      printLocalTime();
+      //---------------------------------------------------------------------------------
+      //starting of bluetooth
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("starting bluetooth - not yet implemented");
       
-        //---------------------------------------------------------------------------------
-        _DEBUG_PRINTLN("");
-        _DEBUG_PRINTLN("starting RTOS initialization");
-        
-        //---------------------------------------------------------------------------------
-        //Erzeugen der Message Queues
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("creating message queues");
-        msgq_ntpTime = xQueueCreate(10, sizeof(uint32_t));
-        msgq_rtcTime = xQueueCreate(10, sizeof(uint32_t));
-        msgq_matrix = xQueueCreate(10, sizeof(uint32_t));
-        
-        //Erzeugen der Semaphoren
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("creating semaphores");
-        sema_1 = xSemaphoreCreateMutex();
-        sema_i2c = xSemaphoreCreateMutex();
+      //---------------------------------------------------------------------------------
+      //starting of I2C
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("starting I2C - not yet implemented");
       
-        //Erzeugen der Tasks
-        /*
-        Prioritäten: je größer die Nummer, desto größer die Priorität
-        */
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        _DEBUG_PRINT(PRINT_SMALLTAB);
-        _DEBUG_PRINTLN("create RTOS tasks");
-        xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
-        xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
-        xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
-        xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
-        xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
+      //---------------------------------------------------------------------------------
+      //starting of LED Strip
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("starting LED strip");
+      //ledStrip.startPattern(LED_NUM,version);
+      ledStrip.setColorOrder("GRB");
+      for (int i=0;i<LED_NUM;i++)
+      {
+            ledStrip.setPixel((uint16_t)i,255, 0, 0);
+      }
+      ledStrip.show();
+      //---------------------------------------------------------------------------------
+      //starting of other peripherals
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("starting other peripherals - not yet implemented");
+       
+      //---------------------------------------------------------------------------------
+      //definition of inouts / outputs
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("defining input / output - not yet implemented");
+        
+      //---------------------------------------------------------------------------------
+      //intialization of perifpherals finished
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINTLN("initialization of peripherals finished");
+      
+      //---------------------------------------------------------------------------------
+      _DEBUG_PRINTLN("");
+      _DEBUG_PRINTLN("starting RTOS initialization");
+        
+      //---------------------------------------------------------------------------------
+      //Erzeugen der Message Queues
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("creating message queues");
+      msgq_ntpTime = xQueueCreate(10, sizeof(uint32_t));
+      msgq_rtcTime = xQueueCreate(10, sizeof(uint32_t));
+      msgq_matrix = xQueueCreate(10, sizeof(uint32_t));
+       
+      //Erzeugen der Semaphoren
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("creating semaphores");
+      sema_1 = xSemaphoreCreateMutex();
+      sema_i2c = xSemaphoreCreateMutex();
+      
+      //Erzeugen der Tasks
+      /*
+      Prioritäten: je größer die Nummer, desto größer die Priorität
+      */
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN(PRINT_SEPARATOR);
+      _DEBUG_PRINT(PRINT_SMALLTAB);
+      _DEBUG_PRINTLN("create RTOS tasks");
+      xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
+      xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
+      xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
+      xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
+      xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
 }
 
 void loop()
 {
-  delay(10);
+      delay(10);
 }
