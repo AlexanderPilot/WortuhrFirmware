@@ -16,7 +16,8 @@ DS3231 ds3231(DS3231_ADDRESS);
 TwoWire i2cRtc = TwoWire(0);
 
 word Matrix[11];
-
+//ISR für Timer interrupt
+//freigeben der semaphore für task getNtpTime
 
 void printLocalTime()
 {

@@ -1,0 +1,36 @@
+///* Header für Einstellungen */
+//
+///* Vermeidung Doppeldefinitionen */
+//#ifndef SETTINGS_H
+//#define SETTINGS_H
+//
+//#include "Arduino.h"
+//#include <EEPROM.h>
+//#include "Renderer.h"
+//#include "Configurations.h"
+//
+//class Settings
+//{
+//  public:
+//    Settings();
+//  
+//    byte getLanguage();
+//    void setLanguage(byte language);
+//  
+//    boolean getCornersClockwise();
+//    void setCornersClockwise(boolean clockwise);
+//  
+//    byte getBrightness();
+//    void setBrightness(byte brightness);
+//  
+//    void loadFromEEPROM();
+//    void saveToEEPROM();
+//  
+//  private:
+//    byte _Language;
+//    boolean _CornersClockwise;
+//    byte _Brightness;
+//};
+//
+//
+//#endif
