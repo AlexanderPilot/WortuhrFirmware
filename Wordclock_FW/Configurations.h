@@ -19,6 +19,8 @@
 // Bibliotheken, abhängig vom Mikrocontroller
 #ifdef ARDUINO_ESP32_DEV
 #include "WiFi.h"
+#include "WS2812B.h"
+#include "DS3231.h"
 #include "time.h"
 #else
 #include "ESP8266WiFi.h"
@@ -52,10 +54,10 @@
 // WiFi Settings
 
 /* WiFi AP Settings*/
-//#define STA_SSID      "ASUS"
-//#define STA_PASSWORD  "Br8#Pojg56"
-#define STA_SSID        "Internet_MH"
-#define STA_PASSWORD    "WZ78AG27MGFF27DL"
+#define STA_SSID      "ASUS"
+#define STA_PASSWORD  "Br8#Pojg56"
+//#define STA_SSID        "Internet_MH"
+//#define STA_PASSWORD    "WZ78AG27MGFF27DL"
 //#define STA_SSID      "UPC68EE18B"
 //#define STA_PASSWORD  "Tw11tYbolz@#"
 
@@ -82,15 +84,17 @@ const int   daylightOffset_sec = 3600;
 
 /* Adresse fuer DS3231 */
 #define DS3231_ADDRESS 0x68
-
+#define SDA_PIN 21
+#define SCL_PIN 22
+#define I2C_FREQUENCY 400000
 
 
 //---------------------------------------------------------------------------------
 // LED Settings
 
-#define LEDSTRIP_PIN    19
-#define LED_NUM            8
-
+#define LEDSTRIP_PIN               19
+#define LED_NUM                        8
+#define START_PATTERN          0
 
 
 

@@ -1,10 +1,3 @@
-/* Copyright (c) 2017 by Neil Kolban
- *
- * This wonderful Library is taken from https://github.com/nkolban/esp32-snippets
- * File: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/WS2812.h
- */
-
-
 #ifndef MAIN_WS2812_H_
 #define MAIN_WS2812_H_
 #include <stdint.h>
@@ -15,9 +8,9 @@
  * @brief A data type representing the color of a pixel.
  */
 typedef struct {
-  uint8_t red;
-  uint8_t green;
-  uint8_t blue;
+      uint8_t red;
+      uint8_t green;
+      uint8_t blue;
 } pixel_t;
 
 
@@ -43,22 +36,21 @@ typedef struct {
  * @endcode
  */
 class WS2812 {
-public:
-  WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel=RMT_CHANNEL_0);
-  void show();
-  void setColorOrder(char *order);
-  void setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
-  void setPixel(uint16_t index, pixel_t pixel);
-  void setPixel(uint16_t index, uint32_t pixel);
-  void setHSBPixel(uint16_t index, uint16_t hue, uint8_t saturation,  uint8_t brightnes);
-  void clear();
-  virtual ~WS2812();
-private:
-  char          *colorOrder;
-  uint16_t       pixelCount;
-  rmt_channel_t  channel;
-  rmt_item32_t  *items;
-  pixel_t       *pixels;
+      public:
+            WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel=RMT_CHANNEL_0);
+            void show();
+            void setColorOrder(char *order);
+            void setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
+            void setAllPixels(uint8_t red, uint8_t green, uint8_t blue);
+            void startPattern(uint8_t version);
+            void clear();
+            virtual ~WS2812();
+      private:
+            char          *colorOrder;
+            uint16_t       pixelCount;
+            rmt_channel_t  channel;
+            rmt_item32_t  *items;
+            pixel_t       *pixels;
 };
 
-#endif /* MAIN_WS2812_H_ */
+#endif
