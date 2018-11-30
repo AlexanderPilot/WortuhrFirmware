@@ -8,17 +8,11 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-//Anlegen des Zeitstructs (für NTP und RTC Zeit)
-
 /* Klasse DS3231 */
 class DS3231
 {
       public:
             DS3231(int address);
-            
-            
-            
-            
             
             //myTime readTime();
             void readTime();

@@ -3,7 +3,6 @@
  */
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------
 ToDo:
-- ISR für Timer interrupt bzw Abfrage der NTP Zeit zur Synchronisation mit definiertem Parameter --> freigeben der semaphore für task getNtpTime in ISR
 - Funktion um Structelemente in Textstring zu wandlen für Übergabe oder struct direkt an Funktion aus der Klasse DS3231 zu übergeben inkl. Vorbereitung der Klassenfunktion
 - Struct global angelegt, kann aber auch in der klasse erfolgen aber lokale struct-Elemente in den RTOS Tasks (falls notwenidg)
 - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
@@ -279,7 +278,6 @@ void setup()
       Serial.println();
       Serial.print(PRINT_SEPARATOR);
       Serial.println(PRINT_SEPARATOR);
-      
       //---------------------------------------------------------------------------------
       //Initializierung der Peripherie
       _DEBUG_PRINTLN("");
