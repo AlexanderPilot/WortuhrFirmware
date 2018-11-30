@@ -51,9 +51,9 @@
 #define PRINT_SMALLTAB "    "
 
 //---------------------------------------------------------------------------------
-// WiFi Settings
+// WiFi Einstellungen
 
-/* WiFi AP Settings*/
+/* WiFi AP Einstellungen*/
 #define STA_SSID      "ASUS"
 #define STA_PASSWORD  "Br8#Pojg56"
 //#define STA_SSID        "Internet_MH"
@@ -65,13 +65,13 @@ uint8_t counterWiFiConnection = 0;
 
 
 //---------------------------------------------------------------------------------
-// NTP Settings
+// NTP Server Einstellungen
 const char* NTP_SERVER_NAME = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
 
 //---------------------------------------------------------------------------------
-// Bluetooth Settings
+// Bluetooth Einstellungen
 
 
 #define MAX_BT_CLIENTS    1
@@ -80,7 +80,7 @@ const int   daylightOffset_sec = 3600;
 
 
 //---------------------------------------------------------------------------------
-// I2C Settings
+// I2C Einstellungen
 
 /* Adresse fuer DS3231 */
 #define DS3231_ADDRESS 0x68
@@ -91,17 +91,19 @@ const int   daylightOffset_sec = 3600;
 
 
 //---------------------------------------------------------------------------------
-// LED Settings
+// LED Einstellungen
 
 #define LEDSTRIP_PIN               19
 #define LED_NUM                        8
 #define START_PATTERN          0
 
 
+//---------------------------------------------------------------------------------
+// Timer Einstellungen
 
 
-
-
+//#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
+#define NTP_TIMER_VALUE_SEC 60 //für Testzwecke wird der Interrupt alle 10 Sekunden ausgelöst
 
 
 #endif

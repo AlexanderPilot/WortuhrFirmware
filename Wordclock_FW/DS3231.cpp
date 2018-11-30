@@ -4,6 +4,8 @@
 /* Einbinden von Headerdateien */
 #include "DS3231.h"
 
+
+
 /* Funktionen */
 DS3231::DS3231(int address)
 {
@@ -42,15 +44,34 @@ void DS3231::readTime()
       Wire.endTransmission();
 }
 
-//ds3231.writeTime(rtcTimeWrite);
-void DS3231::writeTime()
+/*ds3231.writeTime(struct structName);
 {
       //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
       Wire.beginTransmission(_address);
 
-      //Schreibe an die Anfangsadresse (ab welcher Adresse soll ausgelesen werden)
+       //Schreibe an die Anfangsadresse (ab welcher Adresse soll ausgelesen werden)
       Wire.write((uint8_t)0x00);
-  
+      
+      Wire.write(DecToBCD(structName.second));
+      Wire.write(DecToBCD(structName.minute));
+      Wire.write(DecToBCD(structName.hour));
+      Wire.write(DecToBCD(structName.dayOfWeek));
+      Wire.write(DecToBCD(structName.date));
+      Wire.write(DecToBCD(structName.month));
+      Wire.write(DecToBCD(structName.year));
+
+      Wire.endTransmission();
+}
+*/
+
+void DS3231::writeTime()
+{
+      //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
+      Wire.beginTransmission(_address);
+      
+       //Schreibe an die Anfangsadresse (ab welcher Adresse soll ausgelesen werden)
+      Wire.write((uint8_t)0x00);
+      
       Wire.write(DecToBCD(_Seconds));
       Wire.write(DecToBCD(_Minutes));
       Wire.write(DecToBCD(_Hours));
@@ -58,7 +79,7 @@ void DS3231::writeTime()
       Wire.write(DecToBCD(_Date));
       Wire.write(DecToBCD(_Month));
       Wire.write(DecToBCD(_Year));
-  
+      
       Wire.endTransmission();
 }
 
