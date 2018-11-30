@@ -14,7 +14,7 @@ DS3231::DS3231(int address)
 
 void DS3231::readTime()
 {
-      byte count = 0;
+      uint8_t count = 0;
       
       //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
       Wire.beginTransmission(_address);
@@ -43,26 +43,6 @@ void DS3231::readTime()
   
       Wire.endTransmission();
 }
-
-/*ds3231.writeTime(struct structName);
-{
-      //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
-      Wire.beginTransmission(_address);
-
-       //Schreibe an die Anfangsadresse (ab welcher Adresse soll ausgelesen werden)
-      Wire.write((uint8_t)0x00);
-      
-      Wire.write(DecToBCD(structName.second));
-      Wire.write(DecToBCD(structName.minute));
-      Wire.write(DecToBCD(structName.hour));
-      Wire.write(DecToBCD(structName.dayOfWeek));
-      Wire.write(DecToBCD(structName.date));
-      Wire.write(DecToBCD(structName.month));
-      Wire.write(DecToBCD(structName.year));
-
-      Wire.endTransmission();
-}
-*/
 
 void DS3231::writeTime()
 {
@@ -93,72 +73,72 @@ void DS3231::printRTCTime(void)
       Serial.println(getSeconds());
 }
 
-void DS3231::setSeconds(byte Seconds)
+void DS3231::setSeconds(uint8_t Seconds)
 {
       _Seconds = Seconds;
 }
 
-void DS3231::setMinutes(byte Minutes)
+void DS3231::setMinutes(uint8_t Minutes)
 {
       _Minutes = Minutes;
 }
 
-void DS3231::setHours(byte Hours)
+void DS3231::setHours(uint8_t Hours)
 {
       _Hours = Hours;
 }
 
-void DS3231::setDayOfWeek(byte DayOfWeek)
+void DS3231::setDayOfWeek(uint8_t DayOfWeek)
 {
       _DayOfWeek = DayOfWeek;
 }
 
-void DS3231::setDate(byte Date)
+void DS3231::setDate(uint8_t Date)
 {
       _Date = Date;
 }
 
-void DS3231::setMonth(byte Month)
+void DS3231::setMonth(uint8_t Month)
 {
       _Month = Month;
 }
 
-void DS3231::setYear(byte Year)
+void DS3231::setYear(uint16_t Year)
 {
       _Year = Year;
 }
 
-byte DS3231::getSeconds()
+uint8_t DS3231::getSeconds()
 {
       return _Seconds;  
 }
 
-byte DS3231::getMinutes()
+uint8_t DS3231::getMinutes()
 {
       return _Minutes;  
 }
 
-byte DS3231::getHours()
+uint8_t DS3231::getHours()
 {
       return _Hours;  
 }
 
-byte DS3231::getDayOfWeek()
+uint8_t DS3231::getDayOfWeek()
 {
       return _DayOfWeek;  
 }
 
-byte DS3231::getDate()
+uint8_t DS3231::getDate()
 {
       return _Date;  
 }
 
-byte DS3231::getMonth()
+uint8_t DS3231::getMonth()
 {
       return _Month;  
 }
 
-byte DS3231::getYear()
+uint16_t DS3231::getYear()
 {
       return _Year; 
 }
@@ -166,15 +146,14 @@ byte DS3231::getYear()
 //Binary Code Decimal = Dateiformat der DS3231 Register
 
 //Konvertiert decimal > bcd
-byte DS3231::DecToBCD(byte value)
+uint16_t DS3231::DecToBCD(uint16_t value)
 {
       return((value / 10 * 16) + (value % 10));
 }
 
 //Konvertiert bcd > decimal
-byte DS3231::BCDToDec(byte value)
+uint16_t DS3231::BCDToDec(uint16_t value)
 {
       return((value / 16 * 10) + (value % 16));
 }
-
 

@@ -61,14 +61,14 @@
 //#define STA_SSID      "UPC68EE18B"
 //#define STA_PASSWORD  "Tw11tYbolz@#"
 
-uint8_t counterWiFiConnection = 0;
+//uint8_t counterWiFiConnection = 0;
 
 
 //---------------------------------------------------------------------------------
 // NTP Server Einstellungen
-const char* NTP_SERVER_NAME = "pool.ntp.org";
-const long  gmtOffset_sec = 3600;
-const int   daylightOffset_sec = 3600;
+#define NTP_SERVER_NAME "pool.ntp.org"
+#define gmtOffset_sec  3600
+#define daylightOffset_sec  3600
 
 //---------------------------------------------------------------------------------
 // Bluetooth Einstellungen
@@ -107,4 +107,3 @@ const int   daylightOffset_sec = 3600;
 
 
 #endif
-
