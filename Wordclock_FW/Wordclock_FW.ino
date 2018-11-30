@@ -12,12 +12,6 @@ ToDo:
 
 
 
-
-
-
-
-
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 //Einbinden von benötigten Bibliotheken
 #include "Configurations.h"
@@ -35,12 +29,9 @@ SemaphoreHandle_t sema_i2c;
 WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 DS3231 ds3231(DS3231_ADDRESS);
 TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
+hw_timer_t * timer = NULL;
 
-//Speicher für LED Matrix
-//word Matrix[11];
-
-//Anlegen des Zeitstructs (für NTP und RTC Zeit)
- struct myTime {
+struct myTime {
       uint16_t year;
       uint8_t month;
       uint8_t date;
@@ -49,6 +40,18 @@ TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
       uint8_t minute;
       uint8_t second;
 };
+
+uint32_t ISRcounter = 0;
+
+void IRAM_ATTR ISR_Timer(){
+      //ISR wird jede Sekunde ausgelöst. Eine ISR
+      if(ISRcounter >= NTP_TIMER_VALUE_SEC){
+            ISRcounter = 0;
+            //Freigeben der Semaphore an den Task getNtp
+            xSemaphoreGiveFromISR(sema_ntp, NULL);
+      }
+      ISRcounter++;
+}
 
 void printLocalTime()
 {
@@ -71,6 +74,7 @@ void getNtpTime(void *arg)
             if (xSemaphoreTake(sema_ntp, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
             //semaphore wird in ISR freigegeben
             {
+                  Serial.println("ISR ausgeloest");
                   _DEBUG_PRINTLN("Task getNtpTime receives NTP time");
                   //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
                   ntpTime.year = 2018;
@@ -259,13 +263,13 @@ void showMatrix(void *arg)
 void setup()
 {
       //---------------------------------------------------------------------------------
-      // starting of serial communication
+      //Initializierung der seriellen Kommunikation
       Serial.begin(SERIAL_SPEED);
       _DEBUG_BEGIN(SERIAL_SPEED);
       delay(10);
       
       //---------------------------------------------------------------------------------
-      // output of version number
+      //Ausgabe der Version
       Serial.println();
       Serial.print(PRINT_SEPARATOR);
       Serial.println(PRINT_SEPARATOR);
@@ -277,12 +281,12 @@ void setup()
       Serial.println(PRINT_SEPARATOR);
       
       //---------------------------------------------------------------------------------
-      // initializing peripherals
+      //Initializierung der Peripherie
       _DEBUG_PRINTLN("");
-      _DEBUG_PRINTLN("Starting initialization of all peripherals ");
+      _DEBUG_PRINTLN("Starte die Initialisierung der Peripherie");
       
       //---------------------------------------------------------------------------------
-      // starting WiFi in stationary modus
+      //Initializierung WiFi im stationären Modus
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       WiFi.mode(WIFI_STA);
       WiFi.begin(STA_SSID, STA_PASSWORD);
@@ -308,14 +312,14 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       printLocalTime();
       //---------------------------------------------------------------------------------
-      //starting of bluetooth
+      //Initializierung von Bluetooth
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("starting bluetooth - not yet implemented");
       
       //---------------------------------------------------------------------------------
-      //starting of I2C
+      //Initializierung des I2C-Bus
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -323,7 +327,7 @@ void setup()
       i2cRtc.begin(SDA_PIN, SCL_PIN, I2C_FREQUENCY);
       
       //---------------------------------------------------------------------------------
-      //starting of LED Strip
+      //Initializierung des LED Strip
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -346,7 +350,17 @@ void setup()
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("defining input / output - not yet implemented");
-        
+      //---------------------------------------------------------------------------------
+      //Starten Timer und Interrupt
+      
+      //Setzen des Timer0 mit Prescaler 80 --> 1us Taktung und Aufwärtszählung (true)
+      timer = timerBegin(0, 80, true);
+      //Interrupt an Timer0 koppeln
+      timerAttachInterrupt(timer, &ISR_Timer, true);
+      //Alarm wird jede Sekunde gesetzt, Alarm soll immer wieder wiederholt werden (true)
+      timerAlarmWrite(timer, 1000000, true);
+      // Start an alarm
+      timerAlarmEnable(timer);
       //---------------------------------------------------------------------------------
       //intialization of perifpherals finished
       _DEBUG_PRINT(PRINT_SMALLTAB);
