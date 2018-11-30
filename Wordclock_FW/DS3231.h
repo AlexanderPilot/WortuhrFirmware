@@ -8,21 +8,17 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-typedef struct {
-      uint16_t year;
-      uint8_t month;
-      uint8_t date;
-      uint8_t dayOfWeek;
-      uint8_t hour;
-      uint8_t minute;
-      uint8_t second;
-} myTime;
+
 
 /* Klasse DS3231 */
 class DS3231
 {
       public:
             DS3231(int address);
+
+           
+
+            
             
             //myTime readTime();
             void readTime();
@@ -49,7 +45,9 @@ class DS3231
       private:
             int _address;
 
-            myTime *RtcTime;
+            //struct für RTC Time
+            //myTime *RtcTime;
+            
             
             byte _Seconds;
             byte _Minutes;

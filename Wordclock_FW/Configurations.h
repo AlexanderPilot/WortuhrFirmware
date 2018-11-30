@@ -86,6 +86,7 @@ const int   daylightOffset_sec = 3600;
 #define DS3231_ADDRESS 0x68
 #define SDA_PIN 21
 #define SCL_PIN 22
+#define I2C_CHANNEL 0
 #define I2C_FREQUENCY 400000
 
 

@@ -42,6 +42,7 @@ void DS3231::readTime()
       Wire.endTransmission();
 }
 
+//ds3231.writeTime(rtcTimeWrite);
 void DS3231::writeTime()
 {
       //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address

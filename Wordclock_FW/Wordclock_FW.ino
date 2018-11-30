@@ -1,23 +1,54 @@
 /*
  * Wordclock
  */
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------
+ToDo:
+- ISR für Timer interrupt bzw Abfrage der NTP Zeit zur Synchronisation mit definiertem Parameter --> freigeben der semaphore für task getNtpTime in ISR
+- Funktion um Structelemente in Textstring zu wandlen für Übergabe oder struct direkt an Funktion aus der Klasse DS3231 zu übergeben inkl. Vorbereitung der Klassenfunktion
+- Struct global angelegt, kann aber auch in der klasse erfolgen aber lokale struct-Elemente in den RTOS Tasks (falls notwenidg)
+- Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
+- renderer Anpassen, sodass struct übergeben werden kann und die Auswertung in der Funktion separat erfolgt
+- Einbindung Bluetooth
 
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+//Einbinden von benötigten Bibliotheken
 #include "Configurations.h"
 
+//Anlegen der RTOS Message Queues
 xQueueHandle msgq_ntpTime;
 xQueueHandle msgq_rtcTime;
 xQueueHandle msgq_matrix;
 
-SemaphoreHandle_t sema_1;
+//Anlegen der RTOS Semaphoren
+SemaphoreHandle_t sema_ntp;
 SemaphoreHandle_t sema_i2c;
 
+//Anlegen der Peripherie Instanzen
 WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 DS3231 ds3231(DS3231_ADDRESS);
-TwoWire i2cRtc = TwoWire(0);
+TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
 
-word Matrix[11];
-//ISR für Timer interrupt
-//freigeben der semaphore für task getNtpTime
+//Speicher für LED Matrix
+//word Matrix[11];
+
+//Anlegen des Zeitstructs (für NTP und RTC Zeit)
+ struct myTime {
+      uint16_t year;
+      uint8_t month;
+      uint8_t date;
+      uint8_t dayOfWeek;
+      uint8_t hour;
+      uint8_t minute;
+      uint8_t second;
+};
 
 void printLocalTime()
 {
@@ -30,32 +61,43 @@ void printLocalTime()
       Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
 }
 
-
 void getNtpTime(void *arg)
 {
-      uint32_t ntpTime = 0;
-      //struct ntpTime anlegen um die uhrzeit von ntp server auszulesen und das structin die msgq zu übergeben
+      //erzeugen eines lokalen Struct objects
+      myTime ntpTime;
+      //struct ntpTime anlegen um die Uhrzeit von ntp server auszulesen und das structin die msgq zu übergeben
       while (1)
       {
-            if (xSemaphoreTake(sema_1, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
-            //semaphore is released in ISR
+            if (xSemaphoreTake(sema_ntp, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
+            //semaphore wird in ISR freigegeben
             {
                   _DEBUG_PRINTLN("Task getNtpTime receives NTP time");
-                  //get NTP Time
-                  
-                  //copy internal time in struct for message queue
-                  _DEBUG_PRINTLN(ntpTime);
+                  //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
+                  ntpTime.year = 2018;
+                  ntpTime.month = 12;
+                  ntpTime.date = 1;
+                  ntpTime.dayOfWeek = 2;
+                  ntpTime.hour = 16;
+                  ntpTime.minute = 35;
+                  ntpTime.second = 17;
+                  //Struct ntpTime in die Message Queue senden                  
                   if (xQueueSendToBack(msgq_ntpTime, &ntpTime, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
-                        _DEBUG_PRINT("Task getNtpTime failed to send value to queue ");
+                        _DEBUG_PRINTLN("Task getNtpTime failed to send value to queue ");
                   }
                   else
                   {
                         _DEBUG_PRINT("Task getNtpTime has send value to queue ");
-                        _DEBUG_PRINT(ntpTime);
+                        //_DEBUG_PRINTLN(ntpTimeAsString);
+                        _DEBUG_PRINTLN(ntpTime.year);
+                        _DEBUG_PRINTLN(ntpTime.month);
+                        _DEBUG_PRINTLN(ntpTime.date);
+                        _DEBUG_PRINTLN(ntpTime.dayOfWeek);
+                        _DEBUG_PRINTLN(ntpTime.hour);
+                        _DEBUG_PRINTLN(ntpTime.minute);
+                        _DEBUG_PRINTLN(ntpTime.second);
                   }
                   vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
-                  ntpTime++;
             }
       }
 }
@@ -63,11 +105,11 @@ void getNtpTime(void *arg)
 void writeTimeToRtc(void *arg)
 {
       bool error;
-      uint32_t rtcTime;
+      struct myTime rtcTimeWrite;
       //struct rtcTime anlegen um den inhalt der msgq auszulesen
       while (1)
       {
-            if (xQueueReceive(msgq_ntpTime, &rtcTime, 1000 / portTICK_RATE_MS) != pdTRUE)
+            if (xQueueReceive(msgq_ntpTime, &rtcTimeWrite, 1000 / portTICK_RATE_MS) != pdTRUE)
             {
                   // max wait 1000ms
                   _DEBUG_PRINTLN("Task writeTimeToRtc fail to receive queued value");
@@ -75,14 +117,20 @@ void writeTimeToRtc(void *arg)
             else
             {
                   _DEBUG_PRINT("Task writeTimeToRtc received queued value ");
-                  _DEBUG_PRINTLN(rtcTime);
+                  _DEBUG_PRINTLN(rtcTimeWrite.year);
+                  _DEBUG_PRINTLN(rtcTimeWrite.month);
+                  _DEBUG_PRINTLN(rtcTimeWrite.date);
+                  _DEBUG_PRINTLN(rtcTimeWrite.dayOfWeek);
+                  _DEBUG_PRINTLN(rtcTimeWrite.hour);
+                  _DEBUG_PRINTLN(rtcTimeWrite.minute);
+                  _DEBUG_PRINTLN(rtcTimeWrite.second);
                   _DEBUG_PRINTLN("Task writeTimeToRtc trying to access I2C bus");
                   if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
                   {
                         _DEBUG_PRINTLN("Task writeTimeToRtc acces to I2C bus granted");
                         _DEBUG_PRINTLN("Task writeTimeToRtc start I2C communication");
                         i2cRtc.beginTransmission(DS3231_ADDRESS); //starting I2C communication to DS3231_ADRESS
-                        //ds3231.writeTime(rtcTime);
+                        //ds3231.writeTime(rtcTimeWrite);
                         //Funktion anpassen und per Übergabeparameter struct die Uhrzeit auf der RTC Speichern
                         _DEBUG_PRINTLN("Task writeTimeToRtc sending data");
                         i2cRtc.endTransmission(true); //stopping I2C communication
@@ -99,10 +147,11 @@ void writeTimeToRtc(void *arg)
 
 void readRtcTime(void *arg)
 {
-      uint32_t rtcTime = 0;
+      struct myTime rtcTimeRead;
       while (1)
       {
             _DEBUG_PRINTLN("Task readRtcTime trying to get acces to I2C bus");
+            vTaskDelay(10);
             if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
             {
                   _DEBUG_PRINTLN("Task readRtcTime acces to I2C bus granted");
@@ -114,34 +163,43 @@ void readRtcTime(void *arg)
                   i2cRtc.endTransmission(true); //stopping I2C communication
                   xSemaphoreGive(sema_i2c);
                   _DEBUG_PRINT("Task readRtcTime send the value ");
-                  _DEBUG_PRINTLN(rtcTime);
-                  if (xQueueSendToBack(msgq_rtcTime, &rtcTime, 500 / portTICK_RATE_MS) != pdTRUE)
+                  _DEBUG_PRINTLN(rtcTimeRead.year);
+                  _DEBUG_PRINTLN(rtcTimeRead.month);
+                  _DEBUG_PRINTLN(rtcTimeRead.date);
+                  _DEBUG_PRINTLN(rtcTimeRead.dayOfWeek);
+                  _DEBUG_PRINTLN(rtcTimeRead.hour);
+                  _DEBUG_PRINTLN(rtcTimeRead.minute);
+                  _DEBUG_PRINTLN(rtcTimeRead.second);
+                  if (xQueueSendToBack(msgq_rtcTime, &rtcTimeRead, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
-                        _DEBUG_PRINT("Task readRtcTime failed to send value to queue ");
+                        _DEBUG_PRINTLN("Task readRtcTime failed to send value to queue ");
                   }
                   else
                   {
                         _DEBUG_PRINT("Task readRtcTime has send value to queue ");
-                        _DEBUG_PRINT(rtcTime);
+                        _DEBUG_PRINT(rtcTimeRead.minute);
                   }
             }
             else
             {
                   _DEBUG_PRINTLN("Task readRtcTime acces to I2C bus not possible");
             }
+            rtcTimeRead.minute++;
             vTaskDelay(500 / portTICK_RATE_MS); // delay 1000ms
-            rtcTime++;
       }
 }
 
 void renderRtcTime(void *arg)
 {
-      uint32_t txpos = 0;
-      uint32_t rtcTime = 0;
+      word MatrixRendered[11];
+      
+      
+      
+      struct myTime rtcTimeRead;
       //
       while (1)
       {
-            if (xQueueReceive(msgq_rtcTime, &rtcTime, 1000 / portTICK_RATE_MS) != pdTRUE)
+            if (xQueueReceive(msgq_rtcTime, &rtcTimeRead, 1000 / portTICK_RATE_MS) != pdTRUE)
             {
                   // max wait 1000ms
                   _DEBUG_PRINTLN("Task renderRtcTime fail to receive queued value");
@@ -149,14 +207,17 @@ void renderRtcTime(void *arg)
             else
             {
                   _DEBUG_PRINT("Task renderRtcTime get queued value ");
-                  _DEBUG_PRINTLN(rtcTime);
-                  txpos = rtcTime;
+                  _DEBUG_PRINTLN(rtcTimeRead.minute);
+                  
+                  //rendern der Uhrzeit in Matrix Muster
+                  //MatrixRendered = renderTime(rtcTimeRead);
+                  MatrixRendered[0] |= 0b1111111111100000;
+                  MatrixRendered[1] |= 0b1111111111100000;
+                  
                   _DEBUG_PRINT("Task renderRtcTime send");
-                  _DEBUG_PRINTLN(txpos);
-                  if (xQueueSendToBack(msgq_matrix, &txpos, 500 / portTICK_RATE_MS) != pdTRUE)
+                  if (xQueueSendToBack(msgq_matrix, &MatrixRendered, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
                         _DEBUG_PRINT("Task renderRtcTime failed to send value to queue ");
-                        _DEBUG_PRINTLN(txpos);
                   }
             }
             if (uxQueueMessagesWaiting(msgq_rtcTime) == 0)
@@ -170,7 +231,7 @@ void renderRtcTime(void *arg)
 
 void showMatrix(void *arg)
 {
-      uint32_t Matrix;
+      word Matrix[11];
       //Matrix als Übergabeparameter aus der msgq, beinhaltet das LED Binärmuster
       while (1)
       {
@@ -182,7 +243,8 @@ void showMatrix(void *arg)
             else
             {
                   _DEBUG_PRINT("Task showMatrix get queued value ");
-                  _DEBUG_PRINTLN(Matrix);
+                  _DEBUG_PRINTLN(Matrix[0]);
+                  _DEBUG_PRINTLN(Matrix[1]);
                   //Ausgeben der Matrix über die LEDs
                   ledStrip.show();
             }
@@ -301,16 +363,16 @@ void setup()
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("creating message queues");
-      msgq_ntpTime = xQueueCreate(10, sizeof(uint32_t));
-      msgq_rtcTime = xQueueCreate(10, sizeof(uint32_t));
-      msgq_matrix = xQueueCreate(10, sizeof(uint32_t));
+      msgq_ntpTime = xQueueCreate(1, sizeof(struct myTime));
+      msgq_rtcTime = xQueueCreate(1, sizeof(struct myTime));
+      msgq_matrix = xQueueCreate(8, sizeof(uint32_t));
        
       //Erzeugen der Semaphoren
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("creating semaphores");
-      sema_1 = xSemaphoreCreateMutex();
+      sema_ntp = xSemaphoreCreateMutex();
       sema_i2c = xSemaphoreCreateMutex();
       
       //Erzeugen der Tasks
