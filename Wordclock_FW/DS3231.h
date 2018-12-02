@@ -1,8 +1,7 @@
 /* Header für DS3231 */
 
 /* Vermeidung Doppeldefinitionen */
-#ifndef DS3231_H
-#define DS3231_H
+#pragma once
 
 /* Weitere Bibliotheken */
 #include <Arduino.h>
@@ -52,6 +51,3 @@ class DS3231
             uint16_t DecToBCD(uint16_t value);
             uint16_t BCDToDec(uint16_t value);
 };
-
-#endif
-

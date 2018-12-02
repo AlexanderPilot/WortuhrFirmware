@@ -1,8 +1,7 @@
 ///* Header für Einstellungen */
 //
 ///* Vermeidung Doppeldefinitionen */
-//#ifndef SETTINGS_H
-//#define SETTINGS_H
+//#pragma once
 //
 //#include "Arduino.h"
 //#include <EEPROM.h>
@@ -31,6 +30,4 @@
 //    boolean _CornersClockwise;
 //    byte _Brightness;
 //};
-//
-//
-//#endif
+

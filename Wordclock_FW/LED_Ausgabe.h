@@ -1,8 +1,7 @@
 ///* Header für die LED Ausgabe */
 //
 ///* Vermeidung Doppeldefinitionen */
-//#ifndef LEDAUSGABE_H
-//#define LEDAUSGABE_H
+//#pragma once
 //
 //#include "Arduino.h"
 //#include "Configurations.h"

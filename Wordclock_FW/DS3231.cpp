@@ -1,6 +1,5 @@
 /* Funktionen DS3231 */
 
-
 /* Einbinden von Headerdateien */
 #include "DS3231.h"
 

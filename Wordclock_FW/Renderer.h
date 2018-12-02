@@ -1,8 +1,7 @@
 ///* Header für Wortfilter */
 //
 ///* Vermeidung Doppeldefinitionen */
-//#ifndef RENDERER_H
-//#define RENDERER_H
+//#pragma once
 //
 //#include "Arduino.h"
 //#include "Configurations.h"
@@ -41,6 +40,5 @@
 //
 //};
 //
-//#endif
-//
+
 

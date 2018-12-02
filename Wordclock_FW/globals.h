@@ -1,5 +1,4 @@
-/* #ifndef GLOBALS_H
-#define GLOBALS_H
+/* #pragma once
 
 // EEPROM Struktur
 // Types 'byte' und 'word' doesn't work!
@@ -13,7 +12,7 @@ typedef struct {
 extern unsigned int helligkeit;
 // Farben in RGB-Format --> in hex
 extern char farbe[6];
-// Farben aufgelöst nach einzelnen Anteilen --> Rot, Grün, Blau
+// Farben aufgelï¿½st nach einzelnen Anteilen --> Rot, Grï¿½n, Blau
 struct colorRGB{
 	char ssid[20];
 	char password[20];
@@ -22,7 +21,7 @@ struct colorRGB{
 	int blue;
 };
 extern colorRGB farbanteile;
-// Platz für Ideen
+// Platz fï¿½r Ideen
 extern char befehl[6];
 // Zum einlesen von neuen Befehlen
 extern char bufferReader[8];
@@ -30,5 +29,4 @@ extern char bufferReader[8];
 // Persistenter Speicher
 extern eepromData configData;
 
-#endif
  */

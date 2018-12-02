@@ -6,7 +6,6 @@ ToDo:
 - Funktion um Structelemente in Textstring zu wandlen für Übergabe oder struct direkt an Funktion aus der Klasse DS3231 zu übergeben inkl. Vorbereitung der Klassenfunktion
 - Struct global angelegt, kann aber auch in der klasse erfolgen aber lokale struct-Elemente in den RTOS Tasks (falls notwenidg)
 - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
-- renderer Anpassen, sodass struct übergeben werden kann und die Auswertung in der Funktion separat erfolgt
 - Einbindung Bluetooth
 
 
@@ -29,6 +28,9 @@ WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 DS3231 ds3231(DS3231_ADDRESS);
 TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
 hw_timer_t * timer = NULL;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
+
 
 //Anlegen von globalen Variablen
 struct myTime {
@@ -77,14 +79,17 @@ void getNtpTime(void *arg)
             if (xSemaphoreTake(sema_ntp, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
             //semaphore wird in ISR freigegeben
             {
+                  timeClient.update();
+                  
+                  
                   //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
                   ntpTime.year = 2018;
                   ntpTime.month = 12;
                   ntpTime.date = 1;
-                  ntpTime.dayOfWeek = 2;
-                  ntpTime.hour = 16;
-                  ntpTime.minute = 35;
-                  ntpTime.second = 17;
+                  ntpTime.dayOfWeek = timeClient.getDay();
+                  ntpTime.hour = timeClient.getHours();
+                  ntpTime.minute = timeClient.getMinutes();
+                  ntpTime.second = timeClient.getSeconds();
 
                   //Ausgabe der Uhrzeit
                   _DEBUG_PRINT("NTP Abfrage");
@@ -372,11 +377,12 @@ void setup()
       _DEBUG_PRINTLN(START_PATTERN);
       ledStrip.startPattern(START_PATTERN);
       //---------------------------------------------------------------------------------
-      //starting of other peripherals
+      //Starten NTP Server
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN("starting other peripherals - not yet implemented");
+      _DEBUG_PRINTLN("Starten des NTP Servers");
+      timeClient.begin();
        
       //---------------------------------------------------------------------------------
       //definition of inouts / outputs

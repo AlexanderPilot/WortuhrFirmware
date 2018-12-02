@@ -1,8 +1,7 @@
 /* Headerdatei fuer Konfigurationen */
 
 /* Vermeidung Doppeldefinitionen */
-#ifndef CONFIGURATION_H
-#define CONFIGURATION_H
+#pragma once
 
 //---------------------------------------------------------------------------------
 // Version
@@ -22,8 +21,11 @@
 #include "WS2812B.h"
 #include "DS3231.h"
 #include "time.h"
+//#include "NtpTime.h"
+#include "NTPClient.h"
+#include <WiFiUdp.h>
 #else
-#include "ESP8266WiFi.h"
+//#include "ESP8266WiFi.h"
 #endif
 
 //---------------------------------------------------------------------------------
@@ -70,6 +72,7 @@
 #define gmtOffset_sec  3600
 #define daylightOffset_sec  3600
 
+
 //---------------------------------------------------------------------------------
 // Bluetooth Einstellungen
 
@@ -105,5 +108,3 @@
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke wird der Interrupt alle 10 Sekunden ausgelöst
 
-
-#endif
