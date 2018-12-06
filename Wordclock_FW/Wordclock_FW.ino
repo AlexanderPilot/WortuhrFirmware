@@ -31,6 +31,9 @@ hw_timer_t * timer = NULL;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 
+String formattedDate;
+String dayStamp;
+String timeStamp;
 
 //Anlegen von globalen Variablen
 struct myTime {
@@ -81,7 +84,6 @@ void getNtpTime(void *arg)
             {
                   timeClient.update();
                   
-                  
                   //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
                   ntpTime.year = 2018;
                   ntpTime.month = 12;
@@ -92,7 +94,7 @@ void getNtpTime(void *arg)
                   ntpTime.second = timeClient.getSeconds();
 
                   //Ausgabe der Uhrzeit
-                  _DEBUG_PRINT("NTP Abfrage");
+                  _DEBUG_PRINT("NTP Abfrage und Synchronisation");
                   //_DEBUG_PRINT(ntpTime.year);
                   //_DEBUG_PRINT("-");
                   //_DEBUG_PRINT(ntpTime.month);
@@ -100,11 +102,11 @@ void getNtpTime(void *arg)
                   //_DEBUG_PRINT(ntpTime.date);
                   //_DEBUG_PRINT("-");
                   //_DEBUG_PRINTLN(ntpTime.dayOfWeek);
-                  //_DEBUG_PRINT(ntpTime.hour);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(ntpTime.minute);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINTLN(ntpTime.second);
+                  _DEBUG_PRINT(ntpTime.hour);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(ntpTime.minute);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(ntpTime.second);
                   
                   //Struct ntpTime in die Message Queue senden                  
                   if (xQueueSendToBack(msgq_ntpTime, &ntpTime, 500 / portTICK_RATE_MS) != pdTRUE)
@@ -150,7 +152,7 @@ void writeTimeToRtc(void *arg)
                   //_DEBUG_PRINT(rtcTimeWrite.minute);
                   //_DEBUG_PRINT("-");
                   //_DEBUG_PRINTLN(rtcTimeWrite.second);
-
+                  _DEBUG_PRINTLN("DS3231 wird gesetzt");
                   //Speichern der Uhrzeit in den klasseninternen Variablen
                   ds3231.setSeconds(rtcTimeWrite.second);
                   ds3231.setMinutes(rtcTimeWrite.minute);
@@ -197,20 +199,20 @@ void readRtcTime(void *arg)
                   rtcTimeRead.date = ds3231.getDate();
                   rtcTimeRead.month = ds3231.getMonth();
                   rtcTimeRead.year = ds3231.getYear();
-
+                  _DEBUG_PRINTLN("RTC wirdausgelesen");
                   //Serielle Ausgabe
-                  _DEBUG_PRINT(rtcTimeRead.year);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINT(rtcTimeRead.month);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINT(rtcTimeRead.date);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINTLN(rtcTimeRead.dayOfWeek);
-                  _DEBUG_PRINT(rtcTimeRead.hour);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINT(rtcTimeRead.minute);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINTLN(rtcTimeRead.second);
+                  //_DEBUG_PRINT(rtcTimeRead.year);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeRead.month);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeRead.date);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(rtcTimeRead.dayOfWeek);
+                  //_DEBUG_PRINT(rtcTimeRead.hour);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeRead.minute);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(rtcTimeRead.second);
 
                   //Schreiben des struct-Objekts rtcTimeRead indie Message Queue
                   if (xQueueSendToBack(msgq_rtcTime, &rtcTimeRead, 500 / portTICK_RATE_MS) != pdTRUE)
@@ -248,7 +250,13 @@ void renderRtcTime(void *arg)
             }
             else
             {
-                  //_DEBUG_PRINT("Task renderRtcTime get queued value ");
+                  _DEBUG_PRINTLN("Matrix berechnen");
+                  _DEBUG_PRINT("RTC Time: ");
+                  _DEBUG_PRINT(rtcTimeRead.hour);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(rtcTimeRead.minute);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(rtcTimeRead.second);
                   
                   //rendern der Uhrzeit in Matrix Muster
                   //renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), MatrixRendered);
@@ -363,7 +371,8 @@ void setup()
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("starting I2C - not yet implemented");
-      //i2cRtc.begin(SDA_PIN, SCL_PIN, I2C_FREQUENCY);
+      
+      i2cRtc.begin(SDA_PIN, SCL_PIN, I2C_FREQUENCY);
       
       //---------------------------------------------------------------------------------
       //Initializierung des LED Strip
@@ -383,7 +392,7 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("Starten des NTP Servers");
       timeClient.begin();
-       
+      timeClient.setTimeOffset(3600);
       //---------------------------------------------------------------------------------
       //definition of inouts / outputs
       _DEBUG_PRINT(PRINT_SMALLTAB);
