@@ -43,6 +43,7 @@ void Settings::setCornersClockwise(boolean CornersClockwise)
       _CornersClockwise = CornersClockwise;
 }
 
+/*
 void Settings::loadFromEEPROM()
 {
       _Language = EEPROM.read(0);
@@ -52,7 +53,8 @@ void Settings::loadFromEEPROM()
 
 void Settings::saveToEEPROM()
 {
-      //EEPROM.update(0, _Language);
-      //EEPROM.update(1, _CornersClockwise);
-      //EEPROM.update(2, _Brightness);
+      EEPROM.update(0, _Language);
+      EEPROM.update(1, _CornersClockwise);
+      EEPROM.update(2, _Brightness);
 }
+*/

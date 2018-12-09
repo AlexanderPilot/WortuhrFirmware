@@ -21,10 +21,10 @@ class Settings
             
             byte getBrightness();
             void setBrightness(byte brightness);
-            
+            /*
             void loadFromEEPROM();
             void saveToEEPROM();
-              
+            */
       private:
             byte _Language;
             boolean _CornersClockwise;
