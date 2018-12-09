@@ -14,11 +14,6 @@ ToDo:
 //Einbinden von benötigten Bibliotheken
 #include "Configurations.h"
 
-//Anlegen der RTOS Message Queues
-xQueueHandle msgq_ntpTime;
-xQueueHandle msgq_rtcTime;
-xQueueHandle msgq_matrix;
-
 //Anlegen der RTOS Semaphoren
 SemaphoreHandle_t sema_ntp;
 SemaphoreHandle_t sema_i2c;
@@ -26,7 +21,6 @@ SemaphoreHandle_t sema_i2c;
 //Anlegen der Peripherie Instanzen
 WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 DS3231 ds3231(DS3231_ADDRESS);
-TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
 hw_timer_t * timer = NULL;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
@@ -137,7 +131,7 @@ void getNtpTime(void *arg)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void readRtcTime(void *arg)
 {
-      struct myTime rtcTimeRead;
+      //struct myTime rtcTimeRead;
       while (1)
       {
             if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
@@ -146,7 +140,7 @@ void readRtcTime(void *arg)
                   ds3231.readTime();
                   //Rückgabe der I2C Semaphore
                   xSemaphoreGive(sema_i2c);
-
+                  /*
                   //Speichern der RTC Zeit in den Struct rtcTimeRead
                   rtcTimeRead.second = ds3231.getSeconds();
                   rtcTimeRead.minute = ds3231.getMinutes();
@@ -154,7 +148,8 @@ void readRtcTime(void *arg)
                   rtcTimeRead.dayOfWeek = ds3231.getDayOfWeek();
                   rtcTimeRead.date = ds3231.getDate();
                   rtcTimeRead.month = ds3231.getMonth();
-                  rtcTimeRead.year = ds3231.getYear();
+                  rtcTimeRead.year = ds3231.getYear();7
+                  */
                   _DEBUG_PRINTLN("RTC wirdausgelesen");
                   //Serielle Ausgabe
                   //_DEBUG_PRINT(rtcTimeRead.year);
@@ -169,7 +164,7 @@ void readRtcTime(void *arg)
                   //_DEBUG_PRINT(rtcTimeRead.minute);
                   //_DEBUG_PRINT("-");
                   //_DEBUG_PRINTLN(rtcTimeRead.second);
-
+                  /*
                   //Schreiben des struct-Objekts rtcTimeRead indie Message Queue
                   if (xQueueSendToBack(msgq_rtcTime, &rtcTimeRead, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
@@ -179,7 +174,7 @@ void readRtcTime(void *arg)
                   {
                         //_DEBUG_PRINT("Task readRtcTime has send value to queue ");
                   }
-                  
+                  */
                   //rendern der Uhrzeit in Matrix Muster
                   //renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), MatrixRendered);
                   //renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), MatrixRendered);
@@ -193,80 +188,6 @@ void readRtcTime(void *arg)
       }
 }
 
-/*
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void renderRtcTime(void *arg)
-{
-      word MatrixRendered[11];
-      
-      
-      
-      struct myTime rtcTimeRead;
-      //
-      while (1)
-      {
-            if (xQueueReceive(msgq_rtcTime, &rtcTimeRead, 1000 / portTICK_RATE_MS) != pdTRUE)
-            {
-                  // max wait 1000ms
-                  //_DEBUG_PRINTLN("Task renderRtcTime fail to receive queued value");
-            }
-            else
-            {
-                  _DEBUG_PRINTLN("Matrix berechnen");
-                  _DEBUG_PRINT("RTC Time: ");
-                  _DEBUG_PRINT(rtcTimeRead.hour);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINT(rtcTimeRead.minute);
-                  _DEBUG_PRINT("-");
-                  _DEBUG_PRINTLN(rtcTimeRead.second);
-                  
-                  //rendern der Uhrzeit in Matrix Muster
-                  //renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), MatrixRendered);
-                  //renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), MatrixRendered);
-                  
-                  //_DEBUG_PRINT("Task renderRtcTime send");
-                  if (xQueueSendToBack(msgq_matrix, &MatrixRendered, 500 / portTICK_RATE_MS) != pdTRUE)
-                  {
-                        //_DEBUG_PRINT("Task renderRtcTime failed to send value to queue ");
-                  }
-            }
-            if (uxQueueMessagesWaiting(msgq_rtcTime) == 0)
-            {
-                  // no message? take a break
-                  //vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
-            }
-            //vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
-      }
-}*/
-/*
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void showMatrix(void *arg)
-{
-      word Matrix[11];
-      //Matrix als Übergabeparameter aus der msgq, beinhaltet das LED Binärmuster
-      while (1)
-      {
-            if (xQueueReceive(msgq_matrix, &Matrix, 1000 / portTICK_RATE_MS) != pdTRUE)
-            {
-                  // max wait 1000ms
-                  //_DEBUG_PRINTLN("Task showMatrix fail to receive queued value");
-            }
-            else
-            {
-                  //_DEBUG_PRINT("Task showMatrix get queued value ");
-                  //_DEBUG_PRINTLN(Matrix[0]);
-                  //_DEBUG_PRINTLN(Matrix[1]);
-                  //Ausgeben der Matrix über die LEDs
-                  //led_ausgabe.setMatrixToLEDs(Matrix, true);
-            }
-            if (uxQueueMessagesWaiting(msgq_matrix) == 0)
-            {
-                  // no message? take a break
-                  //vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
-            }
-      }
-}
-*/
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -334,7 +255,7 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("starting I2C - not yet implemented");
       
-      i2cRtc.begin(SDA_PIN, SCL_PIN, I2C_FREQUENCY);
+      Wire.begin(SDA_PIN, SCL_PIN);
       
       //---------------------------------------------------------------------------------
       //Initializierung des LED Strip
@@ -383,15 +304,6 @@ void setup()
       _DEBUG_PRINTLN("starting RTOS initialization");
         
       //---------------------------------------------------------------------------------
-      //Erzeugen der Message Queues
-      _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN(PRINT_SEPARATOR);
-      _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN("creating message queues");
-      msgq_ntpTime = xQueueCreate(1, sizeof(struct myTime));
-      msgq_rtcTime = xQueueCreate(1, sizeof(struct myTime));
-      msgq_matrix = xQueueCreate(8, sizeof(uint32_t));
-       
       //Erzeugen der Semaphoren
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
@@ -409,10 +321,7 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("create RTOS tasks");
       xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
-      //xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
       xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
-      //xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
-      //xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
