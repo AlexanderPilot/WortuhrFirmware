@@ -23,6 +23,7 @@ DS3231 ds3231(DS3231_ADDRESS);
 hw_timer_t * timer = NULL;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
+BluetoothSerial SerialBT;
 Renderer renderer;
 Settings settings;
 
@@ -216,25 +217,20 @@ void setup()
       _DEBUG_PRINTLN("finished");
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("STA mode initialized");
-      _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN("receive NTP time for first time");
-      configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER_NAME);
-      _DEBUG_PRINT(PRINT_SMALLTAB);
-      //printLocalTime();
       //---------------------------------------------------------------------------------
       //Initializierung von Bluetooth
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN("starting bluetooth - not yet implemented");
+      _DEBUG_PRINTLN("Starte Bluetooth Initialisierung");
+      SerialBT.begin("Wordclock"); //Bluetooth device name
+      _DEBUG_PRINTLN("Bluetooth gestartet");
       
       //---------------------------------------------------------------------------------
       //Initializierung des I2C-Bus
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
-      _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN("starting I2C - not yet implemented");
-      
+      _DEBUG_PRINT(PRINT_SMALLTAB);      
       Wire.begin(SDA_PIN, SCL_PIN);
       
       //---------------------------------------------------------------------------------
@@ -255,7 +251,7 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("Starten des NTP Servers");
       timeClient.begin();
-      timeClient.setTimeOffset(3600);
+      timeClient.setTimeOffset(gmtOffset_sec);
       //---------------------------------------------------------------------------------
       //definition of inouts / outputs
       _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -309,5 +305,12 @@ void setup()
 
 void loop()
 {
-      delay(10);
+      if (Serial.available())
+      {
+            SerialBT.write(Serial.read());
+      }
+      if (SerialBT.available())
+      {
+            Serial.write(SerialBT.read());
+      }
 }

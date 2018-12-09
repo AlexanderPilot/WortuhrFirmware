@@ -24,8 +24,10 @@
 //#include "NtpTime.h"
 #include "NTPClient.h"
 #include <WiFiUdp.h>
+#include "BluetoothSerial.h"
 #include "Renderer.h"
 #include "Settings.h"
+
 #else
 //#include "ESP8266WiFi.h"
 #endif
@@ -72,12 +74,14 @@
 // NTP Server Einstellungen
 #define NTP_SERVER_NAME "pool.ntp.org"
 #define gmtOffset_sec  3600
-#define daylightOffset_sec  3600
 
 
 //---------------------------------------------------------------------------------
 // Bluetooth Einstellungen
 
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
 
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
