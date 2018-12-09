@@ -1,8 +1,7 @@
 /* Headerdatei fuer Konfigurationen */
 
 /* Vermeidung Doppeldefinitionen */
-#ifndef CONFIGURATION_H
-#define CONFIGURATION_H
+#pragma once
 
 //---------------------------------------------------------------------------------
 // Version
@@ -22,8 +21,11 @@
 #include "WS2812B.h"
 #include "DS3231.h"
 #include "time.h"
+//#include "NtpTime.h"
+#include "NTPClient.h"
+#include <WiFiUdp.h>
 #else
-#include "ESP8266WiFi.h"
+//#include "ESP8266WiFi.h"
 #endif
 
 //---------------------------------------------------------------------------------
@@ -51,9 +53,9 @@
 #define PRINT_SMALLTAB "    "
 
 //---------------------------------------------------------------------------------
-// WiFi Settings
+// WiFi Einstellungen
 
-/* WiFi AP Settings*/
+/* WiFi AP Einstellungen*/
 #define STA_SSID      "ASUS"
 #define STA_PASSWORD  "Br8#Pojg56"
 //#define STA_SSID        "Internet_MH"
@@ -61,17 +63,18 @@
 //#define STA_SSID      "UPC68EE18B"
 //#define STA_PASSWORD  "Tw11tYbolz@#"
 
-uint8_t counterWiFiConnection = 0;
+//uint8_t counterWiFiConnection = 0;
 
 
 //---------------------------------------------------------------------------------
-// NTP Settings
-const char* NTP_SERVER_NAME = "pool.ntp.org";
-const long  gmtOffset_sec = 3600;
-const int   daylightOffset_sec = 3600;
+// NTP Server Einstellungen
+#define NTP_SERVER_NAME "pool.ntp.org"
+#define gmtOffset_sec  3600
+#define daylightOffset_sec  3600
+
 
 //---------------------------------------------------------------------------------
-// Bluetooth Settings
+// Bluetooth Einstellungen
 
 
 #define MAX_BT_CLIENTS    1
@@ -80,28 +83,28 @@ const int   daylightOffset_sec = 3600;
 
 
 //---------------------------------------------------------------------------------
-// I2C Settings
+// I2C Einstellungen
 
 /* Adresse fuer DS3231 */
 #define DS3231_ADDRESS 0x68
 #define SDA_PIN 21
 #define SCL_PIN 22
+#define I2C_CHANNEL 0
 #define I2C_FREQUENCY 400000
 
 
 //---------------------------------------------------------------------------------
-// LED Settings
+// LED Einstellungen
 
 #define LEDSTRIP_PIN               19
 #define LED_NUM                        8
 #define START_PATTERN          0
 
 
+//---------------------------------------------------------------------------------
+// Timer Einstellungen
 
 
-
-
-
-
-#endif
+//#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
+#define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
 

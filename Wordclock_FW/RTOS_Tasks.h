@@ -1,8 +1,7 @@
 ///* Header für RTOS Tasks*/
 //
 ///* Vermeidung Doppeldefinitionen */
-//#ifndef RTOSTASKS_H
-//#define RTOSTASKS_H
+//#pragma once
 //
 ///* Weitere Bibliotheken */
 //#include <Arduino.h>
@@ -20,5 +19,3 @@
 //    void showMatrix(void *arg);
 //};
 //
-//
-//#endif

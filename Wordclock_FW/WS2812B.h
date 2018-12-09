@@ -1,5 +1,5 @@
-#ifndef MAIN_WS2812_H_
-#define MAIN_WS2812_H_
+#pragma once
+
 #include <stdint.h>
 #include <driver/rmt.h>
 #include <driver/gpio.h>
@@ -52,5 +52,3 @@ class WS2812 {
             rmt_item32_t  *items;
             pixel_t       *pixels;
 };
-
-#endif

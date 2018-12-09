@@ -1,23 +1,65 @@
 /*
  * Wordclock
  */
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------
+ToDo:
+- Funktion um Structelemente in Textstring zu wandlen für Übergabe oder struct direkt an Funktion aus der Klasse DS3231 zu übergeben inkl. Vorbereitung der Klassenfunktion
+- Struct global angelegt, kann aber auch in der klasse erfolgen aber lokale struct-Elemente in den RTOS Tasks (falls notwenidg)
+- Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
+- Einbindung Bluetooth
 
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+//Einbinden von benötigten Bibliotheken
 #include "Configurations.h"
 
+//Anlegen der RTOS Message Queues
 xQueueHandle msgq_ntpTime;
 xQueueHandle msgq_rtcTime;
 xQueueHandle msgq_matrix;
 
-SemaphoreHandle_t sema_1;
+//Anlegen der RTOS Semaphoren
+SemaphoreHandle_t sema_ntp;
 SemaphoreHandle_t sema_i2c;
 
+//Anlegen der Peripherie Instanzen
 WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 DS3231 ds3231(DS3231_ADDRESS);
-TwoWire i2cRtc = TwoWire(0);
+TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
+hw_timer_t * timer = NULL;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
-word Matrix[11];
+String formattedDate;
+String dayStamp;
+String timeStamp;
 
+//Anlegen von globalen Variablen
+struct myTime {
+      uint16_t year;
+      uint8_t month;
+      uint8_t date;
+      uint8_t dayOfWeek;
+      uint8_t hour;
+      uint8_t minute;
+      uint8_t second;
+};
 
+uint32_t ISRcounter = 0;
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void IRAM_ATTR ISR_Timer(){
+      //ISR wird jede Sekunde ausgelöst. Eine ISR
+      if(ISRcounter >= NTP_TIMER_VALUE_SEC){
+            ISRcounter = 0;
+            //Freigeben der Semaphore an den Task getNtp
+            xSemaphoreGiveFromISR(sema_ntp, NULL);
+      }
+      ISRcounter++;
+}
+
+/*
 void printLocalTime()
 {
       struct tm timeinfo;
@@ -27,64 +69,126 @@ void printLocalTime()
             return;
       }
       Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-}
+}*/
 
-
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void getNtpTime(void *arg)
 {
-      uint32_t ntpTime = 0;
-      //struct ntpTime anlegen um die uhrzeit von ntp server auszulesen und das structin die msgq zu übergeben
+      //Erzeugen eines lokalen struct-Objects ntpTime
+      myTime ntpTime;
       while (1)
       {
-            if (xSemaphoreTake(sema_1, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
-            //semaphore is released in ISR
+            vTaskDelay(200);
+            if (xSemaphoreTake(sema_ntp, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
+            //semaphore wird in ISR freigegeben
             {
-                  _DEBUG_PRINTLN("Task getNtpTime receives NTP time");
-                  //get NTP Time
+                  timeClient.update();
                   
-                  //copy internal time in struct for message queue
-                  _DEBUG_PRINTLN(ntpTime);
+                  //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
+                  ntpTime.year = 2018;
+                  //ntpTime.year = timeClient.getYear();
+                  ntpTime.month = 12;
+                  //ntpTime.month = timeClient.getMonth();
+                  ntpTime.date = 1;
+                  //ntpTime.date = timeClient.getDate();
+                  ntpTime.dayOfWeek = timeClient.getDay();
+                  ntpTime.hour = timeClient.getHours();
+                  ntpTime.minute = timeClient.getMinutes();
+                  ntpTime.second = timeClient.getSeconds();
+
+                  //Ausgabe der Uhrzeit
+                  _DEBUG_PRINT("NTP Abfrage und Synchronisation");
+                  //_DEBUG_PRINT(ntpTime.year);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(ntpTime.month);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(ntpTime.date);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(ntpTime.dayOfWeek);
+                  _DEBUG_PRINT(ntpTime.hour);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(ntpTime.minute);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(ntpTime.second);
+                  
+                  //Struct ntpTime in die Message Queue senden                  
+                  /*
                   if (xQueueSendToBack(msgq_ntpTime, &ntpTime, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
-                        _DEBUG_PRINT("Task getNtpTime failed to send value to queue ");
+                        //_DEBUG_PRINTLN("Task getNtpTime failed to send value to queue ");
                   }
                   else
                   {
-                        _DEBUG_PRINT("Task getNtpTime has send value to queue ");
-                        _DEBUG_PRINT(ntpTime);
+                        //_DEBUG_PRINTLN("Task getNtpTime has send value to queue ");
                   }
+                  */
+                  ds3231.setSeconds(ntpTime.second);
+                  ds3231.setMinutes(ntpTime.minute);
+                  ds3231.setHours(ntpTime.hour);
+                  ds3231.setDayOfWeek(ntpTime.dayOfWeek);
+                  ds3231.setDate(ntpTime.date);
+                  ds3231.setMonth(ntpTime.month);
+                  ds3231.setYear(ntpTime.year);
+                  
+                  //Semaphore für I2C Zugriff nehmen und Daten senden
+                  if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
+                  {
+                        //schreiben der Uhrzeit zur DS3231 RTC
+                        ds3231.writeTime();
+                        xSemaphoreGive(sema_i2c);
+                  }
+                  
                   vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
-                  ntpTime++;
             }
       }
 }
 
+/*
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void writeTimeToRtc(void *arg)
 {
       bool error;
-      uint32_t rtcTime;
+      struct myTime rtcTimeWrite;
       //struct rtcTime anlegen um den inhalt der msgq auszulesen
       while (1)
       {
-            if (xQueueReceive(msgq_ntpTime, &rtcTime, 1000 / portTICK_RATE_MS) != pdTRUE)
+            vTaskDelay(200);
+            if (xQueueReceive(msgq_ntpTime, &rtcTimeWrite, 1000 / portTICK_RATE_MS) != pdTRUE)
             {
                   // max wait 1000ms
-                  _DEBUG_PRINTLN("Task writeTimeToRtc fail to receive queued value");
+                  //_DEBUG_PRINTLN("Task writeTimeToRtc fail to receive queued value");
             }
             else
             {
-                  _DEBUG_PRINT("Task writeTimeToRtc received queued value ");
-                  _DEBUG_PRINTLN(rtcTime);
-                  _DEBUG_PRINTLN("Task writeTimeToRtc trying to access I2C bus");
+                  //_DEBUG_PRINTLN("Task writeTimeToRtc received queued value ");
+                  //_DEBUG_PRINT("gruezi");
+                  //_DEBUG_PRINT(rtcTimeWrite.year);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeWrite.month);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeWrite.date);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(rtcTimeWrite.dayOfWeek);
+                  //_DEBUG_PRINT(rtcTimeWrite.hour);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeWrite.minute);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(rtcTimeWrite.second);
+                  _DEBUG_PRINTLN("DS3231 wird gesetzt");
+                  //Speichern der Uhrzeit in den klasseninternen Variablen
+                  ds3231.setSeconds(rtcTimeWrite.second);
+                  ds3231.setMinutes(rtcTimeWrite.minute);
+                  ds3231.setHours(rtcTimeWrite.hour);
+                  ds3231.setDayOfWeek(rtcTimeWrite.dayOfWeek);
+                  ds3231.setDate(rtcTimeWrite.date);
+                  ds3231.setMonth(rtcTimeWrite.month);
+                  ds3231.setYear(rtcTimeWrite.year);
+
+                  //Semaphore für I2C Zugriff nehmen und Daten senden
                   if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
                   {
-                        _DEBUG_PRINTLN("Task writeTimeToRtc acces to I2C bus granted");
-                        _DEBUG_PRINTLN("Task writeTimeToRtc start I2C communication");
-                        i2cRtc.beginTransmission(DS3231_ADDRESS); //starting I2C communication to DS3231_ADRESS
-                        //ds3231.writeTime(rtcTime);
-                        //Funktion anpassen und per Übergabeparameter struct die Uhrzeit auf der RTC Speichern
-                        _DEBUG_PRINTLN("Task writeTimeToRtc sending data");
-                        i2cRtc.endTransmission(true); //stopping I2C communication
+                        //schreiben der Uhrzeit zur DS3231 RTC
+                        ds3231.writeTime();
                         xSemaphoreGive(sema_i2c);
                   }
             }
@@ -95,67 +199,95 @@ void writeTimeToRtc(void *arg)
             }
       }
 }
-
+*/
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void readRtcTime(void *arg)
 {
-      uint32_t rtcTime = 0;
+      struct myTime rtcTimeRead;
       while (1)
       {
-            _DEBUG_PRINTLN("Task readRtcTime trying to get acces to I2C bus");
             if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
             {
-                  _DEBUG_PRINTLN("Task readRtcTime acces to I2C bus granted");
-                  _DEBUG_PRINTLN("Task readRtcTime start I2C communication");
-                  i2cRtc.beginTransmission(DS3231_ADDRESS); //starting I2C communication to DS3231_ADRESS
-                  //rtcTime = ds3231.readTime();
-                  //Rückgabeparameter ist die struct 
-                  _DEBUG_PRINTLN("Task readRtcTime treading data");
-                  i2cRtc.endTransmission(true); //stopping I2C communication
+                  //lesen der gespeicherten Zeit aus der RTC
+                  ds3231.readTime();
+                  //Rückgabe der I2C Semaphore
                   xSemaphoreGive(sema_i2c);
-                  _DEBUG_PRINT("Task readRtcTime send the value ");
-                  _DEBUG_PRINTLN(rtcTime);
-                  if (xQueueSendToBack(msgq_rtcTime, &rtcTime, 500 / portTICK_RATE_MS) != pdTRUE)
+
+                  //Speichern der RTC Zeit in den Struct rtcTimeRead
+                  rtcTimeRead.second = ds3231.getSeconds();
+                  rtcTimeRead.minute = ds3231.getMinutes();
+                  rtcTimeRead.hour = ds3231.getHours();
+                  rtcTimeRead.dayOfWeek = ds3231.getDayOfWeek();
+                  rtcTimeRead.date = ds3231.getDate();
+                  rtcTimeRead.month = ds3231.getMonth();
+                  rtcTimeRead.year = ds3231.getYear();
+                  _DEBUG_PRINTLN("RTC wirdausgelesen");
+                  //Serielle Ausgabe
+                  //_DEBUG_PRINT(rtcTimeRead.year);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeRead.month);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeRead.date);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(rtcTimeRead.dayOfWeek);
+                  //_DEBUG_PRINT(rtcTimeRead.hour);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINT(rtcTimeRead.minute);
+                  //_DEBUG_PRINT("-");
+                  //_DEBUG_PRINTLN(rtcTimeRead.second);
+
+                  //Schreiben des struct-Objekts rtcTimeRead indie Message Queue
+                  if (xQueueSendToBack(msgq_rtcTime, &rtcTimeRead, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
-                        _DEBUG_PRINT("Task readRtcTime failed to send value to queue ");
+                        //_DEBUG_PRINTLN("Task readRtcTime failed to send value to queue ");
                   }
                   else
                   {
-                        _DEBUG_PRINT("Task readRtcTime has send value to queue ");
-                        _DEBUG_PRINT(rtcTime);
+                        //_DEBUG_PRINT("Task readRtcTime has send value to queue ");
                   }
             }
             else
             {
-                  _DEBUG_PRINTLN("Task readRtcTime acces to I2C bus not possible");
+                  //_DEBUG_PRINTLN("Task readRtcTime acces to I2C bus not possible");
             }
             vTaskDelay(500 / portTICK_RATE_MS); // delay 1000ms
-            rtcTime++;
       }
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void renderRtcTime(void *arg)
 {
-      uint32_t txpos = 0;
-      uint32_t rtcTime = 0;
+      word MatrixRendered[11];
+      
+      
+      
+      struct myTime rtcTimeRead;
       //
       while (1)
       {
-            if (xQueueReceive(msgq_rtcTime, &rtcTime, 1000 / portTICK_RATE_MS) != pdTRUE)
+            if (xQueueReceive(msgq_rtcTime, &rtcTimeRead, 1000 / portTICK_RATE_MS) != pdTRUE)
             {
                   // max wait 1000ms
-                  _DEBUG_PRINTLN("Task renderRtcTime fail to receive queued value");
+                  //_DEBUG_PRINTLN("Task renderRtcTime fail to receive queued value");
             }
             else
             {
-                  _DEBUG_PRINT("Task renderRtcTime get queued value ");
-                  _DEBUG_PRINTLN(rtcTime);
-                  txpos = rtcTime;
-                  _DEBUG_PRINT("Task renderRtcTime send");
-                  _DEBUG_PRINTLN(txpos);
-                  if (xQueueSendToBack(msgq_matrix, &txpos, 500 / portTICK_RATE_MS) != pdTRUE)
+                  _DEBUG_PRINTLN("Matrix berechnen");
+                  _DEBUG_PRINT("RTC Time: ");
+                  _DEBUG_PRINT(rtcTimeRead.hour);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(rtcTimeRead.minute);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(rtcTimeRead.second);
+                  
+                  //rendern der Uhrzeit in Matrix Muster
+                  //renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), MatrixRendered);
+                  //renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), MatrixRendered);
+                  
+                  //_DEBUG_PRINT("Task renderRtcTime send");
+                  if (xQueueSendToBack(msgq_matrix, &MatrixRendered, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
-                        _DEBUG_PRINT("Task renderRtcTime failed to send value to queue ");
-                        _DEBUG_PRINTLN(txpos);
+                        //_DEBUG_PRINT("Task renderRtcTime failed to send value to queue ");
                   }
             }
             if (uxQueueMessagesWaiting(msgq_rtcTime) == 0)
@@ -167,23 +299,25 @@ void renderRtcTime(void *arg)
       }
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void showMatrix(void *arg)
 {
-      uint32_t Matrix;
+      word Matrix[11];
       //Matrix als Übergabeparameter aus der msgq, beinhaltet das LED Binärmuster
       while (1)
       {
             if (xQueueReceive(msgq_matrix, &Matrix, 1000 / portTICK_RATE_MS) != pdTRUE)
             {
                   // max wait 1000ms
-                  _DEBUG_PRINTLN("Task showMatrix fail to receive queued value");
+                  //_DEBUG_PRINTLN("Task showMatrix fail to receive queued value");
             }
             else
             {
-                  _DEBUG_PRINT("Task showMatrix get queued value ");
-                  _DEBUG_PRINTLN(Matrix);
+                  //_DEBUG_PRINT("Task showMatrix get queued value ");
+                  //_DEBUG_PRINTLN(Matrix[0]);
+                  //_DEBUG_PRINTLN(Matrix[1]);
                   //Ausgeben der Matrix über die LEDs
-                  ledStrip.show();
+                  //led_ausgabe.setMatrixToLEDs(Matrix, true);
             }
             if (uxQueueMessagesWaiting(msgq_matrix) == 0)
             {
@@ -193,16 +327,19 @@ void showMatrix(void *arg)
       }
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 void setup()
 {
       //---------------------------------------------------------------------------------
-      // starting of serial communication
+      //Initializierung der seriellen Kommunikation
       Serial.begin(SERIAL_SPEED);
       _DEBUG_BEGIN(SERIAL_SPEED);
       delay(10);
       
       //---------------------------------------------------------------------------------
-      // output of version number
+      //Ausgabe der Version
       Serial.println();
       Serial.print(PRINT_SEPARATOR);
       Serial.println(PRINT_SEPARATOR);
@@ -212,14 +349,13 @@ void setup()
       Serial.println();
       Serial.print(PRINT_SEPARATOR);
       Serial.println(PRINT_SEPARATOR);
-      
       //---------------------------------------------------------------------------------
-      // initializing peripherals
+      //Initializierung der Peripherie
       _DEBUG_PRINTLN("");
-      _DEBUG_PRINTLN("Starting initialization of all peripherals ");
+      _DEBUG_PRINTLN("Starte die Initialisierung der Peripherie");
       
       //---------------------------------------------------------------------------------
-      // starting WiFi in stationary modus
+      //Initializierung WiFi im stationären Modus
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       WiFi.mode(WIFI_STA);
       WiFi.begin(STA_SSID, STA_PASSWORD);
@@ -234,7 +370,7 @@ void setup()
       {
             delay(500);
             _DEBUG_PRINT(".");
-            counterWiFiConnection++;
+            //counterWiFiConnection++;
       }
       _DEBUG_PRINTLN("finished");
       _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -243,24 +379,25 @@ void setup()
       _DEBUG_PRINTLN("receive NTP time for first time");
       configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER_NAME);
       _DEBUG_PRINT(PRINT_SMALLTAB);
-      printLocalTime();
+      //printLocalTime();
       //---------------------------------------------------------------------------------
-      //starting of bluetooth
+      //Initializierung von Bluetooth
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("starting bluetooth - not yet implemented");
       
       //---------------------------------------------------------------------------------
-      //starting of I2C
+      //Initializierung des I2C-Bus
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("starting I2C - not yet implemented");
+      
       i2cRtc.begin(SDA_PIN, SCL_PIN, I2C_FREQUENCY);
       
       //---------------------------------------------------------------------------------
-      //starting of LED Strip
+      //Initializierung des LED Strip
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -271,19 +408,30 @@ void setup()
       _DEBUG_PRINTLN(START_PATTERN);
       ledStrip.startPattern(START_PATTERN);
       //---------------------------------------------------------------------------------
-      //starting of other peripherals
+      //Starten NTP Server
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
-      _DEBUG_PRINTLN("starting other peripherals - not yet implemented");
-       
+      _DEBUG_PRINTLN("Starten des NTP Servers");
+      timeClient.begin();
+      timeClient.setTimeOffset(3600);
       //---------------------------------------------------------------------------------
       //definition of inouts / outputs
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("defining input / output - not yet implemented");
-        
+      //---------------------------------------------------------------------------------
+      //Starten Timer und Interrupt
+      
+      //Setzen des Timer0 mit Prescaler 80 --> 1us Taktung und Aufwärtszählung (true)
+      timer = timerBegin(0, 80, true);
+      //Interrupt an Timer0 koppeln
+      timerAttachInterrupt(timer, &ISR_Timer, true);
+      //Alarm wird jede Sekunde gesetzt, Alarm soll immer wieder wiederholt werden (true)
+      timerAlarmWrite(timer, 1000000, true);
+      // Start an alarm
+      timerAlarmEnable(timer);
       //---------------------------------------------------------------------------------
       //intialization of perifpherals finished
       _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -300,16 +448,16 @@ void setup()
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("creating message queues");
-      msgq_ntpTime = xQueueCreate(10, sizeof(uint32_t));
-      msgq_rtcTime = xQueueCreate(10, sizeof(uint32_t));
-      msgq_matrix = xQueueCreate(10, sizeof(uint32_t));
+      msgq_ntpTime = xQueueCreate(1, sizeof(struct myTime));
+      msgq_rtcTime = xQueueCreate(1, sizeof(struct myTime));
+      msgq_matrix = xQueueCreate(8, sizeof(uint32_t));
        
       //Erzeugen der Semaphoren
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("creating semaphores");
-      sema_1 = xSemaphoreCreateMutex();
+      sema_ntp = xSemaphoreCreateMutex();
       sema_i2c = xSemaphoreCreateMutex();
       
       //Erzeugen der Tasks
@@ -321,11 +469,14 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("create RTOS tasks");
       xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
-      xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
+      //xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
       xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
       xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
       xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
 }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void loop()
 {
