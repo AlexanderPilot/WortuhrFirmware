@@ -4,10 +4,10 @@
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------
 ToDo:
 - RTC läuft nicht weiter und Sekunden werden nicht hochgezählt --> Prüfen warum das so ist
+- Einbindung Bluetooth testen
+
+optional:
 - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
-- Einbindung Bluetooth
-
-
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 //Einbinden von benötigten Bibliotheken
@@ -27,19 +27,17 @@ BluetoothSerial SerialBT;
 Renderer renderer;
 Settings settings;
 
-String formattedDate;
-String dayStamp;
-String timeStamp;
-
-
+//Matrix zur Speicherung der Bitmuster für LED Ausgabe
 word Matrix[11];
 
+//Für debug-Zwecke
 uint32_t ISRcounter = 0;
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void IRAM_ATTR ISR_Timer(){
-      //ISR wird jede Sekunde ausgelöst. Eine ISR
-      if(ISRcounter >= NTP_TIMER_VALUE_SEC){
+      //ISR wird über Timer jede Sekunde ausgelöst
+      if(ISRcounter >= NTP_TIMER_VALUE_SEC)
+      {
             ISRcounter = 0;
             //Freigeben der Semaphore an den Task getNtp
             xSemaphoreGiveFromISR(sema_ntp, NULL);
@@ -51,7 +49,8 @@ void IRAM_ATTR ISR_Timer(){
 void getNtpTime(void *arg)
 {
       //Anlegen eines lokalen Structs
-      struct myTime {
+      struct myTime
+      {
             uint16_t year;
             uint8_t month;
             uint8_t date;
@@ -114,7 +113,7 @@ void getNtpTime(void *arg)
                   {
                         //schreiben der Uhrzeit zur RTC
                         ds3231.writeTime();
-
+                        
                         //Zurückgabe der I2C Semaphore
                         xSemaphoreGive(sema_i2c);
                   }
