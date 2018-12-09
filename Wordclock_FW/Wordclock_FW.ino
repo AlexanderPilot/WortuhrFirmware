@@ -86,8 +86,11 @@ void getNtpTime(void *arg)
                   
                   //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
                   ntpTime.year = 2018;
+                  //ntpTime.year = timeClient.getYear();
                   ntpTime.month = 12;
+                  //ntpTime.month = timeClient.getMonth();
                   ntpTime.date = 1;
+                  //ntpTime.date = timeClient.getDate();
                   ntpTime.dayOfWeek = timeClient.getDay();
                   ntpTime.hour = timeClient.getHours();
                   ntpTime.minute = timeClient.getMinutes();
@@ -109,6 +112,7 @@ void getNtpTime(void *arg)
                   _DEBUG_PRINTLN(ntpTime.second);
                   
                   //Struct ntpTime in die Message Queue senden                  
+                  /*
                   if (xQueueSendToBack(msgq_ntpTime, &ntpTime, 500 / portTICK_RATE_MS) != pdTRUE)
                   {
                         //_DEBUG_PRINTLN("Task getNtpTime failed to send value to queue ");
@@ -117,11 +121,29 @@ void getNtpTime(void *arg)
                   {
                         //_DEBUG_PRINTLN("Task getNtpTime has send value to queue ");
                   }
+                  */
+                  ds3231.setSeconds(ntpTime.second);
+                  ds3231.setMinutes(ntpTime.minute);
+                  ds3231.setHours(ntpTime.hour);
+                  ds3231.setDayOfWeek(ntpTime.dayOfWeek);
+                  ds3231.setDate(ntpTime.date);
+                  ds3231.setMonth(ntpTime.month);
+                  ds3231.setYear(ntpTime.year);
+                  
+                  //Semaphore für I2C Zugriff nehmen und Daten senden
+                  if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
+                  {
+                        //schreiben der Uhrzeit zur DS3231 RTC
+                        ds3231.writeTime();
+                        xSemaphoreGive(sema_i2c);
+                  }
+                  
                   vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
             }
       }
 }
 
+/*
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void writeTimeToRtc(void *arg)
 {
@@ -177,7 +199,7 @@ void writeTimeToRtc(void *arg)
             }
       }
 }
-
+*/
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void readRtcTime(void *arg)
 {
@@ -447,7 +469,7 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("create RTOS tasks");
       xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
-      xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
+      //xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
       xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
       xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
       xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
