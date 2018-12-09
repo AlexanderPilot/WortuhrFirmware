@@ -59,18 +59,6 @@ void IRAM_ATTR ISR_Timer(){
       ISRcounter++;
 }
 
-/*
-void printLocalTime()
-{
-      struct tm timeinfo;
-      if(!getLocalTime(&timeinfo))
-      {
-            _DEBUG_PRINTLN("Failed to obtain time");
-            return;
-      }
-      Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-}*/
-
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void getNtpTime(void *arg)
 {
@@ -143,63 +131,6 @@ void getNtpTime(void *arg)
       }
 }
 
-/*
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void writeTimeToRtc(void *arg)
-{
-      bool error;
-      struct myTime rtcTimeWrite;
-      //struct rtcTime anlegen um den inhalt der msgq auszulesen
-      while (1)
-      {
-            vTaskDelay(200);
-            if (xQueueReceive(msgq_ntpTime, &rtcTimeWrite, 1000 / portTICK_RATE_MS) != pdTRUE)
-            {
-                  // max wait 1000ms
-                  //_DEBUG_PRINTLN("Task writeTimeToRtc fail to receive queued value");
-            }
-            else
-            {
-                  //_DEBUG_PRINTLN("Task writeTimeToRtc received queued value ");
-                  //_DEBUG_PRINT("gruezi");
-                  //_DEBUG_PRINT(rtcTimeWrite.year);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(rtcTimeWrite.month);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(rtcTimeWrite.date);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINTLN(rtcTimeWrite.dayOfWeek);
-                  //_DEBUG_PRINT(rtcTimeWrite.hour);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(rtcTimeWrite.minute);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINTLN(rtcTimeWrite.second);
-                  _DEBUG_PRINTLN("DS3231 wird gesetzt");
-                  //Speichern der Uhrzeit in den klasseninternen Variablen
-                  ds3231.setSeconds(rtcTimeWrite.second);
-                  ds3231.setMinutes(rtcTimeWrite.minute);
-                  ds3231.setHours(rtcTimeWrite.hour);
-                  ds3231.setDayOfWeek(rtcTimeWrite.dayOfWeek);
-                  ds3231.setDate(rtcTimeWrite.date);
-                  ds3231.setMonth(rtcTimeWrite.month);
-                  ds3231.setYear(rtcTimeWrite.year);
-
-                  //Semaphore für I2C Zugriff nehmen und Daten senden
-                  if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
-                  {
-                        //schreiben der Uhrzeit zur DS3231 RTC
-                        ds3231.writeTime();
-                        xSemaphoreGive(sema_i2c);
-                  }
-            }
-            if (uxQueueMessagesWaiting(msgq_ntpTime) == 0)
-            {
-                  // no message? take a break
-                  //vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
-            }
-      }
-}
-*/
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void readRtcTime(void *arg)
 {
