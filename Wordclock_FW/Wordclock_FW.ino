@@ -25,6 +25,7 @@ hw_timer_t * timer = NULL;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 Renderer renderer;
+Settings settings;
 
 String formattedDate;
 String dayStamp;
@@ -150,7 +151,7 @@ void readRtcTime(void *arg)
                   rtcTimeRead.month = ds3231.getMonth();
                   rtcTimeRead.year = ds3231.getYear();7
                   */
-                  _DEBUG_PRINTLN("RTC wirdausgelesen");
+                  _DEBUG_PRINTLN("RTC wird ausgelesen");
                   //Serielle Ausgabe
                   //_DEBUG_PRINT(rtcTimeRead.year);
                   //_DEBUG_PRINT("-");
@@ -176,7 +177,7 @@ void readRtcTime(void *arg)
                   }
                   */
                   //rendern der Uhrzeit in Matrix Muster
-                  //renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), MatrixRendered);
+                  renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), Matrix);
                   //renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), MatrixRendered);
                   //led_ausgabe.setMatrixToLEDs(Matrix, true);
             }

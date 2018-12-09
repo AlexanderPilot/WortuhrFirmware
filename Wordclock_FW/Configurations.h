@@ -25,6 +25,7 @@
 #include "NTPClient.h"
 #include <WiFiUdp.h>
 #include "Renderer.h"
+#include "Settings.h"
 #else
 //#include "ESP8266WiFi.h"
 #endif
