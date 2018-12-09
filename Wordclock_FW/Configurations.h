@@ -24,6 +24,7 @@
 //#include "NtpTime.h"
 #include "NTPClient.h"
 #include <WiFiUdp.h>
+#include "Renderer.h"
 #else
 //#include "ESP8266WiFi.h"
 #endif

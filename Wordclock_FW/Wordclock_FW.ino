@@ -30,6 +30,7 @@ TwoWire i2cRtc = TwoWire(I2C_CHANNEL);
 hw_timer_t * timer = NULL;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
+Renderer renderer;
 
 String formattedDate;
 String dayStamp;
@@ -45,6 +46,8 @@ struct myTime {
       uint8_t minute;
       uint8_t second;
 };
+
+word Matrix[11];
 
 uint32_t ISRcounter = 0;
 
@@ -176,6 +179,11 @@ void readRtcTime(void *arg)
                   {
                         //_DEBUG_PRINT("Task readRtcTime has send value to queue ");
                   }
+                  
+                  //rendern der Uhrzeit in Matrix Muster
+                  //renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), MatrixRendered);
+                  //renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), MatrixRendered);
+                  //led_ausgabe.setMatrixToLEDs(Matrix, true);
             }
             else
             {
@@ -185,6 +193,7 @@ void readRtcTime(void *arg)
       }
 }
 
+/*
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void renderRtcTime(void *arg)
 {
@@ -228,8 +237,8 @@ void renderRtcTime(void *arg)
             }
             //vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
       }
-}
-
+}*/
+/*
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void showMatrix(void *arg)
 {
@@ -257,7 +266,7 @@ void showMatrix(void *arg)
             }
       }
 }
-
+*/
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -402,8 +411,8 @@ void setup()
       xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
       //xTaskCreate(&writeTimeToRtc, "writeTimeToRtc", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 5, NULL);
       xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
-      xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
-      xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
+      //xTaskCreate(&renderRtcTime, "renderRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
+      //xTaskCreate(&showMatrix, "showMatrix", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 3, NULL); 
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
