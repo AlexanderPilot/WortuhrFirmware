@@ -1,3 +1,6 @@
+/* Header für WS2812B LED Streifen */
+
+/* Vermeidung Doppeldefinitionen */
 #pragma once
 
 #include <stdint.h>

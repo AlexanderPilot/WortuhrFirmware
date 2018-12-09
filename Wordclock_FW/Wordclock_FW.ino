@@ -3,8 +3,7 @@
  */
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------
 ToDo:
-- Funktion um Structelemente in Textstring zu wandlen für Übergabe oder struct direkt an Funktion aus der Klasse DS3231 zu übergeben inkl. Vorbereitung der Klassenfunktion
-- Struct global angelegt, kann aber auch in der klasse erfolgen aber lokale struct-Elemente in den RTOS Tasks (falls notwenidg)
+- RTC läuft nicht weiter und Sekunden werden nicht hochgezählt --> Prüfen warum das so ist
 - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
 - Einbindung Bluetooth
 
@@ -31,16 +30,6 @@ String formattedDate;
 String dayStamp;
 String timeStamp;
 
-//Anlegen von globalen Variablen
-struct myTime {
-      uint16_t year;
-      uint8_t month;
-      uint8_t date;
-      uint8_t dayOfWeek;
-      uint8_t hour;
-      uint8_t minute;
-      uint8_t second;
-};
 
 word Matrix[11];
 
@@ -60,17 +49,30 @@ void IRAM_ATTR ISR_Timer(){
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void getNtpTime(void *arg)
 {
-      //Erzeugen eines lokalen struct-Objects ntpTime
-      myTime ntpTime;
+      //Anlegen eines lokalen Structs
+      struct myTime {
+            uint16_t year;
+            uint8_t month;
+            uint8_t date;
+            uint8_t dayOfWeek;
+            uint8_t hour;
+            uint8_t minute;
+            uint8_t second;
+      } ntpTime;
+      
       while (1)
       {
             vTaskDelay(200);
             if (xSemaphoreTake(sema_ntp, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
             //semaphore wird in ISR freigegeben
             {
+                  //Update der NTP Zeit vom Server
                   timeClient.update();
                   
-                  //NTP Uhrzeit vom Server abfragen und in struct ntpTime speichern
+                  //Speichern der NTP Uhrzeit in lokalem Struct
+                  /*
+                  Die Funktionen getYear, getMonth, getDate sind nicht in der originalen Bibliothek enthalten und müssen noch implementiert werden um die vollständige Funktionalität darstellen zu können
+                  */
                   ntpTime.year = 2018;
                   //ntpTime.year = timeClient.getYear();
                   ntpTime.month = 12;
@@ -96,18 +98,8 @@ void getNtpTime(void *arg)
                   _DEBUG_PRINT(ntpTime.minute);
                   _DEBUG_PRINT("-");
                   _DEBUG_PRINTLN(ntpTime.second);
-                  
-                  //Struct ntpTime in die Message Queue senden                  
-                  /*
-                  if (xQueueSendToBack(msgq_ntpTime, &ntpTime, 500 / portTICK_RATE_MS) != pdTRUE)
-                  {
-                        //_DEBUG_PRINTLN("Task getNtpTime failed to send value to queue ");
-                  }
-                  else
-                  {
-                        //_DEBUG_PRINTLN("Task getNtpTime has send value to queue ");
-                  }
-                  */
+
+                  //Schreiben der Uhrzeit auf die RTC auf die klassen-internen Variablen (schreiben passiert hier noch nicht)
                   ds3231.setSeconds(ntpTime.second);
                   ds3231.setMinutes(ntpTime.minute);
                   ds3231.setHours(ntpTime.hour);
@@ -117,10 +109,12 @@ void getNtpTime(void *arg)
                   ds3231.setYear(ntpTime.year);
                   
                   //Semaphore für I2C Zugriff nehmen und Daten senden
-                  if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
+                  if (xSemaphoreTake(sema_i2c, 100)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
                   {
-                        //schreiben der Uhrzeit zur DS3231 RTC
+                        //schreiben der Uhrzeit zur RTC
                         ds3231.writeTime();
+
+                        //Zurückgabe der I2C Semaphore
                         xSemaphoreGive(sema_i2c);
                   }
                   
@@ -132,53 +126,38 @@ void getNtpTime(void *arg)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void readRtcTime(void *arg)
 {
-      //struct myTime rtcTimeRead;
       while (1)
       {
             if (xSemaphoreTake(sema_i2c, 1000)) //xSemaphoreTake(semaphore, time to wait for semaphore before going to blocked state)
             {
-                  //lesen der gespeicherten Zeit aus der RTC
+                  //Lesen der gespeicherten Zeit aus der RTC und speichern in klassen-internen Variablen
                   ds3231.readTime();
+                  
                   //Rückgabe der I2C Semaphore
                   xSemaphoreGive(sema_i2c);
-                  /*
-                  //Speichern der RTC Zeit in den Struct rtcTimeRead
-                  rtcTimeRead.second = ds3231.getSeconds();
-                  rtcTimeRead.minute = ds3231.getMinutes();
-                  rtcTimeRead.hour = ds3231.getHours();
-                  rtcTimeRead.dayOfWeek = ds3231.getDayOfWeek();
-                  rtcTimeRead.date = ds3231.getDate();
-                  rtcTimeRead.month = ds3231.getMonth();
-                  rtcTimeRead.year = ds3231.getYear();7
-                  */
-                  _DEBUG_PRINTLN("RTC wird ausgelesen");
-                  //Serielle Ausgabe
-                  //_DEBUG_PRINT(rtcTimeRead.year);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(rtcTimeRead.month);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(rtcTimeRead.date);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINTLN(rtcTimeRead.dayOfWeek);
-                  //_DEBUG_PRINT(rtcTimeRead.hour);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(rtcTimeRead.minute);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINTLN(rtcTimeRead.second);
-                  /*
-                  //Schreiben des struct-Objekts rtcTimeRead indie Message Queue
-                  if (xQueueSendToBack(msgq_rtcTime, &rtcTimeRead, 500 / portTICK_RATE_MS) != pdTRUE)
-                  {
-                        //_DEBUG_PRINTLN("Task readRtcTime failed to send value to queue ");
-                  }
-                  else
-                  {
-                        //_DEBUG_PRINT("Task readRtcTime has send value to queue ");
-                  }
-                  */
-                  //rendern der Uhrzeit in Matrix Muster
+                  
+                  _DEBUG_PRINTLN("RTC wird ausgelesen:");
+                  //Serielle Ausgabe der ausgelesenen Uhrzeit 
+                  _DEBUG_PRINT(ds3231.getYear());
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(ds3231.getMonth());
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(ds3231.getDate());
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(ds3231.getDayOfWeek());
+                  _DEBUG_PRINT(ds3231.getHours());
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(ds3231.getMinutes());
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(ds3231.getSeconds());
+                  
+                  //Rendern der Ecken aus der Uhrzeit
                   renderer.setCorners(ds3231.getMinutes(), settings.getCornersClockwise(), Matrix);
-                  //renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), MatrixRendered);
+
+                  //Rendern der Matrix aus der Uhrzeit 
+                  renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), Matrix);
+
+                  //Ausgabe der Matrix auf die LEDs
                   //led_ausgabe.setMatrixToLEDs(Matrix, true);
             }
             else
