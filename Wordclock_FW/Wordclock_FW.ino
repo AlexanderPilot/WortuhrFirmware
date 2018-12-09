@@ -5,7 +5,7 @@
 ToDo:
 - Einbindung Bluetooth testen
 - Ausgabe auf LEDs einbinden
-- 
+- RTC auslesen nach der Synchronaisation führt zu Fehler in der ausgabe -->vermutlich auch im Bitmuster
 
 optional:
 - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
@@ -86,7 +86,7 @@ void getNtpTime(void *arg)
                   ntpTime.second = timeClient.getSeconds();
 
                   //Ausgabe der Uhrzeit
-                  _DEBUG_PRINT("NTP Abfrage und Synchronisation");
+                  _DEBUG_PRINTLN("NTP Abfrage und Synchronisation");
                   _DEBUG_PRINT(ntpTime.year);
                   _DEBUG_PRINT("-");
                   _DEBUG_PRINT(ntpTime.month);
@@ -240,7 +240,6 @@ void setup()
       _DEBUG_PRINTLN(PRINT_SEPARATOR);
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("starting LED strip");
-      _DEBUG_PRINT("starting pattern ");
       ledStrip.setColorOrder("GRB");
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINT("Output of starting pattern version ");
