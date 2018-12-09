@@ -1,19 +1,11 @@
-/**
- * Zahlen
- * Definition der Zahlen fuer die Sekundenanzeige der QLOCKTWO.
- * Die Zahlen sind wie die Woerter Bitmasken fuer die Matrix.
- *
- * @mc       Arduino/RBBB
- * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.3
- * @created  18.2.2011
- * @updated  18.1.2013
- *
- * Versionshistorie:
- * V 1.1:  - A/M fuer die Umschaltung zwischen LDR auto/manuell hinzugefuegt (Danke an Alexander).
- * V 1.2:  - Bitmaps in den PROGMEM ausgelagert.
- * V 1.3:  - Staben von V 1.1 in eigene Datei ausgelagert und das Alphabet komplettiert.
- */
+/* Header für deutsche Wörter */
+
+/*
+Zahlen zur Anzeige auf den LEDs
+Anzeige der Sekunden
+*/
+
+/* Vermeidung Doppeldefinitionen */
 #ifndef ZAHLEN_H
 #define ZAHLEN_H
 

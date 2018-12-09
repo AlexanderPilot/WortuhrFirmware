@@ -1,18 +1,12 @@
-/**
- * Staben
- * Definition der (Buch-)Staben fuer die QLOCKTWO.
- * Die Staben sind wie die Woerter Bitmasken fuer die Matrix.
- * Die Staben sind so ausgelegt, dass zwei nebeneinander passen.
- * Das ist wichtig fuewr die Konfiguration der Uhr.
- *
- * @mc       Arduino/RBBB
- * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.1
- * @created  23.1.2013
- *
- * Versionshiostorie:
- * V 1.1:  - auf 5 Pixel Hoehe geandert, damit zwei Reihen auf das Display passen.
- */
+/* Header für deutsche Wörter */
+
+/*
+Buchstaben zur Anzeige auf den LEDs
+Nutzung für die Bestätigung von Einstellungen auf der Wortuhr
+bis zu 4 Buchstaben darstellbar (5x5 Pixel)
+*/
+
+/* Vermeidung Doppeldefinitionen */
 #ifndef STABEN_H
 #define STABEN_H
 

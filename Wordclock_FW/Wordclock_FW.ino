@@ -224,6 +224,7 @@ void setup()
       _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("Starte Bluetooth Initialisierung");
       SerialBT.begin("Wordclock"); //Bluetooth device name
+      _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINTLN("Bluetooth gestartet");
       
       //---------------------------------------------------------------------------------
@@ -241,6 +242,7 @@ void setup()
       _DEBUG_PRINTLN("starting LED strip");
       _DEBUG_PRINT("starting pattern ");
       ledStrip.setColorOrder("GRB");
+      _DEBUG_PRINT(PRINT_SMALLTAB);
       _DEBUG_PRINT("Output of starting pattern version ");
       _DEBUG_PRINTLN(START_PATTERN);
       ledStrip.startPattern(START_PATTERN);
