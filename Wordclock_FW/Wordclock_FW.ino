@@ -3,8 +3,9 @@
  */
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------
 ToDo:
-- RTC läuft nicht weiter und Sekunden werden nicht hochgezählt --> Prüfen warum das so ist
 - Einbindung Bluetooth testen
+- Ausgabe auf LEDs einbinden
+- 
 
 optional:
 - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
@@ -73,7 +74,7 @@ void getNtpTime(void *arg)
                   /*
                   Die Funktionen getYear, getMonth, getDate sind nicht in der originalen Bibliothek enthalten und müssen noch implementiert werden um die vollständige Funktionalität darstellen zu können
                   */
-                  ntpTime.year = 2018;
+                  ntpTime.year = 18;
                   //ntpTime.year = timeClient.getYear();
                   ntpTime.month = 12;
                   //ntpTime.month = timeClient.getMonth();
@@ -86,13 +87,13 @@ void getNtpTime(void *arg)
 
                   //Ausgabe der Uhrzeit
                   _DEBUG_PRINT("NTP Abfrage und Synchronisation");
-                  //_DEBUG_PRINT(ntpTime.year);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(ntpTime.month);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINT(ntpTime.date);
-                  //_DEBUG_PRINT("-");
-                  //_DEBUG_PRINTLN(ntpTime.dayOfWeek);
+                  _DEBUG_PRINT(ntpTime.year);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINT(ntpTime.month);
+                  _DEBUG_PRINT(" -");
+                  _DEBUG_PRINT(ntpTime.date);
+                  _DEBUG_PRINT("-");
+                  _DEBUG_PRINTLN(ntpTime.dayOfWeek);
                   _DEBUG_PRINT(ntpTime.hour);
                   _DEBUG_PRINT("-");
                   _DEBUG_PRINT(ntpTime.minute);

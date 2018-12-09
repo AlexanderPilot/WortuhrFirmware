@@ -23,7 +23,7 @@ class DS3231
             void setDate(uint8_t Date);
             void setDayOfWeek(uint8_t DayOfWeek);
             void setMonth(uint8_t Month);
-            void setYear(uint16_t Year);
+            void setYear(uint8_t Year);
             
             uint8_t getSeconds();
             uint8_t getMinutes();
@@ -31,23 +31,19 @@ class DS3231
             uint8_t getDate();
             uint8_t getDayOfWeek();
             uint8_t getMonth();
-            uint16_t getYear(); 
+            uint8_t getYear(); 
             
       private:
             int _address;
 
-            //struct für RTC Time
-            //myTime *RtcTime;
-            
-            
             uint8_t _Seconds;
             uint8_t _Minutes;
             uint8_t _Hours;
             uint8_t _Date;
             uint8_t _DayOfWeek;
             uint8_t _Month;
-            uint16_t _Year;
+            uint8_t _Year;
             
-            uint16_t DecToBCD(uint16_t value);
-            uint16_t BCDToDec(uint16_t value);
+            uint8_t DecToBCD(uint8_t value);
+            uint8_t BCDToDec(uint8_t value);
 };

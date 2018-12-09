@@ -27,13 +27,13 @@ void DS3231::readTime()
       if(count == 7)
       {
             //Alle 7 Bits sind vorhanden
-            _Seconds   = BCDToDec(Wire.read() & 0x7F); //Maske um nur die notwendigen Bits auszulesen
-            _Minutes   = BCDToDec(Wire.read()); 
-            _Hours     = BCDToDec(Wire.read() & 0x3F);
+            _Seconds = BCDToDec(Wire.read() & 0x7F); //Maske um nur die notwendigen Bits auszulesen
+            _Minutes = BCDToDec(Wire.read()); 
+            _Hours = BCDToDec(Wire.read() & 0x3F);
             _DayOfWeek = BCDToDec(Wire.read());
-            _Date      = BCDToDec(Wire.read());
-            _Month     = BCDToDec(Wire.read());
-            _Year      = BCDToDec(Wire.read());
+            _Date = BCDToDec(Wire.read());
+            _Month = BCDToDec(Wire.read());
+            _Year = BCDToDec(Wire.read());
       }
       else
       {
@@ -102,7 +102,7 @@ void DS3231::setMonth(uint8_t Month)
       _Month = Month;
 }
 
-void DS3231::setYear(uint16_t Year)
+void DS3231::setYear(uint8_t Year)
 {
       _Year = Year;
 }
@@ -137,7 +137,7 @@ uint8_t DS3231::getMonth()
       return _Month;  
 }
 
-uint16_t DS3231::getYear()
+uint8_t DS3231::getYear()
 {
       return _Year; 
 }
@@ -145,13 +145,13 @@ uint16_t DS3231::getYear()
 //Binary Code Decimal = Dateiformat der DS3231 Register
 
 //Konvertiert decimal > bcd
-uint16_t DS3231::DecToBCD(uint16_t value)
+uint8_t DS3231::DecToBCD(uint8_t value)
 {
       return((value / 10 * 16) + (value % 10));
 }
 
 //Konvertiert bcd > decimal
-uint16_t DS3231::BCDToDec(uint16_t value)
+uint8_t DS3231::BCDToDec(uint8_t value)
 {
       return((value / 16 * 10) + (value % 16));
 }
