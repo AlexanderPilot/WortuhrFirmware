@@ -7,6 +7,7 @@
 #include "Configurations.h"
 
 #include "Woerter_DE.h"
+#include "Woerter_EN.h"
 
 
 /* Definitionen */
@@ -24,18 +25,22 @@
 
 
 /* Klasse Renderer */
-class Renderer {
-  public:
-    Renderer();
-
-    void setTime(byte Hours, byte Minutes, byte Language, word Matrix[11]);
-    void setCorners(byte Minutes, boolean CornersClockwise, word Matrix[11]);
-
-    void setAllScreenOn(word Matrix[11]);
-    void clearScreen(word Matrix[11]);
-
-  private:
-    void setHours(byte Hours, boolean glatt, byte Language, word Matrix[11]);
-    
-
+class Renderer
+{
+      public:
+            Renderer();
+            
+            void randomMatrix(word Matrix[11]);
+            
+            void setTime(byte Hours, byte Minutes, byte Language, word Matrix[11]);
+            void setCorners(byte Minutes, boolean CornersClockwise, word Matrix[11]);
+            
+            void cleanWordsMode(byte Language, word Matrix[11]);
+            void setAllScreenOn(word Matrix[11]);
+            void clearScreen(word Matrix[11]);
+            
+      private:
+            void setHours(byte Hours, boolean glatt, byte Language, word Matrix[11]);
+            
+            
 };
