@@ -125,7 +125,6 @@ bool Settings::getWifiSettingsAvailable()
         Serial.print("WLAN Einstellungen ");
         Serial.println(WifiSettingsAvailable ? "gueltig" : "ungueltig");
     }
-
     
     return WifiSettingsAvailable;
 }
@@ -140,7 +139,6 @@ void Settings::setWifiSSID(String Ssid)
         Serial.print(Ssid);
         Serial.print(" an den internen Parameter ");
         Serial.println(_WifiSSID);
-        Serial.println(Ssid.length());
     }
 
 }

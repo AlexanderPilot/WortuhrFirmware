@@ -63,7 +63,7 @@
 /***************************************************************************
  * WiFi Einstellungen
  **************************************************************************/
-#define WIFI_MAX_TIME_CONNECTING_SEC    10  //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
+#define WIFI_MAX_TIME_CONNECTING_SEC    1  //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 #define STA_SSID        "ASUS"
 #define STA_PASSWORD    "Br8#Pojg56"
 

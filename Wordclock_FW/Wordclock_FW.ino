@@ -199,7 +199,7 @@ void setup()
     /***************************************************************************
      * Anlegen von lokalen Variablen für setup
      **************************************************************************/
-    bool wifiDataAvailable = false;
+    bool wifiOK = false;
     uint8_t WifiTimeToConnect = 0;
     
     
@@ -270,22 +270,9 @@ void setup()
     //settings.setSsidWifi("UPC68EE18B");
     //settings.setPwWifi("Tw11tYbolz@#");
     
-    
-    //Test der Funktionalität getWifiSettingsAvailable()
+    /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
     if(settings.getWifiSettingsAvailable() == true)
     {
-        Serial.println("Netzwerkdaten gültig");
-    }
-    else
-    {
-        Serial.println("Netzwerkdaten nicht gültig");
-    }
-    delay(10000);
-    
-    
-    /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
-    //if(settings.getWifiSettingsAvailable() == true)
-    //{
         /****************************************
          * Verbindungsaufbau zum WLAN Netzwerk mit den gespeicherten WLAN Einstellungen
          ****************************************/
@@ -295,7 +282,7 @@ void setup()
         /** Auslesen der SSID und PW aus den Einstellungen **/
         //WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
         WiFi.begin(STA_SSID, STA_PASSWORD);
-        /** Name der Wordclock im Netzwerk (aktuell nicht funktionsfähig) **/
+        //Name der Wordclock im Netzwerk (aktuell nicht funktionsfähig)
         //WiFi.setHostname("Name");
         _DEBUG_PRINT(PRINT_SMALLTAB);
         _DEBUG_PRINTLN("WiFi STA mode started");
@@ -304,30 +291,36 @@ void setup()
         //_DEBUG_PRINT(settings.getWifiSSID());
         _DEBUG_PRINT(STA_SSID);
         /** Starten des Verbindungsaufbaus zum Netzwerk **/
-        while ((WiFi.status() != WL_CONNECTED))
+        while(WiFi.status() != WL_CONNECTED)
         {
             delay(500);
             _DEBUG_PRINT(".");
-            //
-            if(WifiTimeToConnect >= WIFI_MAX_TIME_CONNECTING_SEC)
-            {
-                //falls Verbindungsversuch länger gedauert hat als maximale Zeitvorgabe soll der verbindungsversuch abgebrochen werden, da 
-            }
-            
+            //Hochzählen der Variable WifiTimeToConnect bei jedem Durchgang
+            //WifiTimeToConnect++;
+            //_DEBUG_PRINT(WifiTimeToConnect);
+            //Abfrage wenn Verbindungsaufbau zu lange gedauert hat, dann muss flag ERROR gesetzt werden
         }
+        //Wenn flag ERROR nicht gesetzt ist
+        //dann
         _DEBUG_PRINTLN("finished");
         _DEBUG_PRINT(PRINT_SMALLTAB);
         _DEBUG_PRINTLN("STA mode initialized");
-    //}
+        //
+    }
+    
+    //Abhängig vom flag ERROR wird ausgegeben, ob Error anliegt oder nicht
+    //_DEBUG_PRINT(PRINT_SMALLTAB);
+    //_DEBUG_PRINT("WLAN Verbindungsproblem");
+    //_DEBUG_PRINTLN(wifiOK ? " vorhanden" : "nicht vorhanden");
     
     /** Verbindung zum WLAN Netzwerk nicht möglich oder keine WLAN Einstellungen gespeichert **/
-    //while(wifiDataAvailable == false)
+    //while(wifiOK == true)
     //{
         //Abfrage der Daten über die App
         //sobald Daten verfügbar sind, versuchen die Verbindung zum WLAN aufzubauen
         
         /** Verbindung zum WLAN Netzwerk möglich **/
-        //wifiDataAvailable = true;
+        //wifiOK = false;
     //}
     
     //----------------------------------------------------------------------------------------------------------------------------
