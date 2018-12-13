@@ -1,5 +1,7 @@
-/* Header für die LED Ausgabe */
-
+/***************************************************************************
+ * Header für die Ausgabe von Bitmustern auf der LED-Matrix
+ *
+ **************************************************************************/
 /* Vermeidung Doppeldefinitionen */
 #pragma once
 
