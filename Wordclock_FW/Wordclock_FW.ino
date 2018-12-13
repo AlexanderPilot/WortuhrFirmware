@@ -255,12 +255,13 @@ void setup()
      * Standardeinstellungen für Testzwecke, soll später aus dem EEPROM gelesen werden
      **************************************************************************/
     settings.setLanguage(LANGUAGE_DE_DE);
-    //settings.setWifiSSID("ASUS");
-    //settings.setWifiPW("Br8#Pojg56");
+    settings.setWifiSSID("ASUS");
+    settings.setWifiPW("Br8#Pojg56");
     settings.setStartPattern(0);
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
+    
     /****************************************
      * Weitere WiFi Konfiguarationen für Test
     ****************************************/
@@ -271,7 +272,6 @@ void setup()
     
     
     //Test der Funktionalität getWifiSettingsAvailable()
-    /*
     if(settings.getWifiSettingsAvailable() == true)
     {
         Serial.println("Netzwerkdaten gültig");
@@ -281,7 +281,7 @@ void setup()
         Serial.println("Netzwerkdaten nicht gültig");
     }
     delay(10000);
-    */
+    
     
     /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
     //if(settings.getWifiSettingsAvailable() == true)

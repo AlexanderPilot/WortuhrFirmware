@@ -111,62 +111,61 @@ boolean Settings::getCornersClockwise()
 /****************************************
  * WLAN SSID und Passwort
  ***************************************/
-/*
 bool Settings::getWifiSettingsAvailable()
 {
     bool WifiSettingsAvailable = false;
-    if( not( _WifiSSID[] = "" or _WifiPW[] = "")
+    
+    if(_WifiSSID.length() > 0 && _WifiPW.length() > 0)
     {
         WifiSettingsAvailable = true;
     }
     
     if(DEBUG_SETTINGS == true)
     {
-        Serial.print("WLAN Einstellungen verfügbar: ");
-        Serial.print(WifiSettingsAvailable);
+        Serial.print("WLAN Einstellungen ");
+        Serial.println(WifiSettingsAvailable ? "gueltig" : "ungueltig");
     }
 
     
     return WifiSettingsAvailable;
-}*/
+}
 
-/*void Settings::setWifiSSID(char Ssid[])
+void Settings::setWifiSSID(String Ssid)
 {
-    _WifiSSID[] = Ssid[];
+    _WifiSSID = Ssid;
     
     if(DEBUG_SETTINGS == true)
     {
         Serial.print("Übergabe des Parameters WLAN SSID ");
-        Serial.print(Ssid[]);
+        Serial.print(Ssid);
         Serial.print(" an den internen Parameter ");
-        Serial.println(_WifiSSID[]);
+        Serial.println(_WifiSSID);
+        Serial.println(Ssid.length());
     }
 
-}*/
+}
 
-/*
-char *getWifiSSID()
+String Settings::getWifiSSID()
 {
-    return _WifiSSID[];
-}*/
+    return _WifiSSID;
+}
 
-/*void Settings::setWifiPW(char Password[])
+void Settings::setWifiPW(String Password)
 {
-    _WifiPW[] = Password[];
+    _WifiPW = Password;
     if(DEBUG_SETTINGS == true)
     {
         Serial.print("Übergabe des Parameters WLAN Passwort ");
-        Serial.print(Password[]);
+        Serial.print(Password);
         Serial.print(" an den internen Parameter ");
-        Serial.println(_WifiPW[]);
+        Serial.println(_WifiPW);
     }
-}*/
+}
 
-/*
-char *getWifiPW()
+String Settings::getWifiPW()
 {
-    return _WifiPW[];
-}*/
+    return _WifiPW;
+}
 
 /****************************************
  * Starmuster

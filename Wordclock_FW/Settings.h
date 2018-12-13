@@ -46,13 +46,13 @@ class Settings
         /****************************************
          * WLAN SSID und Passwort
          ***************************************/
-        //void getWifiSettingsAvailable();
+        bool getWifiSettingsAvailable();
         
-        //void setWifiSSID(char Ssid[]);
-        //char *getWifiSSID();
+        void setWifiSSID(String Ssid);
+        String getWifiSSID();
         
-        //void setWifiPW(char Password[]);
-        //char *getWifiPW();
+        void setWifiPW(String Password);
+        String getWifiPW();
         
         /****************************************
          * Starmuster
@@ -81,8 +81,8 @@ class Settings
         boolean _CornersClockwise;
         byte _Brightness;
         //byte _Color
-        char _WifiSSID[];
-        char _WifiPW[];
+        String _WifiSSID;
+        String _WifiPW;
         byte _StartPattern;
         uint16_t _GmtTimeOffsetSec;
 };
