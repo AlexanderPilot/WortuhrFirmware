@@ -1,4 +1,7 @@
-/* Header für Wortfilter */
+/***************************************************************************
+ * Header für die Interpretation der Uhrzeit in Bitmuster für LED-Matrix (Rendern)
+ *
+ **************************************************************************/
 
 /* Vermeidung Doppeldefinitionen */
 #pragma once

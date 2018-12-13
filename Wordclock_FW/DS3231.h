@@ -1,4 +1,7 @@
-/* Header für DS3231 */
+/***************************************************************************
+ * Header für die Verbindung zur Echtzeituhr
+ *
+ **************************************************************************/
 
 /* Vermeidung Doppeldefinitionen */
 #pragma once

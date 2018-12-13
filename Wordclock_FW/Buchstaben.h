@@ -1,18 +1,18 @@
-/* Header für deutsche Wörter */
+/***************************************************************************
+ * Header für die Darstellung von Buchstaben
+ *
+ * Buchstaben zur Anzeige auf den LEDs
+ * Nutzung für die Bestätigung von Einstellungen auf der Wortuhr
+ * bis zu 4 Buchstaben darstellbar (5x5 Pixel)
+ **************************************************************************/
 
-/*
-Buchstaben zur Anzeige auf den LEDs
-Nutzung für die Bestätigung von Einstellungen auf der Wortuhr
-bis zu 4 Buchstaben darstellbar (5x5 Pixel)
-*/
 
 /* Vermeidung Doppeldefinitionen */
-#ifndef STABEN_H
-#define STABEN_H
+#pragma once
 
-#include <avr/pgmspace.h>
+//#include <avr/pgmspace.h>
 
-extern const char staben[][5] PROGMEM;
+//extern const char staben[][5] PROGMEM;
 const char staben[][5] = {
     { // 0:A
         0b00001100,
@@ -222,5 +222,3 @@ const char staben[][5] = {
         0b00011110
     }
 };
-
-#endif

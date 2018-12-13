@@ -1,17 +1,18 @@
-/* Header für deutsche Wörter */
+/***************************************************************************
+ * Header für die Darstellung von Zahlen
+ *
+ * Zahlen zur Anzeige auf den LEDs
+ * Anzeige der Sekunden
+ * bis zu 2 Zahlen nebeneinander darstellbar (7x5 Pixel)
+ **************************************************************************/
 
-/*
-Zahlen zur Anzeige auf den LEDs
-Anzeige der Sekunden
-*/
 
 /* Vermeidung Doppeldefinitionen */
-#ifndef ZAHLEN_H
-#define ZAHLEN_H
+#pragma once
 
-#include <avr/pgmspace.h>
+//#include <avr/pgmspace.h>
 
-extern const char ziffern[][7] PROGMEM;
+//extern const char ziffern[][7] PROGMEM;
 const char ziffern[][7] = {
     { // 0:0
         0b00001110,
@@ -113,5 +114,3 @@ const char ziffern[][7] = {
         0b00001100
     }
 };
-
-#endif

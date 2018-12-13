@@ -1,4 +1,8 @@
-/* Header für WS2812B LED Streifen */
+/***************************************************************************
+ * Header für die Ansteuerung der WS2812B LEDs
+ *
+ **************************************************************************/
+
 
 /* Vermeidung Doppeldefinitionen */
 #pragma once
