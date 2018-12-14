@@ -31,13 +31,13 @@
 
 AppInterpreter::AppInterpreter()
 {
-	
+    
 }
 
 
 void AppInterpreter::setup()
 {
-	
+    
 }
 
 
@@ -51,97 +51,96 @@ void AppInterpreter::setup()
  **************************************************************************/
 bool AppInterpreter::comevatiation(char getChar)
 {
-  /*
-  // Indikator ob ein Kommando vollstaendig angekommen ist
-  static bool newComAv = false;
-  static int zaehler = 0;
-  static bool comStart = false;
+    /*
+    // Indikator ob ein Kommando vollstaendig angekommen ist
+    static bool newComAv = false;
+    static int zaehler = 0;
+    static bool comStart = false;
 
-  if( newComAv )
-  {
-    zaehler  = 0;
-    comStart = false;
-    newComAv = false;
-  }
+    if( newComAv )
+    {
+        zaehler  = 0;
+        comStart = false;
+        newComAv = false;
+    }
 
-  // Neues Kommando einlesen
-  if(comStart)
-  {
-    zaehler++;
-    switch(zaehler)
-	{
-       case 4: 
-        if( (getChar == '#') || (getChar == '%') || (getChar == '!') ){
-            bufferReader[0] = getChar;
+    // Neues Kommando einlesen
+    if(comStart)
+    {
+        zaehler++;
+        switch(zaehler)
+        {
+            case 4: 
+                if( (getChar == '#') || (getChar == '%') || (getChar == '!') )
+                {
+                    bufferReader[0] = getChar;
+                }
+                else
+                {
+                    comStart = false;
+                    zaehler=0;
+                }
+                break;
+            case 5:
+                bufferReader[1] = getChar;
+                break;
+            case 6:
+                bufferReader[2] = getChar;
+                break;
+            case 7:
+                bufferReader[3] = getChar;
+                break;
+            case 8:   
+                bufferReader[4] = getChar;
+                break;
+            case 9:  
+                bufferReader[5] = getChar;
+                break;
+            case 10:  
+                bufferReader[6] = getChar;
+                break;
+            case 11:
+                if( getChar == END_SIGN )
+                {
+                    bufferReader[7] = getChar;
+                    newComAv = true;
+                    zaehler=0;
+                }
+                else
+                {
+                    comStart = false;
+                    zaehler=0; 
+                }
+                break;
+            default:
+                comStart=false;
+                break;
+        }
+    }
+
+    // Start eines Kommandos feststellen
+    if( !(comStart) )
+    {
+        if( getChar == START_SIGN )
+        {
+            zaehler++;
+            if( zaehler == 3 )
+            {
+                comStart = true;
+            }
         }
         else
-		{
-            comStart = false; zaehler=0;
+        {
+            zaehler = 0;
         }
-       break;
-       case 5:
-			bufferReader[1] = getChar;
-			break;
-       case 6:
-			bufferReader[2] = getChar;
-			break;
-       case 7:
-			bufferReader[3] = getChar;
-			break;
-       case 8:   
-			bufferReader[4] = getChar;
-			break;
-       case 9:  
-			bufferReader[5] = getChar;
-			break;
-       case 10:  
-			bufferReader[6] = getChar;
-			break;
-       
-       case 11:
-       if( getChar == END_SIGN )
-	   {
-        bufferReader[7] = getChar;
-        newComAv = true;
-        zaehler=0;
-       }
-       else
-	   {
-        comStart = false;
-        zaehler=0; 
-       }
-       break;
-       
-       default:
-		comStart=false;
-		break;
     }
-  }
-  
-  // Start eines Kommandos feststellen
-  if( !(comStart) )
-  {
-	  if( getChar == START_SIGN )
-	  {
-		    zaehler++;
-		    if( zaehler == 3 )
-			{
-		      comStart = true;
-		    }
-	  }
-	  else
-	  {
-		  zaehler = 0;
-	  }
-
-  }
-  // ist "true" wenn neues Kommando erkannt wurde
-  if(newComAv)
-  {
-	  setUpCommand( );
-  }
-  return newComAv;
-  */
+    // ist "true" wenn neues Kommando erkannt wurde
+    if(newComAv)
+    {
+        setUpCommand( );
+    }
+    return newComAv;
+    */
 }
 
 /***************************************************************************
@@ -152,17 +151,17 @@ bool AppInterpreter::comevatiation(char getChar)
  **************************************************************************/
 unsigned int charToInt( void )
 {
-	/*
-	unsigned int convert[] = {0,100000,10000,1000,100,10,1};
-	unsigned int iRet = 0;
-	unsigned int iVal = 1;
-	while( iVal < sizeof(bufferReader) )
-	{
-		iRet = iRet + (bufferReader[iVal] - '0') * convert[iVal];
-		iVal ++;
-	}
-	return ( (iRet+1) * 100 / 999999 );
-	*/
+    /*
+    unsigned int convert[] = {0,100000,10000,1000,100,10,1};
+    unsigned int iRet = 0;
+    unsigned int iVal = 1;
+    while( iVal < sizeof(bufferReader) )
+    {
+        iRet = iRet + (bufferReader[iVal] - '0') * convert[iVal];
+        iVal ++;
+    }
+    return ( (iRet+1) * 100 / 999999 );
+    */
 }
 
 /***************************************************************************
@@ -174,32 +173,32 @@ unsigned int charToInt( void )
  **************************************************************************/
 void setUpColor( void )
 {
-	/*
-	// Keinschreibung in Grossschreibung umwandeln
-	unsigned int iVal = 1;
-	while( iVal < sizeof(bufferReader) )
-	{
-		if( (bufferReader[iVal] >= 'a') && (bufferReader[iVal] <= 'z') )
-			bufferReader[iVal] = bufferReader[iVal] - 32;
-		iVal ++;
-	}
-	iVal = 0;
-	while( iVal < sizeof(farbe) )
-	{
-		farbe[iVal] = bufferReader[iVal+1];
-		iVal++;
-	}
+    /*
+    // Keinschreibung in Grossschreibung umwandeln
+    unsigned int iVal = 1;
+    while( iVal < sizeof(bufferReader) )
+    {
+        if( (bufferReader[iVal] >= 'a') && (bufferReader[iVal] <= 'z') )
+            bufferReader[iVal] = bufferReader[iVal] - 32;
+        iVal ++;
+    }
+    iVal = 0;
+    while( iVal < sizeof(farbe) )
+    {
+        farbe[iVal] = bufferReader[iVal+1];
+        iVal++;
+    }
 
-	farbanteile.red     = 0;
-	farbanteile.green   = 0;
-	farbanteile.blue    = 0;
-	farbanteile.red     = (farbe[0] >= 'A') ? ((farbe[0] - 'A' + 10)*16) : ((farbe[0] - '0')*16);
-	farbanteile.red     = (farbe[1] >= 'A') ? (farbanteile.red +(farbe[1] - 'A' + 10)) : (farbanteile.red +(farbe[1] - '0'));
-	farbanteile.green   = (farbe[2] >= 'A') ? ((farbe[2] - 'A' + 10)*16) : ((farbe[2] - '0')*16);
-	farbanteile.green   = (farbe[3] >= 'A') ? (farbanteile.green+(farbe[3] - 'A' + 10)) : (farbanteile.green+(farbe[3] - '0'));
-	farbanteile.blue    = (farbe[4] >= 'A') ? ((farbe[4] - 'A' + 10)*16) : ((farbe[4] - '0')*16);
-	farbanteile.blue    = (farbe[5] >= 'A') ? (farbanteile.blue+(farbe[5] - 'A' + 10)) : (farbanteile.blue+(farbe[5] - '0'));
-	*/
+    farbanteile.red     = 0;
+    farbanteile.green   = 0;
+    farbanteile.blue    = 0;
+    farbanteile.red     = (farbe[0] >= 'A') ? ((farbe[0] - 'A' + 10)*16) : ((farbe[0] - '0')*16);
+    farbanteile.red     = (farbe[1] >= 'A') ? (farbanteile.red +(farbe[1] - 'A' + 10)) : (farbanteile.red +(farbe[1] - '0'));
+    farbanteile.green   = (farbe[2] >= 'A') ? ((farbe[2] - 'A' + 10)*16) : ((farbe[2] - '0')*16);
+    farbanteile.green   = (farbe[3] >= 'A') ? (farbanteile.green+(farbe[3] - 'A' + 10)) : (farbanteile.green+(farbe[3] - '0'));
+    farbanteile.blue    = (farbe[4] >= 'A') ? ((farbe[4] - 'A' + 10)*16) : ((farbe[4] - '0')*16);
+    farbanteile.blue    = (farbe[5] >= 'A') ? (farbanteile.blue+(farbe[5] - 'A' + 10)) : (farbanteile.blue+(farbe[5] - '0'));
+    */
 }
 
 /********************************************************************
@@ -209,38 +208,38 @@ void setUpColor( void )
  * Input:
  * Globale Variable: bufferReader[6];
  * Output:
- * Globale Variable: helligkeit; (in %)				-> '!'
- * Globale Variable: farbe[6]; (in HTML Farbcodes)	-> '#'
- * Globale Variable: befehl[6]; (tbd.)				-> '%'
+ * Globale Variable: helligkeit; (in %)             -> '!'
+ * Globale Variable: farbe[6]; (in HTML Farbcodes)  -> '#'
+ * Globale Variable: befehl[6]; (tbd.)              -> '%'
  ********************************************************************/
 void AppInterpreter::setUpCommand( void )
 {
-	/*
-	switch ( bufferReader[0] )
-	{
-		case '!':
-			helligkeit = charToInt();
-			break;
-		case '#':
-			setUpColor(); break;
-		case '%':
-			break;
-		default:
-			break;
-	}
-	*/
+    /*
+    switch ( bufferReader[0] )
+    {
+        case '!':
+            helligkeit = charToInt();
+            break;
+        case '#':
+            setUpColor(); break;
+        case '%':
+            break;
+        default:
+            break;
+    }
+    */
 }
 
 // Loeschen eines Strings
 void AppInterpreter::deleteString(char a[])
 {
-  uint8_t i = 0;
-  for(i=0;i<=sizeof(*a);i++)
-  {
+    uint8_t i = 0;
+    for(i=0;i<=sizeof(*a);i++)
+    {
     a[i] = '\0';
-  }
-  //while( sizeof(*a) < i )
-  //{
-  //  a = '\0';
-  //}
+    }
+    //while( sizeof(*a) < i )
+    //{
+    //  a = '\0';
+    //}
 }

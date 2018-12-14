@@ -1,4 +1,7 @@
-/* Funktionen Renderer */
+/***************************************************************************
+ * Funktionen für die Interpretation der Uhrzeit in Bitmuster für LED-Matrix (Rendern)
+ *
+ **************************************************************************/
 
 
 /* Einbinden von Headerdateien */
