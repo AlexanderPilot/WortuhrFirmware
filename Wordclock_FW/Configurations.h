@@ -32,6 +32,7 @@
 #include "BluetoothSerial.h"
 #include "Renderer.h"
 #include "Settings.h"
+#include "LED_Ausgabe.h"
 
 /***************************************************************************
  * Serielle Verbindung
@@ -71,8 +72,6 @@
  * NTP Server Einstellungen
  **************************************************************************/
 #define NTP_SERVER_NAME     "pool.ntp.org"
-#define gmtOffset_sec  3600
-
 
 /***************************************************************************
  * Bluetooth Einstellungen
