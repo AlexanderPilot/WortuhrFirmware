@@ -9,31 +9,26 @@
 #include "Configurations.h"
 #include "WS2812B.h"
 
+#define DEBUG_LEDAUSGABE true
+
 class LED_Ausgabe
 {
-      public:
-	      LED_Ausgabe(byte pinDataLED);
-            
-            void init();
-            void setMatrixToLEDs(word Matrix[11], boolean MinuteChange);
-            void setBrightness(byte BrightnessInPercent);
-            
-            void clearLEDs();
-            void setPixelToMatrix(byte xPos, byte yPos, word Matix[11]);
-            
-      private:
-            unsigned int _Brightness;
-            void _setPixel(byte xPos, byte yPos, long color);
-            void _setPixel(byte LEDnum, long color);
-            
-            byte _Red;
-            byte _Green;
-            byte _Blue;
-            
-            byte _BrightnessScaleColor(byte colorPart);
-            
-            byte _pinDataLED;
-            
-            //Adafruit_NeoPixel *_strip;
-                
+    public:
+        LED_Ausgabe();
+        
+        void init(byte StartPattern);
+        
+        void setMatrixToLEDs(word Matrix[11]);
+        void setBrightness(byte BrightnessInPercent);
+        
+        void clearLEDs();
+        void setPixelToMatrix(byte xPos, byte yPos, word Matix[11]);
+        
+    private:
+        void _setPixel(byte xPos, byte yPos, long color);
+        void _setPixel(byte LEDnum, long color);
+        
+        byte _BrightnessScaleColor(byte colorPart);
+        
+        WS2812 *_strip;
 };

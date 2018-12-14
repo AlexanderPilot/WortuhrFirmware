@@ -10,6 +10,9 @@
 #include <stdint.h>
 #include <driver/rmt.h>
 #include <driver/gpio.h>
+#include "Arduino.h"
+
+#define DEBUG_WS2812B 1
 
 /**
  * @brief A data type representing the color of a pixel.
@@ -43,19 +46,22 @@ typedef struct {
  * @endcode
  */
 class WS2812 {
-      public:
-            WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel=RMT_CHANNEL_0);
-            void show();
-            void setColorOrder(char *order);
-            void setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
-            void setAllPixels(uint8_t red, uint8_t green, uint8_t blue);
-            void startPattern(uint8_t version);
-            void clear();
-            virtual ~WS2812();
-      private:
-            char          *colorOrder;
-            uint16_t       pixelCount;
-            rmt_channel_t  channel;
-            rmt_item32_t  *items;
-            pixel_t       *pixels;
+    public:
+        WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel=RMT_CHANNEL_0);
+        void show();
+        void setColorOrder(char *order);
+        uint32_t Color(uint8_t red, uint8_t green, uint8_t blue);
+        void setPixelColor(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
+        void setPixelColor(uint16_t index, uint32_t color);
+        void setAllPixels(uint8_t red, uint8_t green, uint8_t blue);
+        void setAllPixels(uint32_t color);
+        void startPattern(uint8_t version);
+        void clear();
+        virtual ~WS2812();
+    private:
+        char          *colorOrder;
+        uint16_t       pixelCount;
+        rmt_channel_t  channel;
+        rmt_item32_t  *items;
+        pixel_t       *pixels;
 };

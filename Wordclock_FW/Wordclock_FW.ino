@@ -1,17 +1,17 @@
 /****************************************************************************************************************************************************************************************************************************
  * Wordclock Software
+ * created: 01.02.2019
  ***************************************************************************************************************************************************************************************************************************/
 
 /***************************************************************************
  * ToDo:
  * - Anpassen des Aufstartverhaltens (prüfen ob gültige Netzwerkinfo vorliegt, siehe setup-Schleife)
- * - Einbinden der Einstellungen/Settings Funktionalität in Programmcode für alle Peripherien
+ * - Auslesen WLAN SSID und PW für Wifi.begin()
  * - Einbindung Bluetooth testen
  * - Ausgabe auf LEDs einbinden
  * - RTC auslesen nach der Synchronaisation führt zu Fehler in der ausgabe -->vermutlich auch im Bitmuster
  * 
- * optional:
- * - Funktion für die serielle Ausgabe der Zeit in einer Zeile --> keine mehrfachaufrufe zur Ausgabe mit allen
+ *
  *
 **************************************************************************/
 
@@ -30,7 +30,7 @@ SemaphoreHandle_t sema_i2c;
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
  **************************************************************************/
-WS2812 ledStrip = WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
+LED_Ausgabe led_ausgabe;
 DS3231 ds3231(DS3231_ADDRESS);
 hw_timer_t * timer = NULL;
 WiFiUDP ntpUDP;
@@ -182,7 +182,7 @@ void readRtcTime(void *arg)
             renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), Matrix);
 
             //Ausgabe der Matrix auf die LEDs
-            //led_ausgabe.setMatrixToLEDs(Matrix, true);
+            led_ausgabe.setMatrixToLEDs(Matrix);
         }
         else
         {
@@ -222,9 +222,6 @@ void setup()
     Serial.println();
     Serial.println(PRINT_SEPARATOR_LONG);
     
-    
-    
-    
     //----------------------------------------------------------------------------------------------------------------------------
     //-----------******-------***----**-----**---******--********---*******---**--------**----------*******-----------------------
     //-----------**---**-----**-**---**-----**--**----------**------**--------**--------**----------**----------------------------
@@ -257,7 +254,7 @@ void setup()
     settings.setLanguage(LANGUAGE_DE_DE);
     settings.setWifiSSID("ASUS");
     settings.setWifiPW("Br8#Pojg56");
-    settings.setStartPattern(0);
+    settings.setStartPattern(9);
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
@@ -288,8 +285,7 @@ void setup()
         _DEBUG_PRINTLN("WiFi STA mode started");
         _DEBUG_PRINT(PRINT_SMALLTAB);
         _DEBUG_PRINT("Connecting to SSID: ");
-        //_DEBUG_PRINT(settings.getWifiSSID());
-        _DEBUG_PRINT(STA_SSID);
+        _DEBUG_PRINT(settings.getWifiSSID());
         /** Starten des Verbindungsaufbaus zum Netzwerk **/
         while(WiFi.status() != WL_CONNECTED)
         {
@@ -356,7 +352,6 @@ void setup()
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("I2C Bus gestartet");
-    
     /****************************************
      * LED Streifen
      ****************************************/
@@ -364,12 +359,15 @@ void setup()
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("starting LED strip");
-    ledStrip.setColorOrder("GRB");
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINT("Output of starting pattern version ");
     _DEBUG_PRINTLN(settings.getStartPattern());
-    ledStrip.startPattern(settings.getStartPattern());
-    
+    led_ausgabe.init(settings.getStartPattern());
+    delay(2000);
+    led_ausgabe.clearLEDs();
+    delay(2000);
+    led_ausgabe.setMatrixToLEDs(Matrix);
+    delay(20000);
     /****************************************
      * NTP Server
      ****************************************/
@@ -397,7 +395,7 @@ void setup()
     // Start an alarm
     timerAlarmEnable(timer);
     //---------------------------------------------------------------------------------
-    //intialization of perifpherals finished
+    //intialization of peripherals finished
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("initialization of peripherals finished");
@@ -406,8 +404,9 @@ void setup()
     _DEBUG_PRINTLN("");
     _DEBUG_PRINTLN("starting RTOS initialization");
 
-    //---------------------------------------------------------------------------------
-    //Erzeugen der Semaphoren
+    /****************************************
+     * RTOS Semaphoren
+     ****************************************/
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINT(PRINT_SMALLTAB);
@@ -415,10 +414,9 @@ void setup()
     sema_ntp = xSemaphoreCreateMutex();
     sema_i2c = xSemaphoreCreateMutex();
 
-    //Erzeugen der Tasks
-    /*
-    Prioritäten: je größer die Nummer, desto größer die Priorität
-    */
+    /****************************************
+     * RTOS Tasks, höhere Zahl gleich höhere Priorität
+     ****************************************/
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINT(PRINT_SMALLTAB);
