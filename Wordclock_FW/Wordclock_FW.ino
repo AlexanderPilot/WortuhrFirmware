@@ -255,11 +255,15 @@ void setup()
     settings.setWifiSSID("ASUS");
     settings.setWifiPW("Br8#Pojg56");
     settings.setStartPattern(9);
+    Serial.print("Version des Startmusters: ");
+    Serial.println(settings.getStartPattern());
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
     settings.setColor(120, 120, 120);
     settings.setBrightnessPercent(100);
+    Serial.print("Helligkeitswert in %: ");
+    Serial.println(settings.getBrightnessPercent());
     
     /****************************************
      * Weitere WiFi Konfiguarationen für Test
@@ -283,9 +287,7 @@ void setup()
         WiFi.begin(STA_SSID, STA_PASSWORD);
         //Name der Wordclock im Netzwerk (aktuell nicht funktionsfähig)
         //WiFi.setHostname("Name");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
         _DEBUG_PRINTLN("WiFi STA mode started");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
         _DEBUG_PRINT("Connecting to SSID: ");
         _DEBUG_PRINT(settings.getWifiSSID());
         /** Starten des Verbindungsaufbaus zum Netzwerk **/
@@ -301,7 +303,6 @@ void setup()
         //Wenn flag ERROR nicht gesetzt ist
         //dann
         _DEBUG_PRINTLN("finished");
-        _DEBUG_PRINT(PRINT_SMALLTAB);
         _DEBUG_PRINTLN("STA mode initialized");
         //
     }
@@ -334,12 +335,9 @@ void setup()
     
     //---------------------------------------------------------------------------------
     //Initializierung von Bluetooth
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("Starte Bluetooth Initialisierung");
     SerialBT.begin("Wordclock"); //Bluetooth device name
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("Bluetooth gestartet");
     
 
@@ -350,18 +348,13 @@ void setup()
      * I2C Bus
      ****************************************/
     Wire.begin(SDA_PIN, SCL_PIN);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("I2C Bus gestartet");
     /****************************************
      * LED Streifen
      ****************************************/
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("starting LED strip");
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINT("Output of starting pattern version ");
     _DEBUG_PRINTLN(settings.getStartPattern());
     led_ausgabe.LedStartUp(settings.getStartPattern());
@@ -372,17 +365,13 @@ void setup()
     /****************************************
      * NTP Server
      ****************************************/
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("Starten des NTP Servers");
     timeClient.begin();
     timeClient.setTimeOffset(settings.getGmtTimeOffsetSec());
     //---------------------------------------------------------------------------------
     //definition of inouts / outputs
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("defining input / output - not yet implemented");
     //---------------------------------------------------------------------------------
     //Starten Timer und Interrupt
@@ -397,7 +386,6 @@ void setup()
     timerAlarmEnable(timer);
     //---------------------------------------------------------------------------------
     //intialization of peripherals finished
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("initialization of peripherals finished");
 
@@ -408,9 +396,7 @@ void setup()
     /****************************************
      * RTOS Semaphoren
      ****************************************/
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("creating semaphores");
     sema_ntp = xSemaphoreCreateMutex();
     sema_i2c = xSemaphoreCreateMutex();
@@ -418,9 +404,7 @@ void setup()
     /****************************************
      * RTOS Tasks, höhere Zahl gleich höhere Priorität
      ****************************************/
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINTLN("create RTOS tasks");
     xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
     xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);

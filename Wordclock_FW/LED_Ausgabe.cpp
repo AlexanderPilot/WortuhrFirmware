@@ -12,37 +12,49 @@
 LED_Ausgabe::LED_Ausgabe()
 {
     _strip = new WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
-    //_Red = 255;
-    //_Green = 255;
-    //_Blue = 255;
 }
 
 void LED_Ausgabe::LedStartUp(uint8_t Startpattern)
 {
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        Serial.print("LED_Ausgabe.cpp ");
+        Serial.print("Weitergabe des Startmusters Version ");
+        Serial.print(Startpattern);
+        Serial.println(" an die WS2812B.cpp");
+    }
     _strip->startPattern(Startpattern);
 }
 
 void LED_Ausgabe::setPixelToMatrix(uint16_t index)
 {
-    Serial.print("LED_Ausgabe.cpp LED Nummer ");
-    Serial.println(index);
-    Serial.println(" soll ausgegeben werden");
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        Serial.print("LED_Ausgabe.cpp ");
+        Serial.print("LED Nummer ");
+        Serial.println(index);
+        Serial.println(" soll ausgegeben werden");
+    }
     _strip->setPixel(index);
     _strip->show();
 }
 
 void LED_Ausgabe::setPixelToMatrix(uint16_t index, byte red, byte green, byte blue)
 {
-    Serial.print("LED_Ausgabe.cpp LED Nummer ");
-    Serial.println(index);
-    Serial.println(" soll ausgegeben werden");
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        //Serial.print("LED_Ausgabe.cpp ");
+    }
     _strip->setPixel(index, red, green, blue);
     _strip->show();
 }
 
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, word Matix[11])
 {
-    
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        //Serial.print("LED_Ausgabe.cpp ");
+    }
 }
 
 void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
@@ -88,6 +100,11 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
 
 void LED_Ausgabe::clearLEDs()
 {
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        Serial.print("LED_Ausgabe.cpp ");
+        Serial.print("Alle LEDs sollen ausgeschaltet werden");
+    }
     _strip->clear();
     _strip->show();
 }

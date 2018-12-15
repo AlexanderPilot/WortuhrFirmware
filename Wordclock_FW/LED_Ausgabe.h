@@ -10,7 +10,7 @@
 #include "WS2812B.h"
 #include "Settings.h"
 
-#define DEBUG_LEDAUSGABE true
+#define DEBUG_LEDAUSGABE 1
 
 class LED_Ausgabe
 {
