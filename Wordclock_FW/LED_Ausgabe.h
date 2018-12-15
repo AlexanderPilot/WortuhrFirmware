@@ -8,6 +8,7 @@
 #include "Arduino.h"
 #include "Configurations.h"
 #include "WS2812B.h"
+#include "Settings.h"
 
 #define DEBUG_LEDAUSGABE true
 
@@ -16,19 +17,25 @@ class LED_Ausgabe
     public:
         LED_Ausgabe();
         
-        void init(byte StartPattern);
+        /****************************************
+         * Startmuster der Wortuhr
+         ***************************************/
+        void LedStartUp(byte StartPattern);
         
-        void setMatrixToLEDs(word Matrix[11]);
-        void setBrightness(byte BrightnessInPercent);
-        
-        void clearLEDs();
+        /****************************************
+         * LED Funktionen
+         ***************************************/
+        void setPixelToMatrix(uint16_t index);
+        void setPixelToMatrix(uint16_t index, byte red, byte green, byte blue);
         void setPixelToMatrix(byte xPos, byte yPos, word Matix[11]);
-        
+        void setMatrixToLEDs(word Matrix[11]);
+        void clearLEDs();
     private:
+        /****************************************
+         * private LED Funktionen
+         ***************************************/
         void _setPixel(byte xPos, byte yPos, long color);
         void _setPixel(byte LEDnum, long color);
-        
-        byte _BrightnessScaleColor(byte colorPart);
         
         WS2812 *_strip;
 };

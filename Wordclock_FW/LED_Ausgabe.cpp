@@ -12,22 +12,43 @@
 LED_Ausgabe::LED_Ausgabe()
 {
     _strip = new WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
-    _Red = 255;
-    _Green = 255;
-    _Blue = 255;
+    //_Red = 255;
+    //_Green = 255;
+    //_Blue = 255;
 }
 
-void LED_Ausgabe::init(uint8_t Startpattern)
+void LED_Ausgabe::LedStartUp(uint8_t Startpattern)
 {
     _strip->startPattern(Startpattern);
 }
 
+void LED_Ausgabe::setPixelToMatrix(uint16_t index)
+{
+    Serial.print("LED_Ausgabe.cpp LED Nummer ");
+    Serial.println(index);
+    Serial.println(" soll ausgegeben werden");
+    _strip->setPixel(index);
+    _strip->show();
+}
+
+void LED_Ausgabe::setPixelToMatrix(uint16_t index, byte red, byte green, byte blue)
+{
+    Serial.print("LED_Ausgabe.cpp LED Nummer ");
+    Serial.println(index);
+    Serial.println(" soll ausgegeben werden");
+    _strip->setPixel(index, red, green, blue);
+    _strip->show();
+}
+
+void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, word Matix[11])
+{
+    
+}
 
 void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
 {
-
     _strip->clear();
-    long color = _strip->Color(_BrightnessScaleColor(_Red), _BrightnessScaleColor(_Green), _BrightnessScaleColor(_Blue));
+    //long color = _strip->Color(_BrightnessScaleColor(_Red), _BrightnessScaleColor(_Green), _BrightnessScaleColor(_Blue));
 
     for(byte yPos = 0; yPos <= 9; yPos++)         //Zeilen durchzählen
     {
@@ -37,7 +58,7 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
                 if((Matrix[yPos] & BitMaske) == BitMaske)
                 {
                       //Bit in der Matrix ist eine 1 -> LED an
-                      _setPixel(15-xPos, yPos, color); 
+                      //_setPixel(15-xPos, yPos, settings.getColor()); 
                 }
           }
     }
@@ -45,45 +66,56 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
     //Eck-LEDs umsetzen
     if((Matrix[10] & 0b1000000000000000) == 0b1000000000000000)
     {
-          _setPixel(110, color);
+        //_setPixel(110, color);
     }
       
     if((Matrix[10] & 0b0100000000000000) == 0b0100000000000000)
     {
-          _setPixel(111, color);
+        //_setPixel(111, color);
     }
 
     if((Matrix[10] & 0b0010000000000000) == 0b0010000000000000)
     {
-          _setPixel(112, color);
+        //_setPixel(112, color);
     }
 
     if((Matrix[10] & 0b0001000000000000) == 0b0001000000000000)
     {
-          _setPixel(113, color);
+        //_setPixel(113, color);
     }
     _strip->show();
 }
-
-
-void LED_Ausgabe::setBrightness(byte BrightnessInPercent)
-{
-    _Brightness = BrightnessInPercent;
-}
-
 
 void LED_Ausgabe::clearLEDs()
 {
     _strip->clear();
     _strip->show();
 }
+/*
+byte LED_Ausgabe::_BrightnessScaleColor(byte colorPart)
+{
+    //Skaliert Prozentwert der Helligkeit auf Anteil der RGB Farbe
+    return map(_Brightness, 0, 100, 0, colorPart);
+}
+
+void LED_Ausgabe::setPixelToMatrix(uint16_t index, word Matix[11])
+{
+    _strip->setPixelColor(index);
+}
+
+void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, word Matrix[11])
+{
+    Matrix[yPos] |= 0b1000000000000000 >> xPos;
+}*/
 
 
+/****************************************
+ * private LED Funktionen
+ ***************************************/
 void LED_Ausgabe::_setPixel(byte xPos, byte yPos, long color)
 {
     _setPixel(xPos + (yPos * 11), color);
 }
-
 
 void LED_Ausgabe::_setPixel(byte LEDnum, long color)
 {
@@ -93,10 +125,11 @@ void LED_Ausgabe::_setPixel(byte LEDnum, long color)
         //jeder zweite LED Streifen wird "von hinten" angesprochen (Verkabelung)
         if((LEDnum / 11) % 2 == 0)
         {
-        _strip->setPixelColor(LEDnum, color);
+            //_strip->setPixelColor(LEDnum, color);
         }
-        else {
-        _strip->setPixelColor(((LEDnum / 11) * 11) + 10 - (LEDnum % 11), color);
+        else
+        {
+            //_strip->setPixelColor(((LEDnum / 11) * 11) + 10 - (LEDnum % 11), color);
         }
     }
     else
@@ -104,31 +137,18 @@ void LED_Ausgabe::_setPixel(byte LEDnum, long color)
         //Eck-LEDs ansprechen
         switch(LEDnum)
         {
-              case 110:
-                    _strip->setPixelColor(111, color);  
-                    break;
-              case 111:
-                    _strip->setPixelColor(112, color);  
-                    break;
-              case 112:
-                    _strip->setPixelColor(113, color);  
-                    break;
-              case 113:
-                    _strip->setPixelColor(110, color);  
-                    break;
+            case 110:
+                //_strip->setPixelColor(111, color);
+                break;
+            case 111:
+                //_strip->setPixelColor(112, color);
+                break;
+            case 112:
+                //_strip->setPixelColor(113, color);
+                break;
+            case 113:
+                //_strip->setPixelColor(110, color);
+                break;
         }
     }
-}
-
-
-byte LED_Ausgabe::_BrightnessScaleColor(byte colorPart)
-{
-    //Skaliert Prozentwert der Helligkeit auf Anteil der RGB Farbe
-    return map(_Brightness, 0, 100, 0, colorPart);
-}
-
-
-void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, word Matrix[11])
-{
-    Matrix[yPos] |= 0b1000000000000000 >> xPos;
 }

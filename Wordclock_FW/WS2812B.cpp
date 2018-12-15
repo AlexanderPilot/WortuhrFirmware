@@ -208,7 +208,7 @@ uint32_t WS2812::Color(uint8_t red, uint8_t green, uint8_t blue)
  * @param [in] green The amount of green in the pixel.
  * @param [in] blue The amount of blue in the pixel.
  */
-void WS2812::setPixelColor(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
+void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 {
     assert(index < pixelCount);
 
@@ -217,12 +217,12 @@ void WS2812::setPixelColor(uint16_t index, uint8_t red, uint8_t green, uint8_t b
     this->pixels[index].blue  = blue;
 }
 
-void WS2812::setPixelColor(uint16_t index, uint32_t color)
+void WS2812::setPixel(uint16_t index, uint32_t color)
 {
     assert(index < pixelCount);
     if(DEBUG_WS2812B == 1)
     {
-        Serial.println("Farbanteile");
+        Serial.println("WS2812B.cpp Farbanteile");
         Serial.print(uint8_t(color>>16));
         Serial.print(uint8_t(color>>8));
         Serial.print(uint8_t(color));
@@ -231,6 +231,17 @@ void WS2812::setPixelColor(uint16_t index, uint32_t color)
     this->pixels[index].red   = uint8_t(color>>16);
     this->pixels[index].green = uint8_t(color>>8);
     this->pixels[index].blue  = uint8_t(color);
+}
+
+void WS2812::setPixel(uint16_t index)
+{
+    Serial.println("WS2812B.cpp Aufruf setPixel");
+    assert(index < pixelCount);
+    
+    Serial.println("WS2812B.cpp Pixel alle blau");
+    this->pixels[index].red   = 0;
+    this->pixels[index].green = 0;
+    this->pixels[index].blue  = 255;
 }
 
 /**
@@ -274,20 +285,20 @@ void WS2812::setAllPixels(uint32_t color)
  */
 void WS2812::startPattern(uint8_t version)
 {
-    if(DEBUG_WS2812B == true)
+    if(DEBUG_WS2812B == 1)
     {
-        Serial.print("Startpattern für WS2812B ");
+        Serial.print("WS2812B.cpp Startpattern für WS2812B ");
         Serial.println(version);
     }
     
     switch(version)
     {
-        if(DEBUG_WS2812B == true)
+        if(DEBUG_WS2812B == 1)
         {
-            Serial.print("Startmuster ");
+            Serial.print("WS2812B.cpp Startmuster ");
         }
         case 0: //alle LEDs aus
-            if(DEBUG_WS2812B == true)
+            if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
                 Serial.print(" - alle LEDs ausschalten");
@@ -296,12 +307,17 @@ void WS2812::startPattern(uint8_t version)
             this->show();
             break;
         case 1:
-            break;
-        case 9:
-            if(DEBUG_WS2812B == true)
+            if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
-                Serial.print(" - alle LEDs rot leuchten lassen");
+                Serial.println(" - tbd");
+            }
+            break;
+        case 9:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - alle LEDs rot leuchten lassen");
             }
             this->setAllPixels(255,0,0);//voll ROT
             this->show();
@@ -325,6 +341,16 @@ void WS2812::clear()
         this->pixels[i].green = 0;
         this->pixels[i].blue  = 0;
     }
+}
+
+/**
+ * @brief 
+ *
+ * 
+ */
+uint16_t WS2812::getPixelCount()
+{
+    return this->pixelCount;
 }
 
 /**

@@ -182,7 +182,7 @@ void readRtcTime(void *arg)
             renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), Matrix);
 
             //Ausgabe der Matrix auf die LEDs
-            led_ausgabe.setMatrixToLEDs(Matrix);
+            //led_ausgabe.setMatrixToLEDs(Matrix);
         }
         else
         {
@@ -258,6 +258,8 @@ void setup()
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
+    settings.setColor(120, 120, 120);
+    settings.setBrightnessPercent(100);
     
     /****************************************
      * Weitere WiFi Konfiguarationen für Test
@@ -362,12 +364,11 @@ void setup()
     _DEBUG_PRINT(PRINT_SMALLTAB);
     _DEBUG_PRINT("Output of starting pattern version ");
     _DEBUG_PRINTLN(settings.getStartPattern());
-    led_ausgabe.init(settings.getStartPattern());
+    led_ausgabe.LedStartUp(settings.getStartPattern());
     delay(2000);
     led_ausgabe.clearLEDs();
-    delay(2000);
-    led_ausgabe.setMatrixToLEDs(Matrix);
-    delay(20000);
+    led_ausgabe.setPixelToMatrix(2,0,0,255);
+    while(1);
     /****************************************
      * NTP Server
      ****************************************/
