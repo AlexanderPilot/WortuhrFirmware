@@ -220,7 +220,7 @@ void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 void WS2812::setPixel(uint16_t index, uint32_t color)
 {
     assert(index < pixelCount);
-    if(DEBUG_WS2812B == 1)
+    /*if(DEBUG_WS2812B == 1)
     {
         Serial.println("WS2812B.cpp Farbanteile");
         Serial.print(uint8_t(color>>16));
@@ -230,18 +230,17 @@ void WS2812::setPixel(uint16_t index, uint32_t color)
     
     this->pixels[index].red   = uint8_t(color>>16);
     this->pixels[index].green = uint8_t(color>>8);
-    this->pixels[index].blue  = uint8_t(color);
+    this->pixels[index].blue  = uint8_t(color);*/
 }
 
 void WS2812::setPixel(uint16_t index)
 {
-    Serial.println("WS2812B.cpp Aufruf setPixel");
+    //Serial.println("WS2812B.cpp Aufruf setPixel");
     assert(index < pixelCount);
     
-    Serial.println("WS2812B.cpp Pixel alle blau");
-    this->pixels[index].red   = 0;
-    this->pixels[index].green = 0;
-    this->pixels[index].blue  = 255;
+    //this->pixels[index].red   = 0;
+    //this->pixels[index].green = 0;
+    //this->pixels[index].blue  = 255;
 }
 
 /**

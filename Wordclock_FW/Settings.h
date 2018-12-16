@@ -78,14 +78,14 @@ class Settings
         /****************************************
          * interne Variablen
          ***************************************/
-        byte _Language;
-        byte _CornerStartLed;
-        boolean _CornersClockwise;
-        byte _Brightness;
-        pixel_t _Color;
-        String _WifiSSID;
-        String _WifiPW;
-        byte _StartPattern;
-        uint16_t _GmtTimeOffsetSec;
+        static byte _Language;
+        static byte _CornerStartLed;
+        static boolean _CornersClockwise;
+        static byte _Brightness;
+        static pixel_t _Color;
+        static String _WifiSSID;
+        static String _WifiPW;
+        static byte _StartPattern;
+        static uint16_t _GmtTimeOffsetSec;
 };
 

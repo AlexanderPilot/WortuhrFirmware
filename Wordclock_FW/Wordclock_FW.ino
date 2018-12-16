@@ -360,7 +360,7 @@ void setup()
     led_ausgabe.LedStartUp(settings.getStartPattern());
     delay(2000);
     led_ausgabe.clearLEDs();
-    led_ausgabe.setPixelToMatrix(2,0,0,255);
+    led_ausgabe.setPixelToMatrix(2);
     while(1);
     /****************************************
      * NTP Server

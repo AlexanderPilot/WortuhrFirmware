@@ -39,16 +39,6 @@ void LED_Ausgabe::setPixelToMatrix(uint16_t index)
     _strip->show();
 }
 
-void LED_Ausgabe::setPixelToMatrix(uint16_t index, byte red, byte green, byte blue)
-{
-    if(DEBUG_LEDAUSGABE == 1)
-    {
-        //Serial.print("LED_Ausgabe.cpp ");
-    }
-    _strip->setPixel(index, red, green, blue);
-    _strip->show();
-}
-
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, word Matix[11])
 {
     if(DEBUG_LEDAUSGABE == 1)
