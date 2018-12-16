@@ -193,10 +193,10 @@ void WS2812::setColorOrder(char *colorOrder)
 
 
 
-uint32_t WS2812::Color(uint8_t red, uint8_t green, uint8_t blue)
+/*pixel_t WS2812::Color(uint8_t red, uint8_t green, uint8_t blue)
 {
-    return ((uint32_t)red << 16) | ((uint32_t)green <<  8) | blue;
-}
+    return _Color;
+}*/
 
 /**
  * @brief Set the given pixel to the specified color.
@@ -217,7 +217,7 @@ void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
     this->pixels[index].blue  = blue;
 }
 
-void WS2812::setPixel(uint16_t index, uint32_t color)
+void WS2812::setPixel(uint16_t index, pixel_t color)
 {
     assert(index < pixelCount);
     /*if(DEBUG_WS2812B == 1)
@@ -262,13 +262,13 @@ void WS2812::setAllPixels(uint8_t red, uint8_t green, uint8_t blue)
     }
 }
 
-void WS2812::setAllPixels(uint32_t color)
+void WS2812::setAllPixels(pixel_t color)
 {
     for (auto i=0; i<this->pixelCount; i++)
     {
-        this->pixels[i].red   = uint8_t(color>>16);
-        this->pixels[i].green = uint8_t(color>>8);
-        this->pixels[i].blue  = uint8_t(color);
+        this->pixels[i].red   = color.red;
+        this->pixels[i].green = color.green;
+        this->pixels[i].blue  = color.blue;
     }
 }
 
@@ -353,7 +353,22 @@ void WS2812::startPattern(uint8_t version)
                 Serial.print(version);
                 Serial.println(" - LEDs nacheinander einschalten und dann nacheinander wieder ausschalten");
             }
-            this->setAllPixels(0,0,255);
+            for (auto i=0; i<this->pixelCount; i++)
+            {
+                this->pixels[i].red   = 255;
+                this->pixels[i].green = 255;
+                this->pixels[i].blue  = 255;
+                this->show();
+                delay(200);
+            }
+            for (auto i=0; i<this->pixelCount; i++)
+            {
+                this->pixels[i].red   = 255;
+                this->pixels[i].green = 255;
+                this->pixels[i].blue  = 255;
+                this->show();
+                delay(200);
+            }
             this->show();
             break;
         /****************************************
@@ -409,12 +424,6 @@ void WS2812::startPattern(uint8_t version)
          * default
          ***************************************/
         default:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(" - default, alle LEDs ausschalten");
-            }
-            this->clear();
-            this->show();
             break;
     }
     
