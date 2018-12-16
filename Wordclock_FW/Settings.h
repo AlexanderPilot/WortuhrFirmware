@@ -9,8 +9,8 @@
 /** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
 #include <EEPROM.h>
-#include "Renderer.h"
-#include "Configurations.h"
+//#include "Renderer.h"
+//#include "Configurations.h"
 #include "WS2812B.h"
 
 #define DEBUG_SETTINGS 0
