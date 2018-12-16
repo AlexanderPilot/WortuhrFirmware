@@ -11,6 +11,7 @@
 #include <EEPROM.h>
 #include "Renderer.h"
 #include "Configurations.h"
+#include "WS2812B.h"
 
 #define DEBUG_SETTINGS 0
 
@@ -31,12 +32,9 @@ class Settings
         void setBrightnessPercent(byte Brightness);
         byte getBrightnessPercent();
         
-        void setColor(uint32_t color);
+        void setColor(pixel_t color);
         void setColor(byte red, byte green, byte blue);
-        uint32_t getColor();
-        byte getRed();
-        byte getGreen();
-        byte getBlue();
+        pixel_t getColor();
         
         /****************************************
          * Eck-LEDs
@@ -84,10 +82,7 @@ class Settings
         byte _CornerStartLed;
         boolean _CornersClockwise;
         byte _Brightness;
-        uint32_t _Color;
-        byte _Red;
-        byte _Green;
-        byte _Blue;
+        pixel_t _Color;
         String _WifiSSID;
         String _WifiPW;
         byte _StartPattern;
