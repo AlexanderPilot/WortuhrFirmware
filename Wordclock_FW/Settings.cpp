@@ -7,19 +7,26 @@
 /* Einbinden von Headerdateien */
 #include "Settings.h"
 
+/****************************************
+ * Definition der static Variablen
+ ***************************************/
+byte Settings::_Language;
+byte Settings::_Brightness;
+pixel_t Settings::_Color;
+byte Settings::_FadeMode;
+byte Settings::_CornerStartLed;
+boolean Settings::_CornersClockwise;
+String Settings::_WifiSSID;
+String Settings::_WifiPW;
+byte Settings::_StartPattern;
+uint16_t Settings::_GmtTimeOffsetSec;
 
 /****************************************
  * Konstruktor mit Standardeinstellungen
  ***************************************/
 Settings::Settings()
 {
-    if(DEBUG_SETTINGS == 1)
-    {
-        Serial.println("Settings.cpp Konstruktor für Settings ist noch zu definieren, falls erforderlich");
-    }
-    //_Language = LANGUAGE_DE_DE;
-    //_CornersClockwise = true;
-    //_Brightness = 40;
+    //Konstruktor ist zu definieren, falls erforderlich
 }
 
 /****************************************
@@ -31,10 +38,8 @@ void Settings::setLanguage(byte Language)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters Sprache ");
-        Serial.print(Language);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_Language);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der Sprache");
     }
 }
 
@@ -52,10 +57,8 @@ void Settings::setBrightnessPercent(byte Brightness)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters Helligkeit ");
-        Serial.print(Brightness);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_Brightness);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der Helligkeit");
     }
 }
 
@@ -64,9 +67,18 @@ byte Settings::getBrightnessPercent()
     return map(_Brightness, 0, 255, 0, 100);
 }
 
+/****************************************
+ * LED Farbe
+ ***************************************/
 void Settings::setColor(pixel_t color)
 {
     _Color = color;
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der Farbe - color");
+    }
 }
 
 void Settings::setColor(byte red, byte green, byte blue)
@@ -74,6 +86,12 @@ void Settings::setColor(byte red, byte green, byte blue)
     _Color.red = red;
     _Color.green = green;
     _Color.blue = blue;
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der Farbe - R,G,B");
+    }
 }
 
 pixel_t Settings::getColor()
@@ -81,7 +99,24 @@ pixel_t Settings::getColor()
     return _Color;
 }
 
+/****************************************
+ * LED Übergänge
+ ***************************************/
+void Settings::setFadeMode(byte fadeMode)
+{
+    _FadeMode = fadeMode;
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe des FadeMode");
+    }
+}
 
+byte Settings::getFadeMode()
+{
+    return _FadeMode;
+}
 
 /****************************************
  * Eck-LEDs
@@ -92,10 +127,8 @@ void Settings::setCornerStartLed(byte CornerStartLed)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters Start-Eck-LED ");
-        Serial.print(CornerStartLed);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_CornerStartLed);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der Start-Eck-LED");
     }
 }
 
@@ -110,10 +143,8 @@ void Settings::setCornersClockwise(boolean CornersClockwise)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters Ecken im Uhrzeigersinn");
-        Serial.print(CornersClockwise);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_CornersClockwise);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der Drehrichtung der Eck-LEDs");
     }
 }
 
@@ -136,7 +167,8 @@ bool Settings::getWifiSettingsAvailable()
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp WLAN Einstellungen ");
+        Serial.print("Settings.cpp - ");
+        Serial.print("WLAN Einstellungen");
         Serial.println(WifiSettingsAvailable ? "gueltig" : "ungueltig");
     }
     
@@ -149,10 +181,8 @@ void Settings::setWifiSSID(String Ssid)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters WLAN SSID ");
-        Serial.print(Ssid);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_WifiSSID);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe der WiFi SSID");
     }
 
 }
@@ -168,10 +198,8 @@ void Settings::setWifiPW(String Password)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters WLAN Passwort ");
-        Serial.print(Password);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_WifiPW);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe des WiFi Passworts");
     }
 }
 
@@ -189,10 +217,8 @@ void Settings::setStartPattern(byte StartPattern)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters Startpattern ");
-        Serial.print(StartPattern);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_StartPattern);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe des Startmusters");
     }
 }
 
@@ -211,10 +237,8 @@ void Settings::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
     
     if(DEBUG_SETTINGS == 1)
     {
-        Serial.print("Settings.cpp Übergabe des Parameters GMT Time Offset ");
-        Serial.print(GmtTimeOffsetSec);
-        Serial.print(" an den internen Parameter ");
-        Serial.println(_GmtTimeOffsetSec);
+        Serial.print("Settings.cpp - ");
+        Serial.print("Übergabe des GMT Offsets");
     }
 }
 

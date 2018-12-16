@@ -9,8 +9,6 @@
 /** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
 #include <EEPROM.h>
-//#include "Renderer.h"
-//#include "Configurations.h"
 #include "WS2812B.h"
 
 #define DEBUG_SETTINGS 0
@@ -27,14 +25,23 @@ class Settings
         byte getLanguage();
         
         /****************************************
-         * LED Grundeinstellungen
+         * LED Helligkeit
          ***************************************/
         void setBrightnessPercent(byte Brightness);
         byte getBrightnessPercent();
         
+        /****************************************
+         * LED Farbe
+         ***************************************/
         void setColor(pixel_t color);
         void setColor(byte red, byte green, byte blue);
         pixel_t getColor();
+        
+        /****************************************
+         * LED Übergänge
+         ***************************************/
+        void setFadeMode(byte fadeMode);
+        byte getFadeMode();
         
         /****************************************
          * Eck-LEDs
@@ -79,10 +86,11 @@ class Settings
          * interne Variablen
          ***************************************/
         static byte _Language;
-        static byte _CornerStartLed;
-        static boolean _CornersClockwise;
         static byte _Brightness;
         static pixel_t _Color;
+        static byte _FadeMode;
+        static byte _CornerStartLed;
+        static boolean _CornersClockwise;
         static String _WifiSSID;
         static String _WifiPW;
         static byte _StartPattern;
