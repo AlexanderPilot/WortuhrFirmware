@@ -255,6 +255,7 @@ void setup()
     settings.setWifiSSID("ASUS");
     settings.setWifiPW("Br8#Pojg56");
     settings.setStartPattern(9);
+    settings.setFadeMode(0);
     Serial.print("Version des Startmusters: ");
     Serial.println(settings.getStartPattern());
     settings.setGmtTimeOffsetSec(3600);
