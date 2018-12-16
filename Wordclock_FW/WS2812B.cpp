@@ -296,7 +296,10 @@ void WS2812::startPattern(uint8_t version)
         {
             Serial.print("WS2812B.cpp Startmuster ");
         }
-        case 0: //alle LEDs aus
+        /****************************************
+         * alle LEDs ausschalten
+         ***************************************/
+        case 0:
             if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
@@ -305,22 +308,113 @@ void WS2812::startPattern(uint8_t version)
             this->clear();
             this->show();
             break;
+        /****************************************
+         * alle LEDs rot
+         ***************************************/
         case 1:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - alle LEDs rot");
+            }
+            this->setAllPixels(255,0,0);
+            this->show();
+            break;
+        /****************************************
+         * alle LEDs gruen
+         ***************************************/
+        case 2:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - alle LEDs gruen");
+            }
+            this->setAllPixels(0,255,0);
+            this->show();
+            break;
+        /****************************************
+         * alle LEDs blau
+         ***************************************/
+        case 3:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - alle LEDs blau");
+            }
+            this->setAllPixels(0,0,255);
+            this->show();
+            break;
+        /****************************************
+         * LEDs nacheinander einschalten, dann nacheinander ausschalten
+         ***************************************/
+        case 4:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - LEDs nacheinander einschalten und dann nacheinander wieder ausschalten");
+            }
+            this->setAllPixels(0,0,255);
+            this->show();
+            break;
+        /****************************************
+         * tbd
+         ***************************************/
+        case 5:
             if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
                 Serial.println(" - tbd");
             }
             break;
+        /****************************************
+         * tbd
+         ***************************************/
+        case 6:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - tbd");
+            }
+            break;
+        /****************************************
+         * tbd
+         ***************************************/
+        case 7:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - tbd");
+            }
+            break;
+        /****************************************
+         * tbd
+         ***************************************/
+        case 8:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(version);
+                Serial.println(" - tbd");
+            }
+            break;
+        /****************************************
+         * tbd
+         ***************************************/
         case 9:
             if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
-                Serial.println(" - alle LEDs rot leuchten lassen");
+                Serial.println(" - tbd");
             }
-            this->setAllPixels(255,0,0);//voll ROT
-            this->show();
+        /****************************************
+         * default
+         ***************************************/
         default:
+            if(DEBUG_WS2812B == 1)
+            {
+                Serial.print(" - default, alle LEDs ausschalten");
+            }
+            this->clear();
+            this->show();
             break;
     }
     
