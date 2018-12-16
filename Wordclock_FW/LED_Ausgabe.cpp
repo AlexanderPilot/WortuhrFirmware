@@ -16,34 +16,44 @@ LED_Ausgabe::LED_Ausgabe()
 
 void LED_Ausgabe::LedStartUp(uint8_t Startpattern)
 {
+    _strip->startPattern(Startpattern);
+    
     if(DEBUG_LEDAUSGABE == 1)
     {
-        Serial.print("LED_Ausgabe.cpp ");
+        Serial.print("LED_Ausgabe.cpp - ");
         Serial.print("Weitergabe des Startmusters Version ");
         Serial.print(Startpattern);
-        Serial.println(" an die WS2812B.cpp");
     }
-    _strip->startPattern(Startpattern);
 }
 
 void LED_Ausgabe::setPixelToMatrix(uint16_t index)
 {
+    _strip->setPixel(index);
+    _strip->show();
+    
     if(DEBUG_LEDAUSGABE == 1)
     {
-        Serial.print("LED_Ausgabe.cpp ");
+        Serial.print("LED_Ausgabe.cpp - ");
         Serial.print("LED Nummer ");
         Serial.println(index);
         Serial.println(" soll ausgegeben werden");
     }
-    _strip->setPixel(index);
-    _strip->show();
 }
 
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, word Matix[11])
 {
+    
+    
     if(DEBUG_LEDAUSGABE == 1)
     {
-        //Serial.print("LED_Ausgabe.cpp ");
+        Serial.print("TBD ");
+        Serial.print("LED_Ausgabe.cpp - ");
+        Serial.print("Pixel");
+        Serial.print(" xpos: ");
+        Serial.print(xPos);
+        Serial.print(" ypos: ");
+        Serial.print(yPos);
+        Serial.println(" wird gesetzt");
     }
 }
 
