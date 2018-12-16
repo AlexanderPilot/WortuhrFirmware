@@ -64,38 +64,21 @@ byte Settings::getBrightnessPercent()
     return map(_Brightness, 0, 255, 0, 100);
 }
 
-void Settings::setColor(uint32_t color)
+void Settings::setColor(pixel_t color)
 {
-    _Red = 0;
-    _Green = 0;
-    _Blue = 0;
+    _Color = color;
 }
 
 void Settings::setColor(byte red, byte green, byte blue)
 {
-    _Red = red;
-    _Green = green;
-    _Blue = blue;
+    _Color.red = red;
+    _Color.green = green;
+    _Color.blue = blue;
 }
 
-uint32_t Settings::getColor()
+pixel_t Settings::getColor()
 {
     return _Color;
-}
-
-byte Settings::getRed()
-{
-    return _Red;
-}
-
-byte Settings::getGreen()
-{
-    return _Green;
-}
-
-byte Settings::getBlue()
-{
-    return _Blue;
 }
 
 /****************************************
