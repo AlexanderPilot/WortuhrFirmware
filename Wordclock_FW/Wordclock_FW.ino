@@ -263,7 +263,7 @@ void setup()
         WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
         //Name der Wordclock im Netzwerk (aktuell nicht funktionsfähig)
         //WiFi.setHostname("Name");
-        _DEBUG_PRINTLN("WiFi STA mode wird gestartet");
+        _DEBUG_PRINTLN("WiFi STA Mode wird gestartet");
         _DEBUG_PRINT("Verbindung zur SSID: ");
         _DEBUG_PRINT(settings.getWifiSSID());
         /** Starten des Verbindungsaufbaus zum Netzwerk **/
@@ -283,7 +283,7 @@ void setup()
         if(WifiOK == true)
         {
             Serial.println("erfolgreich");
-            _DEBUG_PRINTLN("STA mode initialisiert");
+            _DEBUG_PRINTLN("STA Mode initialisiert");
             WifiAvailable = true;
         }
         else if(WifiOK == false)
@@ -299,30 +299,30 @@ void setup()
     //---------------------------------------------------------------------------------
     //Initializierung von Bluetooth
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINTLN("Starte Bluetooth Initialisierung");
-    SerialBT.begin("Wordclock_"); //Bluetooth device name
+    SerialBT.begin(BT_DEVICE_NAME); //Bluetooth device name
     _DEBUG_PRINTLN("Bluetooth gestartet");
+    _DEBUG_PRINT("Geraetename: ");
+    _DEBUG_PRINTLN(BT_DEVICE_NAME);
     
-
-    _DEBUG_PRINTLN("");
-    _DEBUG_PRINTLN("Starte die Initialisierung der weiteren Peripherie");
-    
-    /****************************************
-     * I2C Bus
-     ****************************************/
+    //---------------------------------------------------------------------------------
+    //Initializierung von I2C Bus
     Wire.begin(SDA_PIN, SCL_PIN);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("I2C Bus gestartet");
-    /****************************************
-     * LED Streifen
-     ****************************************/
+    _DEBUG_PRINT("SDA Pin: ");
+    _DEBUG_PRINTLN(SDA_PIN);
+    _DEBUG_PRINT("SCL Pin: ");
+    _DEBUG_PRINTLN(SCL_PIN);
+    
+    //---------------------------------------------------------------------------------
+    //Initializierung der LED Streifen
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Initialisierung der LEDs");
     led_ausgabe.LedStartUp(settings.getStartPattern());
     delay(2000);
     led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(2);
-    //while(1);
+    while(1);
     /****************************************
      * NTP Server
      ****************************************/

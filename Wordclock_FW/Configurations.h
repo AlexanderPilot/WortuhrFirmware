@@ -77,6 +77,7 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+#define BT_DEVICE_NAME    "Wordclock_"
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
 
