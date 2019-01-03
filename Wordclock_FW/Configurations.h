@@ -63,9 +63,7 @@
 /***************************************************************************
  * WiFi Einstellungen
  **************************************************************************/
-#define WIFI_MAX_TIME_CONNECTING_SEC    1  //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
-#define STA_SSID        "ASUS"
-#define STA_PASSWORD    "Br8#Pojg56"
+#define WIFI_MAX_TIME_CONNECTING    20  //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * NTP Server Einstellungen
