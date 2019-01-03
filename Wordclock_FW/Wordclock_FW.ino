@@ -44,8 +44,14 @@ Settings settings;
  **************************************************************************/
 word Matrix[11];
 
+/***************************************************************************
+ * Anlegen von globalen Variablen
+ **************************************************************************/
 //Für debug-Zwecke
 uint32_t ISRcounter = 0;
+
+//Für Dauer des WiFi Verbindungsaufbau
+bool WifiAvailable = false;
 
 /****************************************************************************************************************************************************************************************************************************/
 
@@ -56,7 +62,7 @@ uint32_t ISRcounter = 0;
 void IRAM_ATTR ISR_Timer()
 {
     //ISR wird über Timer jede Sekunde ausgelöst
-    if(ISRcounter >= NTP_TIMER_VALUE_SEC)
+    if(ISRcounter >= NTP_TIMER_VALUE_SEC && WifiAvailable == true)
     {
         ISRcounter = 0;
         //Freigeben der Semaphore an den Task getNtp
@@ -199,9 +205,9 @@ void setup()
     /***************************************************************************
      * Anlegen von lokalen Variablen für setup
      **************************************************************************/
-    bool wifiOK = false;
+    bool WifiOK = true;
     uint8_t WifiTimeToConnect = 0;
-    
+  
     
     
     /***************************************************************************
@@ -222,57 +228,27 @@ void setup()
     Serial.println();
     Serial.println(PRINT_SEPARATOR_LONG);
     
-    //----------------------------------------------------------------------------------------------------------------------------
-    //-----------******-------***----**-----**---******--********---*******---**--------**----------*******-----------------------
-    //-----------**---**-----**-**---**-----**--**----------**------**--------**--------**----------**----------------------------
-    //-----------******-----**---**--**-----**---*****------**------*****-----**--------**----------*****-------------------------
-    //-----------**---**---*********--**---**--------**-----**------**--------**--------**----------**----------------------------
-    //-----------******---**-------**--*****----******------**------*******---*******---*******-----*******-----------------------
-    //----------------------------------------------------------------------------------------------------------------------------
-    
-    /***************************************************************************
-     * Aufstart und Initialisierung der Wortuhr
-     **************************************************************************/
-    //Prüfen ob im Daten für SSID und PW hinterlegt sind
-        //ja: Verbinden mit diesem Netzwerk versuchen
-            //erfolgreich: regulärer Start der Uhr wird druchgeführt (weitere Periphere usw.)
-            //nicht erfolgreich: siehe nein
-        //nein:
-            //Starten der BT Peripherie
-            //warten auf Verbindung zur App
-            //ggfs Anzeige über die LEDs, dass Verbindung zur App notwendig ist (Laufschrift, Blinkmuster in Farbe, ...)
-            //Hinterlegen dvon SSID und PW oder manuelles setzen der Uhrzeit über App
-    
-    
-    
-    
     /** Lesen der Einstellungen aus dem EEPROM **/
     settings.loadFromEEPROM();
     /***************************************************************************
      * Standardeinstellungen für Testzwecke, soll später aus dem EEPROM gelesen werden
      **************************************************************************/
     settings.setLanguage(LANGUAGE_DE_DE);
+    
     settings.setWifiSSID("ASUS");
     settings.setWifiPW("Br8#Pojg56");
-    settings.setStartPattern(9);
+    //settings.setWifiSSID("UPC68EE18B");
+    //settings.setWifiPW("Tw11tYbolz@#");
+    //settings.setWifiSSID("Internet_MH");
+    //settings.setWifiPW("WZ78AG27MGFF27DL");
+    
+    settings.setStartPattern(4);
     settings.setFadeMode(0);
-    Serial.print("Version des Startmusters: ");
-    Serial.println(settings.getStartPattern());
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
     settings.setColor(120, 120, 120);
     settings.setBrightnessPercent(100);
-    Serial.print("Helligkeitswert in %: ");
-    Serial.println(settings.getBrightnessPercent());
-    
-    /****************************************
-     * Weitere WiFi Konfiguarationen für Test
-    ****************************************/
-    //settings.setSsidWifi("Internet_MH");
-    //settings.setPwWifi("WZ78AG27MGFF27DL");
-    //settings.setSsidWifi("UPC68EE18B");
-    //settings.setPwWifi("Tw11tYbolz@#");
     
     /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
     if(settings.getWifiSettingsAvailable() == true)
@@ -284,61 +260,47 @@ void setup()
         /** stationärer Modus = Verbindung zum Netzwerk **/
         WiFi.mode(WIFI_STA);
         /** Auslesen der SSID und PW aus den Einstellungen **/
-        //WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
-        WiFi.begin(STA_SSID, STA_PASSWORD);
+        WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
         //Name der Wordclock im Netzwerk (aktuell nicht funktionsfähig)
         //WiFi.setHostname("Name");
-        _DEBUG_PRINTLN("WiFi STA mode started");
-        _DEBUG_PRINT("Connecting to SSID: ");
+        _DEBUG_PRINTLN("WiFi STA mode wird gestartet");
+        _DEBUG_PRINT("Verbindung zur SSID: ");
         _DEBUG_PRINT(settings.getWifiSSID());
         /** Starten des Verbindungsaufbaus zum Netzwerk **/
-        while(WiFi.status() != WL_CONNECTED)
+        
+        while(WiFi.status() != WL_CONNECTED && WifiOK == true)
         {
             delay(500);
             _DEBUG_PRINT(".");
-            //Hochzählen der Variable WifiTimeToConnect bei jedem Durchgang
-            //WifiTimeToConnect++;
-            //_DEBUG_PRINT(WifiTimeToConnect);
-            //Abfrage wenn Verbindungsaufbau zu lange gedauert hat, dann muss flag ERROR gesetzt werden
+            //Hochzählen der Variable WifiTimeToConnect bei jedem Durchgang (aktuell 500ms)
+            WifiTimeToConnect++;
+            //Abfrage ob Verbindungsaufbau zu lange gedauert hat
+            if(WifiTimeToConnect >= WIFI_MAX_TIME_CONNECTING)
+            {
+                WifiOK = false;
+            }
         }
-        //Wenn flag ERROR nicht gesetzt ist
-        //dann
-        _DEBUG_PRINTLN("finished");
-        _DEBUG_PRINTLN("STA mode initialized");
-        //
+        if(WifiOK == true)
+        {
+            Serial.println("erfolgreich");
+            _DEBUG_PRINTLN("STA mode initialisiert");
+            WifiAvailable = true;
+        }
+        else if(WifiOK == false)
+        {
+            Serial.println("abgebrochen");
+            //WiFi.end();
+            Serial.println("keine Zeitsynchronisation mit NTP Server möglich");
+            WifiAvailable = false;
+        }
     }
-    
-    //Abhängig vom flag ERROR wird ausgegeben, ob Error anliegt oder nicht
-    //_DEBUG_PRINT(PRINT_SMALLTAB);
-    //_DEBUG_PRINT("WLAN Verbindungsproblem");
-    //_DEBUG_PRINTLN(wifiOK ? " vorhanden" : "nicht vorhanden");
-    
-    /** Verbindung zum WLAN Netzwerk nicht möglich oder keine WLAN Einstellungen gespeichert **/
-    //while(wifiOK == true)
-    //{
-        //Abfrage der Daten über die App
-        //sobald Daten verfügbar sind, versuchen die Verbindung zum WLAN aufzubauen
-        
-        /** Verbindung zum WLAN Netzwerk möglich **/
-        //wifiOK = false;
-    //}
-    
-    //----------------------------------------------------------------------------------------------------------------------------
-    //-----------******-------***----**-----**---******--********---*******---**--------**----------*******-----------------------
-    //-----------**---**-----**-**---**-----**--**----------**------**--------**--------**----------**----------------------------
-    //-----------******-----**---**--**-----**---*****------**------*****-----**--------**----------*****-------------------------
-    //-----------**---**---*********--**---**--------**-----**------**--------**--------**----------**----------------------------
-    //-----------******---**-------**--*****----******------**------*******---*******---*******-----*******-----------------------
-    //----------------------------------------------------------------------------------------------------------------------------
-    
-    
     
     
     //---------------------------------------------------------------------------------
     //Initializierung von Bluetooth
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Starte Bluetooth Initialisierung");
-    SerialBT.begin("Wordclock"); //Bluetooth device name
+    SerialBT.begin("Wordclock_"); //Bluetooth device name
     _DEBUG_PRINTLN("Bluetooth gestartet");
     
 
@@ -355,9 +317,7 @@ void setup()
      * LED Streifen
      ****************************************/
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINTLN("starting LED strip");
-    _DEBUG_PRINT("Output of starting pattern version ");
-    _DEBUG_PRINTLN(settings.getStartPattern());
+    _DEBUG_PRINTLN("Initialisierung der LEDs");
     led_ausgabe.LedStartUp(settings.getStartPattern());
     delay(2000);
     led_ausgabe.clearLEDs();
