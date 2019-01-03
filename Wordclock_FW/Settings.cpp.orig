@@ -67,6 +67,11 @@ byte Settings::getBrightnessPercent()
     return map(_Brightness, 0, 255, 0, 100);
 }
 
+<<<<<<< HEAD
+void Settings::setColor(pixel_t color)
+{
+    _Color = color;
+=======
 /****************************************
  * LED Farbe
  ***************************************/
@@ -79,6 +84,7 @@ void Settings::setColor(pixel_t color)
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Farbe - color");
     }
+>>>>>>> 4214caccefbec9dda2aa584789a953b42e287014
 }
 
 void Settings::setColor(byte red, byte green, byte blue)
@@ -86,12 +92,15 @@ void Settings::setColor(byte red, byte green, byte blue)
     _Color.red = red;
     _Color.green = green;
     _Color.blue = blue;
+<<<<<<< HEAD
+=======
     
     if(DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Farbe - R,G,B");
     }
+>>>>>>> 4214caccefbec9dda2aa584789a953b42e287014
 }
 
 pixel_t Settings::getColor()
@@ -99,6 +108,8 @@ pixel_t Settings::getColor()
     return _Color;
 }
 
+<<<<<<< HEAD
+=======
 /****************************************
  * LED Übergänge
  ***************************************/
@@ -118,6 +129,7 @@ byte Settings::getFadeMode()
     return _FadeMode;
 }
 
+>>>>>>> 4214caccefbec9dda2aa584789a953b42e287014
 /****************************************
  * Eck-LEDs
  ***************************************/

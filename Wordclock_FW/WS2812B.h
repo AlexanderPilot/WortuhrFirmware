@@ -50,12 +50,11 @@ class WS2812 {
         WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel=RMT_CHANNEL_0);
         void show();
         void setColorOrder(char *order);
-        uint32_t Color(uint8_t red, uint8_t green, uint8_t blue);
         void setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
-        void setPixel(uint16_t index, uint32_t color);
+        void setPixel(uint16_t index, pixel_t color);
         void setPixel(uint16_t index);
         void setAllPixels(uint8_t red, uint8_t green, uint8_t blue);
-        void setAllPixels(uint32_t color);
+        void setAllPixels(pixel_t color);
         void setAllPixels();
         void startPattern(uint8_t version);
         void clear();
