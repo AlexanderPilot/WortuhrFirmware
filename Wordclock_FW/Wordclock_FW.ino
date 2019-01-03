@@ -322,7 +322,7 @@ void setup()
     delay(2000);
     led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(2);
-    while(1);
+    //while(1);
     /****************************************
      * NTP Server
      ****************************************/
