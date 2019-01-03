@@ -29,6 +29,11 @@ class LED_Ausgabe
         void setPixelToMatrix(byte xPos, byte yPos, word Matix[11]);
         void setMatrixToLEDs(word Matrix[11]);
         void clearLEDs();
+        
+        /****************************************
+         * LED-Übergang
+         ***************************************/
+         
     private:
         /****************************************
          * private LED Funktionen

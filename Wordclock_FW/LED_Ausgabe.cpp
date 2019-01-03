@@ -33,9 +33,8 @@ void LED_Ausgabe::setPixelToMatrix(uint16_t index)
     
     if(DEBUG_LEDAUSGABE == 1)
     {
-        Serial.print("LED_Ausgabe.cpp - ");
         Serial.print("LED Nummer ");
-        Serial.println(index);
+        Serial.print(index);
         Serial.println(" soll ausgegeben werden");
     }
 }
@@ -103,7 +102,7 @@ void LED_Ausgabe::clearLEDs()
     if(DEBUG_LEDAUSGABE == 1)
     {
         Serial.print("LED_Ausgabe.cpp ");
-        Serial.print("Alle LEDs sollen ausgeschaltet werden");
+        Serial.println("Alle LEDs sollen ausgeschaltet werden");
     }
     _strip->clear();
     _strip->show();
