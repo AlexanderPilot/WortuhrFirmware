@@ -211,7 +211,7 @@ void WS2812::setColorOrder(char *colorOrder)
 void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 {
     assert(index < pixelCount);
-
+    
     this->pixels[index].red   = red;
     this->pixels[index].green = green;
     this->pixels[index].blue  = blue;
@@ -220,17 +220,10 @@ void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 void WS2812::setPixel(uint16_t index, pixel_t color)
 {
     assert(index < pixelCount);
-    /*if(DEBUG_WS2812B == 1)
-    {
-        Serial.println("WS2812B.cpp Farbanteile");
-        Serial.print(uint8_t(color>>16));
-        Serial.print(uint8_t(color>>8));
-        Serial.print(uint8_t(color));
-    }
     
-    this->pixels[index].red   = uint8_t(color>>16);
-    this->pixels[index].green = uint8_t(color>>8);
-    this->pixels[index].blue  = uint8_t(color);*/
+    this->pixels[index].red   = color.red;
+    this->pixels[index].green = color.green;
+    this->pixels[index].blue  = color.blue;
 }
 
 void WS2812::setPixel(uint16_t index)
@@ -284,17 +277,12 @@ void WS2812::setAllPixels(pixel_t color)
  */
 void WS2812::startPattern(uint8_t version)
 {
-    if(DEBUG_WS2812B == 1)
-    {
-        Serial.print("WS2812B.cpp Startpattern für WS2812B ");
-        Serial.println(version);
-    }
-    
     switch(version)
     {
         if(DEBUG_WS2812B == 1)
         {
-            Serial.print("WS2812B.cpp Startmuster ");
+            Serial.print("WS2812B.cpp - ");
+            Serial.print("Startmuster ");
         }
         /****************************************
          * alle LEDs ausschalten
@@ -303,7 +291,7 @@ void WS2812::startPattern(uint8_t version)
             if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
-                Serial.print(" - alle LEDs ausschalten");
+                Serial.println(" - alle LEDs ausschalten");
             }
             this->clear();
             this->show();
@@ -363,22 +351,28 @@ void WS2812::startPattern(uint8_t version)
             }
             for (auto i=0; i<this->pixelCount; i++)
             {
-                this->pixels[i].red   = 255;
-                this->pixels[i].green = 255;
-                this->pixels[i].blue  = 255;
+                this->pixels[i].red   = 0;
+                this->pixels[i].green = 0;
+                this->pixels[i].blue  = 0;
                 this->show();
                 delay(200);
             }
             this->show();
             break;
         /****************************************
-         * tbd
+         * Zufalls-Muster
          ***************************************/
         case 5:
             if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
                 Serial.println(" - tbd");
+            }
+            for (auto i=0; i<this->pixelCount; i++)
+            {
+                this->pixels[i].red = random(255);
+                this->pixels[i].green = random(255);
+                this->pixels[i].blue = random(255);
             }
             break;
         /****************************************
