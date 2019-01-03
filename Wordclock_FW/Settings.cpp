@@ -187,9 +187,10 @@ void Settings::setWifiSSID(String Ssid)
 
 }
 
-String Settings::getWifiSSID()
+const char* Settings::getWifiSSID()
 {
-    return _WifiSSID;
+    const char *WifiSSID = _WifiSSID.c_str();
+    return WifiSSID;
 }
 
 void Settings::setWifiPW(String Password)
@@ -203,9 +204,10 @@ void Settings::setWifiPW(String Password)
     }
 }
 
-String Settings::getWifiPW()
+const char* Settings::getWifiPW()
 {
-    return _WifiPW;
+    const char *WifiPW = _WifiPW.c_str();
+    return WifiPW;
 }
 
 /****************************************
@@ -253,7 +255,8 @@ uint16_t Settings::getGmtTimeOffsetSec()
 
 void Settings::loadFromEEPROM()
 {
-    Serial.println("Settings.cpp Laden vom EEPROM noch nicht implementiert (Settings.cpp)");
+    Serial.print("Settings.cpp - ");
+    Serial.println("Laden vom EEPROM noch nicht implementiert");
     //_Language = EEPROM.read(0);
     //_CornersClockwise = EEPROM.read(1);
     //_Brightness = EEPROM.read(2);
@@ -262,7 +265,8 @@ void Settings::loadFromEEPROM()
 
 void Settings::saveToEEPROM()
 {
-    Serial.println("Settings.cpp Speichern auf EEPROM noch nicht implementiert (Settings.cpp)");
+    Serial.print("Settings.cpp - ");
+    Serial.println("Speichern auf EEPROM noch nicht implementiert");
     //EEPROM.update(0, _Language);
     //EEPROM.update(1, _CornersClockwise);
     //EEPROM.update(2, _Brightness);
