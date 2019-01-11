@@ -107,6 +107,12 @@ void LED_Ausgabe::clearLEDs()
     _strip->clear();
     _strip->show();
 }
+
+void LED_Ausgabe::MatrixToMatrixFade(word MatrixIst[11], word MatrixSoll[11])
+{
+    
+}
+
 /*
 byte LED_Ausgabe::_BrightnessScaleColor(byte colorPart)
 {
