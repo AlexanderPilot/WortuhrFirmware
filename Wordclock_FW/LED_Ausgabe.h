@@ -33,6 +33,7 @@ class LED_Ausgabe
         /****************************************
          * LED-Übergang
          ***************************************/
+        void MatrixToMatrixFade(word Matrix1[11],word Matrix2[11])
          
     private:
         /****************************************
