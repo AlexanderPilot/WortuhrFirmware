@@ -318,11 +318,13 @@ void setup()
     //Initializierung der LED Streifen
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Initialisierung der LEDs");
+    _DEBUG_PRINT("LED Anschlusspin: ");
+    _DEBUG_PRINTLN(LEDSTRIP_PIN);
     led_ausgabe.LedStartUp(settings.getStartPattern());
     delay(2000);
     led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(2);
-    //while(1);
+    while(1);
     /****************************************
      * NTP Server
      ****************************************/
