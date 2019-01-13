@@ -58,11 +58,9 @@ class Settings
         bool getWifiSettingsAvailable();
         
         void setWifiSSID(String Ssid);
-        //String getWifiSSID();
         const char *getWifiSSID();
         
         void setWifiPW(String Password);
-        //String getWifiPW();
         const char *getWifiPW();
         
         /****************************************
