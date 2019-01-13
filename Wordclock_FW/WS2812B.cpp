@@ -220,20 +220,15 @@ void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 void WS2812::setPixel(uint16_t index, pixel_t color)
 {
     assert(index < pixelCount);
+    Serial.print("WS2812.cpp - ");
+    Serial.println("LED Befehel kam an und soll umgesetzt werden");
+    Serial.print(color.red);
+    Serial.print(color.green);
+    Serial.print(color.blue);
     
     this->pixels[index].red   = color.red;
     this->pixels[index].green = color.green;
     this->pixels[index].blue  = color.blue;
-}
-
-void WS2812::setPixel(uint16_t index)
-{
-    //Serial.println("WS2812B.cpp Aufruf setPixel");
-    assert(index < pixelCount);
-    
-    //this->pixels[index].red   = 0;
-    //this->pixels[index].green = 0;
-    //this->pixels[index].blue  = 255;
 }
 
 /**
@@ -275,7 +270,7 @@ void WS2812::setAllPixels(pixel_t color)
  *  1: 
  *  9: all LEDs in red
  */
-void WS2812::startPattern(uint8_t version)
+/*void WS2812::startPattern(uint8_t version)
 {
     switch(version)
     {
@@ -284,9 +279,7 @@ void WS2812::startPattern(uint8_t version)
             Serial.print("WS2812B.cpp - ");
             Serial.print("Startmuster ");
         }
-        /****************************************
-         * alle LEDs ausschalten
-         ***************************************/
+        
         case 0:
             if(DEBUG_WS2812B == 1)
             {
@@ -296,9 +289,7 @@ void WS2812::startPattern(uint8_t version)
             this->clear();
             this->show();
             break;
-        /****************************************
-         * alle LEDs rot
-         ***************************************/
+
         case 1:
             if(DEBUG_WS2812B == 1)
             {
@@ -308,9 +299,7 @@ void WS2812::startPattern(uint8_t version)
             this->setAllPixels(255,0,0);
             this->show();
             break;
-        /****************************************
-         * alle LEDs gruen
-         ***************************************/
+
         case 2:
             if(DEBUG_WS2812B == 1)
             {
@@ -320,9 +309,7 @@ void WS2812::startPattern(uint8_t version)
             this->setAllPixels(0,255,0);
             this->show();
             break;
-        /****************************************
-         * alle LEDs blau
-         ***************************************/
+
         case 3:
             if(DEBUG_WS2812B == 1)
             {
@@ -332,9 +319,7 @@ void WS2812::startPattern(uint8_t version)
             this->setAllPixels(0,0,255);
             this->show();
             break;
-        /****************************************
-         * LEDs nacheinander einschalten, dann nacheinander ausschalten
-         ***************************************/
+
         case 4:
             if(DEBUG_WS2812B == 1)
             {
@@ -359,14 +344,12 @@ void WS2812::startPattern(uint8_t version)
             }
             this->show();
             break;
-        /****************************************
-         * Zufalls-Muster
-         ***************************************/
+
         case 5:
             if(DEBUG_WS2812B == 1)
             {
                 Serial.print(version);
-                Serial.println(" - tbd");
+                Serial.println(" - Zufallsmuster");
             }
             for (auto i=0; i<this->pixelCount; i++)
             {
@@ -375,9 +358,7 @@ void WS2812::startPattern(uint8_t version)
                 this->pixels[i].blue = random(255);
             }
             break;
-        /****************************************
-         * tbd
-         ***************************************/
+
         case 6:
             if(DEBUG_WS2812B == 1)
             {
@@ -385,44 +366,11 @@ void WS2812::startPattern(uint8_t version)
                 Serial.println(" - tbd");
             }
             break;
-        /****************************************
-         * tbd
-         ***************************************/
-        case 7:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - tbd");
-            }
-            break;
-        /****************************************
-         * tbd
-         ***************************************/
-        case 8:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - tbd");
-            }
-            break;
-        /****************************************
-         * tbd
-         ***************************************/
-        case 9:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - tbd");
-            }
-        /****************************************
-         * default
-         ***************************************/
+
         default:
             break;
     }
-    
-}
-
+}*/
 /**
  * @brief Clear all the pixel colors.
  *

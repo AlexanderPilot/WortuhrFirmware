@@ -26,21 +26,21 @@ class LED_Ausgabe
          * LED Funktionen
          ***************************************/
         void setPixelToMatrix(uint16_t index);
-        void setPixelToMatrix(byte xPos, byte yPos, word Matix[11]);
+        void setPixelToMatrix(byte xPos, byte yPos);
         void setMatrixToLEDs(word Matrix[11]);
         void clearLEDs();
         
         /****************************************
          * LED-Übergang
          ***************************************/
-        void MatrixToMatrixFade(word Matrix1[11],word Matrix2[11])
+        void MatrixToMatrixFade(word Matrix1[11],word Matrix2[11]);
          
     private:
         /****************************************
          * private LED Funktionen
          ***************************************/
-        void _setPixel(byte xPos, byte yPos, long color);
-        void _setPixel(byte LEDnum, long color);
+        void _setPixel(byte xPos, byte yPos);
+        void _setPixel(uint16_t LEDnum);
         
         WS2812 *_strip;
 };
