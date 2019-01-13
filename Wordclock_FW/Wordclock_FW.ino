@@ -194,9 +194,29 @@ void readRtcTime(void *arg)
         {
               //_DEBUG_PRINTLN("Task readRtcTime acces to I2C bus not possible");
         }
-        vTaskDelay(500 / portTICK_RATE_MS); // delay 1000ms
+        vTaskDelay(500 / portTICK_RATE_MS); // delay 500ms
     }
 }
+
+/***************************************************************************
+ * RTOS Task für die Kommunikation mit der App über Bluetooth
+ **************************************************************************/
+void BluetoothConnection(void *arg)
+{
+    while (1)
+    {
+        if (Serial.available())
+        {
+            SerialBT.write(Serial.read());
+        }
+        if (SerialBT.available())
+        {
+            Serial.write(SerialBT.read());
+        }
+        vTaskDelay(10 / portTICK_RATE_MS); // delay 10ms
+    }
+}
+
 
 /****************************************************************************************************************************************************************************************************************************/
 
@@ -242,12 +262,12 @@ void setup()
     //settings.setWifiSSID("Internet_MH");
     //settings.setWifiPW("WZ78AG27MGFF27DL");
     
-    settings.setStartPattern(4);
+    settings.setStartPattern(3);
     settings.setFadeMode(0);
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
-    settings.setColor(120, 120, 120);
+    settings.setColor(255, 0, 0);
     settings.setBrightnessPercent(100);
     
     /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
@@ -289,7 +309,6 @@ void setup()
         else if(WifiOK == false)
         {
             Serial.println("abgebrochen");
-            //WiFi.end();
             Serial.println("keine Zeitsynchronisation mit NTP Server möglich");
             WifiAvailable = false;
         }
@@ -320,6 +339,8 @@ void setup()
     _DEBUG_PRINTLN("Initialisierung der LEDs");
     _DEBUG_PRINT("LED Anschlusspin: ");
     _DEBUG_PRINTLN(LEDSTRIP_PIN);
+    _DEBUG_PRINT("Startmuster ");
+    _DEBUG_PRINTLN(settings.getStartPattern());
     led_ausgabe.LedStartUp(settings.getStartPattern());
     delay(2000);
     led_ausgabe.clearLEDs();
@@ -370,19 +391,13 @@ void setup()
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("create RTOS tasks");
     xTaskCreate(&getNtpTime, "getNtpTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 4, NULL);
-    xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
+    xTaskCreate(&readRtcTime, "readRtcTime", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 2, NULL);
+    xTaskCreate(&BluetoothConnection, "BluetoothConnection", CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE, NULL, 1, NULL);
 }
 
 /****************************************************************************************************************************************************************************************************************************/
 
 void loop()
 {
-    if (Serial.available())
-    {
-        SerialBT.write(Serial.read());
-    }
-    if (SerialBT.available())
-    {
-        Serial.write(SerialBT.read());
-    }
+    
 }
