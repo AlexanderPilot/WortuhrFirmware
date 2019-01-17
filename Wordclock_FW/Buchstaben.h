@@ -10,9 +10,6 @@
 /* Vermeidung Doppeldefinitionen */
 #pragma once
 
-//#include <avr/pgmspace.h>
-
-//extern const char staben[][5] PROGMEM;
 const char staben[][5] = {
     { // 0:A
         0b00001100,
