@@ -346,13 +346,15 @@ void setup()
     led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(2);
     while(1);
-    /****************************************
-     * NTP Server
-     ****************************************/
+    //---------------------------------------------------------------------------------
+    //Initializierung des NTP Servers
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Starten des NTP Servers");
     timeClient.begin();
     timeClient.setTimeOffset(settings.getGmtTimeOffsetSec());
+    //---------------------------------------------------------------------------------
+    //Initializierung des EEPROMS
+    EEPROM.begin(EEPROM_SIZE)
     //---------------------------------------------------------------------------------
     //definition of inouts / outputs
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
