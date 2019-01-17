@@ -8,7 +8,7 @@
 
 /** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
-#include <EEPROM.h>
+#include "EEPROM.h"
 #include "WS2812B.h"
 
 #define DEBUG_SETTINGS 0
