@@ -348,7 +348,7 @@ void setup()
     led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(0,0);
     led_ausgabe.setPixelToMatrix(2);
-    while(1);
+    //while(1);
     //---------------------------------------------------------------------------------
     //Initializierung des NTP Servers
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
@@ -359,7 +359,7 @@ void setup()
     //Initializierung des EEPROMS
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Initialisieren des EEPROM");
-    EEPROM.begin(EEPROM_SIZE)
+    EEPROM.begin(EEPROM_SIZE);
     //---------------------------------------------------------------------------------
     //definition of inouts / outputs
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
