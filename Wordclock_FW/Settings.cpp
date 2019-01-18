@@ -253,21 +253,35 @@ uint16_t Settings::getGmtTimeOffsetSec()
  * EEPROM Ansteuerung
  ***************************************/
 
-void Settings::loadFromEEPROM()
+uint8_t Settings::loadFromEEPROM(uint8_t address)
 {
-    Serial.print("Settings.cpp - ");
-    Serial.println("Laden vom EEPROM noch nicht implementiert");
-    //_Language = EEPROM.read(0);
-    //_CornersClockwise = EEPROM.read(1);
-    //_Brightness = EEPROM.read(2);
+    uint8_t EEPROMvalue;
+    EEPROMvalue = EEPROM.read(address);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Der Wert ");
+        Serial.print(EEPROMvalue);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(address);
+        Serial.print(" des EEPROM gelesen");
+    }
+    return EEPROMvalue;
 }
 
 
-void Settings::saveToEEPROM()
+void Settings::saveToEEPROM(uint8_t address, uint8_t value)
 {
-    Serial.print("Settings.cpp - ");
-    Serial.println("Speichern auf EEPROM noch nicht implementiert");
-    //EEPROM.update(0, _Language);
-    //EEPROM.update(1, _CornersClockwise);
-    //EEPROM.update(2, _Brightness);
+    EEPROM.write(address, value);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Der Wert ");
+        Serial.print(value);
+        Serial.print(" wird auf Adresse ");
+        Serial.print(address);
+        Serial.print(" des EEPROM geschrieben");
+    }
 }

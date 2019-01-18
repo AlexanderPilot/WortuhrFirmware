@@ -81,6 +81,11 @@
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
 
+/***************************************************************************
+ * App Interpreter Einstellungen
+ **************************************************************************/
+#define START_SIGN  "+"
+#define END_SIGN    "$"
 
 /***************************************************************************
  * I2C Einstellungen
@@ -104,3 +109,7 @@
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
 
+/***************************************************************************
+ * EEEPROM Einstellungen
+ **************************************************************************/
+#define EEPROM_SIZE 64

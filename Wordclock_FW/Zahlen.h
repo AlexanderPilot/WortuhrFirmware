@@ -10,9 +10,6 @@
 /* Vermeidung Doppeldefinitionen */
 #pragma once
 
-//#include <avr/pgmspace.h>
-
-//extern const char ziffern[][7] PROGMEM;
 const char ziffern[][7] = {
     { // 0:0
         0b00001110,

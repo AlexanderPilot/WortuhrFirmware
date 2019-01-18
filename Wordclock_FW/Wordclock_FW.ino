@@ -249,7 +249,7 @@ void setup()
     Serial.println(PRINT_SEPARATOR_LONG);
     
     /** Lesen der Einstellungen aus dem EEPROM **/
-    settings.loadFromEEPROM();
+    //settings.loadFromEEPROM();
     /***************************************************************************
      * Standardeinstellungen für Testzwecke, soll später aus dem EEPROM gelesen werden
      **************************************************************************/
@@ -344,14 +344,22 @@ void setup()
     _DEBUG_PRINT("Startmuster: ");
     _DEBUG_PRINTLN(settings.getStartPattern());
     led_ausgabe.LedStartUp(settings.getStartPattern());
+    delay(2000);
+    led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(0,0);
-    /****************************************
-     * NTP Server
-     ****************************************/
+    led_ausgabe.setPixelToMatrix(2);
+    while(1);
+    //---------------------------------------------------------------------------------
+    //Initializierung des NTP Servers
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Starten des NTP Servers");
     timeClient.begin();
     timeClient.setTimeOffset(settings.getGmtTimeOffsetSec());
+    //---------------------------------------------------------------------------------
+    //Initializierung des EEPROMS
+    _DEBUG_PRINTLN(PRINT_SEPARATOR);
+    _DEBUG_PRINTLN("Initialisieren des EEPROM");
+    EEPROM.begin(EEPROM_SIZE)
     //---------------------------------------------------------------------------------
     //definition of inouts / outputs
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
