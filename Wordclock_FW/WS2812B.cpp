@@ -191,13 +191,6 @@ void WS2812::setColorOrder(char *colorOrder)
     }
 }
 
-
-
-/*pixel_t WS2812::Color(uint8_t red, uint8_t green, uint8_t blue)
-{
-    return _Color;
-}*/
-
 /**
  * @brief Set the given pixel to the specified color.
  *
@@ -220,11 +213,6 @@ void WS2812::setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 void WS2812::setPixel(uint16_t index, pixel_t color)
 {
     assert(index < pixelCount);
-    Serial.print("WS2812.cpp - ");
-    Serial.println("LED Befehel kam an und soll umgesetzt werden");
-    Serial.print(color.red);
-    Serial.print(color.green);
-    Serial.print(color.blue);
     
     this->pixels[index].red   = color.red;
     this->pixels[index].green = color.green;
@@ -260,117 +248,6 @@ void WS2812::setAllPixels(pixel_t color)
     }
 }
 
-/**
- * @brief Set the starting pattern of the LEDs on wordclock start
- *
- * The LEDs show a specific behaviour on the clock
- *
- * @param [in] The starting pattern version.
- *  0: all LEDs off
- *  1: 
- *  9: all LEDs in red
- */
-/*void WS2812::startPattern(uint8_t version)
-{
-    switch(version)
-    {
-        if(DEBUG_WS2812B == 1)
-        {
-            Serial.print("WS2812B.cpp - ");
-            Serial.print("Startmuster ");
-        }
-        
-        case 0:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - alle LEDs ausschalten");
-            }
-            this->clear();
-            this->show();
-            break;
-
-        case 1:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - alle LEDs rot");
-            }
-            this->setAllPixels(255,0,0);
-            this->show();
-            break;
-
-        case 2:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - alle LEDs gruen");
-            }
-            this->setAllPixels(0,255,0);
-            this->show();
-            break;
-
-        case 3:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - alle LEDs blau");
-            }
-            this->setAllPixels(0,0,255);
-            this->show();
-            break;
-
-        case 4:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - LEDs nacheinander einschalten und dann nacheinander wieder ausschalten");
-            }
-            for (auto i=0; i<this->pixelCount; i++)
-            {
-                this->pixels[i].red   = 255;
-                this->pixels[i].green = 255;
-                this->pixels[i].blue  = 255;
-                this->show();
-                delay(200);
-            }
-            for (auto i=0; i<this->pixelCount; i++)
-            {
-                this->pixels[i].red   = 0;
-                this->pixels[i].green = 0;
-                this->pixels[i].blue  = 0;
-                this->show();
-                delay(200);
-            }
-            this->show();
-            break;
-
-        case 5:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - Zufallsmuster");
-            }
-            for (auto i=0; i<this->pixelCount; i++)
-            {
-                this->pixels[i].red = random(255);
-                this->pixels[i].green = random(255);
-                this->pixels[i].blue = random(255);
-            }
-            break;
-
-        case 6:
-            if(DEBUG_WS2812B == 1)
-            {
-                Serial.print(version);
-                Serial.println(" - tbd");
-            }
-            break;
-
-        default:
-            break;
-    }
-}*/
 /**
  * @brief Clear all the pixel colors.
  *

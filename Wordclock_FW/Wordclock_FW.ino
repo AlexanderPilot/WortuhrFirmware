@@ -188,7 +188,7 @@ void readRtcTime(void *arg)
             renderer.setTime(ds3231.getHours(), ds3231.getMinutes(), settings.getLanguage(), Matrix);
 
             //Ausgabe der Matrix auf die LEDs
-            //led_ausgabe.setMatrixToLEDs(Matrix);
+            led_ausgabe.setMatrixToLEDs(Matrix);
         }
         else
         {
@@ -262,12 +262,12 @@ void setup()
     //settings.setWifiSSID("Internet_MH");
     //settings.setWifiPW("WZ78AG27MGFF27DL");
     
-    settings.setStartPattern(3);
+    settings.setStartPattern(4);
     settings.setFadeMode(0);
     settings.setGmtTimeOffsetSec(3600);
     settings.setBrightnessPercent(100);
     settings.setCornerStartLed(0);
-    settings.setColor(255, 0, 0);
+    settings.setColor(20, 20, 20);
     settings.setBrightnessPercent(100);
     
     /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
@@ -339,13 +339,12 @@ void setup()
     _DEBUG_PRINTLN("Initialisierung der LEDs");
     _DEBUG_PRINT("LED Anschlusspin: ");
     _DEBUG_PRINTLN(LEDSTRIP_PIN);
-    _DEBUG_PRINT("Startmuster ");
+    randomSeed(micros());
+    led_ausgabe.clearLEDs();
+    _DEBUG_PRINT("Startmuster: ");
     _DEBUG_PRINTLN(settings.getStartPattern());
     led_ausgabe.LedStartUp(settings.getStartPattern());
-    delay(2000);
-    led_ausgabe.clearLEDs();
-    led_ausgabe.setPixelToMatrix(2);
-    while(1);
+    led_ausgabe.setPixelToMatrix(0,0);
     /****************************************
      * NTP Server
      ****************************************/

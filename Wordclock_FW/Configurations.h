@@ -94,7 +94,8 @@
  * LED Einstellungen
  **************************************************************************/
 #define LEDSTRIP_PIN        19
-#define LED_NUM             8
+#define LED_NUM             114
+#define STARTPATTERN_DELAY  50
 
 
 /***************************************************************************
