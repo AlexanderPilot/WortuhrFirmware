@@ -274,6 +274,7 @@ uint8_t Settings::loadFromEEPROM(uint8_t address)
 void Settings::saveToEEPROM(uint8_t address, uint8_t value)
 {
     EEPROM.write(address, value);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
