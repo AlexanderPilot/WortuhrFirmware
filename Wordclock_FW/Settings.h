@@ -10,6 +10,7 @@
 #include "Arduino.h"
 #include "EEPROM.h"
 #include "WS2812B.h"
+#include "Configurations.h"
 
 #define DEBUG_SETTINGS 0
 
@@ -78,6 +79,7 @@ class Settings
         /****************************************
          * EEPROM Ansteuerung
          ***************************************/
+        void loadAllFromEEPROM();
         uint8_t loadFromEEPROM(uint8_t address);
         void saveToEEPROM(uint8_t address, uint8_t value);
         

@@ -26,7 +26,22 @@ uint16_t Settings::_GmtTimeOffsetSec;
  ***************************************/
 Settings::Settings()
 {
-    //Konstruktor ist zu definieren, falls erforderlich
+    _Language = LANGUAGE_DE_DE;
+    _Brightness = 100;
+    _Color.red = 255;
+    _Color.green = 255;
+    _Color.blue = 255;
+    _FadeMode = 0;
+    _CornerStartLed = 0;
+    _CornersClockwise = 1;
+    _WifiSSID = "ASUS";
+    _WifiPW = "Br8#Pojg56";
+    //_WifiSSID ="UPC68EE18B";
+    //_WifiPW = "Tw11tYbolz@#";
+    //_WifiSSID = "Internet_MH";
+    //_WifiPW = "WZ78AG27MGFF27DL";
+    _StartPattern = 4;
+    _GmtTimeOffsetSec = 3600;
 }
 
 /****************************************
@@ -252,6 +267,22 @@ uint16_t Settings::getGmtTimeOffsetSec()
 /****************************************
  * EEPROM Ansteuerung
  ***************************************/
+
+void Settings::loadAllFromEEPROM()
+{
+    _Language = loadFromEEPROM(EEPROM_ADDR_LANGUAGE);
+    _Brightness = loadFromEEPROM(EEPROM_ADDR_BRIGHTNESS);
+    _Color.red = loadFromEEPROM(EEPROM_ADDR_COLORRED);
+    _Color.green = loadFromEEPROM(EEPROM_ADDR_COLORGREEN);
+    _Color.blue = loadFromEEPROM(EEPROM_ADDR_COLORBLUE);
+    _FadeMode = loadFromEEPROM(EEPROM_ADDR_FADEMODE);
+    _CornerStartLed = loadFromEEPROM(EEPROM_ADDR_CORNERSTARTLED);
+    _CornersClockwise = loadFromEEPROM(EEPROM_ADDR_CORNERCLOCKWISE);
+    _WifiSSID = loadFromEEPROM(EEPROM_ADDR_WIFISSID);
+    _WifiPW = loadFromEEPROM(EEPROM_ADDR_WIFIPW);
+    _StartPattern = loadFromEEPROM(EEPROM_ADDR_STARTPATTERN);
+    _GmtTimeOffsetSec = loadFromEEPROM(EEPROM_ADDR_GMTOFFSET);
+}
 
 uint8_t Settings::loadFromEEPROM(uint8_t address)
 {

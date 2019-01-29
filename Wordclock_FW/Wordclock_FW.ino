@@ -247,28 +247,14 @@ void setup()
     Serial.println(VERSION);
     Serial.println();
     Serial.println(PRINT_SEPARATOR_LONG);
-    
-    /** Lesen der Einstellungen aus dem EEPROM **/
-    //settings.loadFromEEPROM();
     /***************************************************************************
-     * Standardeinstellungen für Testzwecke, soll später aus dem EEPROM gelesen werden
+     * Initialisierung EEPROM und Laden der Einstellungen
      **************************************************************************/
-    settings.setLanguage(LANGUAGE_DE_DE);
     
-    settings.setWifiSSID("ASUS");
-    settings.setWifiPW("Br8#Pojg56");
-    //settings.setWifiSSID("UPC68EE18B");
-    //settings.setWifiPW("Tw11tYbolz@#");
-    //settings.setWifiSSID("Internet_MH");
-    //settings.setWifiPW("WZ78AG27MGFF27DL");
-    
-    settings.setStartPattern(4);
-    settings.setFadeMode(0);
-    settings.setGmtTimeOffsetSec(3600);
-    settings.setBrightnessPercent(100);
-    settings.setCornerStartLed(0);
-    settings.setColor(20, 20, 20);
-    settings.setBrightnessPercent(100);
+    _DEBUG_PRINTLN(PRINT_SEPARATOR);
+    _DEBUG_PRINTLN("Initialisieren des EEPROM");
+    EEPROM.begin(EEPROM_SIZE);
+    settings.loadAllFromEEPROM();
     
     /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
     if(settings.getWifiSettingsAvailable() == true)
@@ -355,11 +341,6 @@ void setup()
     _DEBUG_PRINTLN("Starten des NTP Servers");
     timeClient.begin();
     timeClient.setTimeOffset(settings.getGmtTimeOffsetSec());
-    //---------------------------------------------------------------------------------
-    //Initializierung des EEPROMS
-    _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINTLN("Initialisieren des EEPROM");
-    EEPROM.begin(EEPROM_SIZE);
     //---------------------------------------------------------------------------------
     //definition of inouts / outputs
     _DEBUG_PRINTLN(PRINT_SEPARATOR);

@@ -112,4 +112,16 @@
 /***************************************************************************
  * EEEPROM Einstellungen
  **************************************************************************/
-#define EEPROM_SIZE 10
+#define EEPROM_SIZE 16
+#define EEPROM_ADDR_LANGUAGE 1
+#define EEPROM_ADDR_BRIGHTNESS 2
+#define EEPROM_ADDR_COLORRED 3
+#define EEPROM_ADDR_COLORGREEN 4
+#define EEPROM_ADDR_COLORBLUE 5
+#define EEPROM_ADDR_FADEMODE 6
+#define EEPROM_ADDR_CORNERSTARTLED 7
+#define EEPROM_ADDR_CORNERCLOCKWISE 8
+#define EEPROM_ADDR_WIFISSID 9
+#define EEPROM_ADDR_WIFIPW 11
+#define EEPROM_ADDR_STARTPATTERN 13
+#define EEPROM_ADDR_GMTOFFSET 14
