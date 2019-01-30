@@ -389,7 +389,7 @@ bool Settings::loadCornerClockwiseFromEEPROM()
     if(DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
-        Serial.print("Drehrichtung im Uhrzeugersinn aus EEPROM: ");
+        Serial.print("Drehrichtung im Uhrzeigersinn aus EEPROM: ");
         Serial.print(EEPROMcornerClockwise);
         Serial.print(" wurde von Adresse ");
         Serial.print(EEPROM_ADDR_CORNERCLOCKWISE);
@@ -467,18 +467,176 @@ uint16_t Settings::loadGmtOffsetFromEEPROM()
 }
 
 
-void Settings::saveToEEPROM(uint8_t address, uint8_t value)
+void Settings::writeLanguageToEEPROM(byte language)
 {
-    EEPROM.write(address, value);
-    EEPROM.commit();
+    size_t EEPROMstorage;
+    EEPROMstorage = writeByte(EEPROM_ADDR_LANGUAGE, language);
     
     if(DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
-        Serial.print("Der Wert ");
-        Serial.print(value);
-        Serial.print(" wird auf Adresse ");
-        Serial.print(address);
-        Serial.print(" des EEPROM geschrieben");
+        Serial.print("Sprache: ");
+        Serial.print(language);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_LANGUAGE);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeBrightnessToEEPROM(byte brightness)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeByte(EEPROM_ADDR_BRIGHTNESS, brightness);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Helligkeit: ");
+        Serial.print(brightness);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESS);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeColorToEEPROM(pixel_t color)
+{
+    size_t EEPROMstorage_red;
+    size_t EEPROMstorage_green;
+    size_t EEPROMstorage_blue;
+    EEPROMstorage_red = writeByte(EEPROM_ADDR_COLORRED, color.red);
+    EEPROMstorage_green = writeByte(EEPROM_ADDR_COLORGREEN, color.green);
+    EEPROMstorage_blue = writeByte(EEPROM_ADDR_COLORBLUE, color.blue);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Farbe: ");
+        Serial.print("rot: ");
+        Serial.print(color.red);
+        Serial.print("gruen: ");
+        Serial.print(color.green);
+        Serial.print("blau: ");
+        Serial.print(color.blue);
+        Serial.print(" wurde auf die Adressen ");
+        Serial.print("rot: ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESSRED);
+        Serial.print("gruen: ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESSGREEN);
+        Serial.print("blau: ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESSBLUE);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeFadeModeFromEEPROM(byte fademode)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeByte(EEPROM_ADDR_FADEMODE, fademode);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("FadeMode: ");
+        Serial.print(fademode);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_FADEMODE);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeCornerStartLedToEEPROM(byte cornerstartled)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeByte(EEPROM_ADDR_CORNERSTARTLED, cornerstartled);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Ecke der Start-LED: ");
+        Serial.print(cornerstartled);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_CORNERSTARTLED);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeCornerClockwiseToEEPROM(bool cornersclockwise)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeBool(EEPROM_ADDR_CORNERCLOCKWISE, cornersclockwise);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Drehrichtung im Uhrzeigersinn: ");
+        Serial.print(cornersclockwise);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_CORNERCLOCKWISE);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeWifiSSIDToEEPROM(String wifiSSID)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeString(EEPROM_ADDR_WIFISSID, wifiSSID);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("WifiSSID: ");
+        Serial.print(wifiSSID);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_WIFISSID);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeWifiPWToEEPROM(String wifiPW)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeString(EEPROM_ADDR_WIFIPW, wifiPW);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("WifiPW: ");
+        Serial.print(wifiPW);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_WIFIPW);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeStartpatternToEEPROM(byte startpattern)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeByte(EEPROM_ADDR_STARTPATTERN, startpattern);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Starpattern: ");
+        Serial.print(startpattern);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_STARTPATTERN);
+        Serial.println(" geschrieben");
+    }
+}
+
+void Settings::writeGmtOffsetToEEPROM(uint16_t gmtoffset)
+{
+    size_t EEPROMstorage;
+    EEPROMstorage = writeUShort(EEPROM_ADDR_GMTOFFSET , gmtoffset);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("GMT Offset: ");
+        Serial.print(gmtoffset);
+        Serial.print(" wird auf EEPROM Adresse ");
+        Serial.print(EEPROM_ADDR_GMTOFFSET);
+        Serial.println(" geschrieben");
     }
 }
