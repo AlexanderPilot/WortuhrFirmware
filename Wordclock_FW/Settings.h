@@ -80,7 +80,16 @@ class Settings
          * EEPROM Ansteuerung
          ***************************************/
         void loadAllFromEEPROM();
-        uint8_t loadFromEEPROM(uint8_t address);
+        byte loadLanguageFromEEPROM();
+        byte loadBrightnessFromEEPROM();
+        pixel_t loadColorFromEEPROM();
+        byte loadFadeModeFromEEPROM();
+        byte loadCornerStartLedFromEEPROM();
+        bool loadCornerClockwiseFromEEPROM();
+        String loadWifiSSIDFromEEPROM();
+        String loadWifiPWFromEEPROM();
+        byte loadStartpatternFromEEPROM();
+        uint16_t loadGmtOffsetFromEEPROM();
         void saveToEEPROM(uint8_t address, uint8_t value);
         
     private:
