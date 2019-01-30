@@ -270,35 +270,200 @@ uint16_t Settings::getGmtTimeOffsetSec()
 
 void Settings::loadAllFromEEPROM()
 {
-    _Language = loadFromEEPROM(EEPROM_ADDR_LANGUAGE);
-    _Brightness = loadFromEEPROM(EEPROM_ADDR_BRIGHTNESS);
-    _Color.red = loadFromEEPROM(EEPROM_ADDR_COLORRED);
-    _Color.green = loadFromEEPROM(EEPROM_ADDR_COLORGREEN);
-    _Color.blue = loadFromEEPROM(EEPROM_ADDR_COLORBLUE);
-    _FadeMode = loadFromEEPROM(EEPROM_ADDR_FADEMODE);
-    _CornerStartLed = loadFromEEPROM(EEPROM_ADDR_CORNERSTARTLED);
-    _CornersClockwise = loadFromEEPROM(EEPROM_ADDR_CORNERCLOCKWISE);
-    _WifiSSID = loadFromEEPROM(EEPROM_ADDR_WIFISSID);
-    _WifiPW = loadFromEEPROM(EEPROM_ADDR_WIFIPW);
-    _StartPattern = loadFromEEPROM(EEPROM_ADDR_STARTPATTERN);
-    _GmtTimeOffsetSec = loadFromEEPROM(EEPROM_ADDR_GMTOFFSET);
+    _Language = this->loadLanguageFromEEPROM();
+    _Brightness = this->loadBrightnessFromEEPROM(EEPROM_ADDR_BRIGHTNESS);
+    _Color.red = this->loadFromEEPROM(EEPROM_ADDR_COLORRED);
+    _Color.green = this->loadFromEEPROM(EEPROM_ADDR_COLORGREEN);
+    _Color.blue = this->loadFromEEPROM(EEPROM_ADDR_COLORBLUE);
+    _FadeMode = this->loadFromEEPROM(EEPROM_ADDR_FADEMODE);
+    _CornerStartLed = this->loadFromEEPROM(EEPROM_ADDR_CORNERSTARTLED);
+    _CornersClockwise = this->loadFromEEPROM(EEPROM_ADDR_CORNERCLOCKWISE);
+    _WifiSSID = this->loadFromEEPROM(EEPROM_ADDR_WIFISSID);
+    _WifiPW = this->loadFromEEPROM(EEPROM_ADDR_WIFIPW);
+    _StartPattern = this->loadFromEEPROM(EEPROM_ADDR_STARTPATTERN);
+    _GmtTimeOffsetSec = this->loadFromEEPROM(EEPROM_ADDR_GMTOFFSET);
 }
 
-uint8_t Settings::loadFromEEPROM(uint8_t address)
+byte Settings::loadLanguageFromEEPROM()
 {
-    uint8_t EEPROMvalue;
-    EEPROMvalue = EEPROM.read(address);
+    byte EEPROMlanguage;
+    EEPROMlanguage = EEPROM.readByte(EEPROM_ADDR_LANGUAGE);
+        
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Sprache aus EEPROM: ");
+        Serial.print(EEPROMlanguage);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_LANGUAGE);
+        Serial.println(" gelesen");
+    }
+    return EEPROMlanguage;
+}
+
+byte Settings::loadBrightnessFromEEPROM()
+{
+    byte EEPROMbrightness;
+    EEPROMbrightness = EEPROM.readByte(EEPROM_ADDR_BRIGHTNESS);
     
     if(DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
-        Serial.print("Der Wert ");
-        Serial.print(EEPROMvalue);
+        Serial.print("Helligkeit aus EEPROM: ");
+        Serial.print(EEPROMbrightness);
         Serial.print(" wurde von Adresse ");
-        Serial.print(address);
-        Serial.print(" des EEPROM gelesen");
+        Serial.print(EEPROM_ADDR_BRIGHTNESS);
+        Serial.println(" gelesen");
     }
-    return EEPROMvalue;
+    return EEPROMbrightness;
+}
+
+pixel_t Settings::loadColorFromEEPROM()
+{
+    pixel_t EEPROMcolor;
+    EEPROMcolor.red = EEPROM.readByte(EEPROM_ADDR_COLORRED);
+    EEPROMcolor.green = EEPROM.readByte(EEPROM_ADDR_COLORGREEN);
+    EEPROMcolor.blue = EEPROM.readByte(EEPROM_ADDR_COLORBLUE);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Farbe aus EEPROM: ");
+        Serial.print("rot: ");
+        Serial.print(EEPROMcolor.red);
+        Serial.print("gruen: ");
+        Serial.print(EEPROMcolor.green);
+        Serial.print("blau: ");
+        Serial.print(EEPROMcolor.blue);
+        Serial.print(" wurde von den Adressen ");
+        Serial.print("rot: ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESSRED);
+        Serial.print("gruen: ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESSGREEN);
+        Serial.print("blau: ");
+        Serial.print(EEPROM_ADDR_BRIGHTNESSBLUE);
+        Serial.println(" gelesen");
+    }
+    return EEPROMcolor;
+}
+
+byte Settings::loadFadeModeFromEEPROM()
+{
+    byte EEPROMfadeMode;
+    EEPROMfadeMode = EEPROM.readByte(EEPROM_ADDR_FADEMODE);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("FadeMode aus EEPROM: ");
+        Serial.print(EEPROMfadeMode);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_FADEMODE);
+        Serial.println(" gelesen");
+    }
+    return EEPROMfadeMode;
+}
+
+byte Settings::loadCornerStartLedFromEEPROM()
+{
+    byte EEPROMcornerStartLed;
+    EEPROMcornerStartLed = EEPROM.readByte(EEPROM_ADDR_CORNERSTARTLED);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Ecke der Start-LED aus EEPROM: ");
+        Serial.print(EEPROMcornerStartLed);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_CORNERSTARTLED);
+        Serial.println(" gelesen");
+    }
+    return EEPROMcornerStartLed;
+}
+
+bool Settings::loadCornerClockwiseFromEEPROM()
+{
+    bool EEPROMcornerClockwise;
+    EEPROMcornerClockwise = EEPROM.readBool(EEPROM_ADDR_CORNERCLOCKWISE);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Drehrichtung im Uhrzeugersinn aus EEPROM: ");
+        Serial.print(EEPROMcornerClockwise);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_CORNERCLOCKWISE);
+        Serial.println(" gelesen");
+    }
+    return EEPROMcornerClockwise;
+}
+
+String Settings::loadWifiSSIDFromEEPROM()
+{
+    String EEPROMwifiSSID;
+    EEPROMwifiSSID = EEPROM.readString(EEPROM_ADDR_WIFISSID);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("WifiSSID aus EEPROM: ");
+        Serial.print(EEPROMwifiSSID);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_WIFISSID);
+        Serial.println(" gelesen");
+    }
+    return EEPROMwifiSSID;
+}
+
+String Settings::loadWifiPWFromEEPROM()
+{
+    String EEPROMwifiPW;
+    EEPROMwifiPW = EEPROM.readString(EEPROM_ADDR_WIFIPW);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("WifiPW aus EEPROM: ");
+        Serial.print(EEPROMwifiPW);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_WIFIPW);
+        Serial.println(" gelesen");
+    }
+    return EEPROMwifiPW;
+}
+
+byte Settings::loadStartpatternFromEEPROM()
+{
+    byte EEPROMstartpattern;
+    EEPROMstartpattern = EEPROM.readByte(EEPROM_ADDR_STARTPATTERN);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Startmuster aus EEPROM: ");
+        Serial.print(EEPROMstartpattern);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_STARTPATTERN);
+        Serial.println(" gelesen");
+    }
+    return EEPROMstartpattern;
+}
+
+uint16_t Settings::loadGmtOffsetFromEEPROM()
+{
+    uint16_t EEPROMgmtOffset;
+    EEPROMgmtOffset = EEPROM.readByte(EEPROM_ADDR_GMTOFFSET);
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("GMT Offset aus EEPROM: ");
+        Serial.print(EEPROMgmtOffset);
+        Serial.print(" wurde von Adresse ");
+        Serial.print(EEPROM_ADDR_GMTOFFSET);
+        Serial.println(" gelesen");
+    }
+    return EEPROMgmtOffset;
 }
 
 
