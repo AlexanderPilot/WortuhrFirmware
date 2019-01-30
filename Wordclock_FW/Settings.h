@@ -90,7 +90,17 @@ class Settings
         String loadWifiPWFromEEPROM();
         byte loadStartpatternFromEEPROM();
         uint16_t loadGmtOffsetFromEEPROM();
-        void saveToEEPROM(uint8_t address, uint8_t value);
+        
+        void writeLanguageToEEPROM();
+        void writeBrightnessToEEPROM();
+        void writeColorToEEPROM();
+        void writeFadeModeFromEEPROM();
+        void writeCornerStartLedToEEPROM();
+        void writeCornerClockwiseToEEPROM();
+        void writeWifiSSIDToEEPROM();
+        void writeWifiPWToEEPROM();
+        void writeStartpatternToEEPROM();
+        void writeGmtOffsetToEEPROM();
         
     private:
         /****************************************
