@@ -100,7 +100,7 @@ class Settings
         void writeWifiSSIDToEEPROM(String wifiSSID);
         void writeWifiPWToEEPROM(String wifiPW);
         void writeStartpatternToEEPROM(byte startpattern);
-        void writeGmtOffsetToEEPROM(byte gmtoffset);
+        void writeGmtOffsetToEEPROM(uint16_t gmtoffset);
         
     private:
         /****************************************
