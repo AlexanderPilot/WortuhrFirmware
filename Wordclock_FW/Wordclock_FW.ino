@@ -5,10 +5,9 @@
 
 /***************************************************************************
  * ToDo:
- * - Anpassen des Aufstartverhaltens (prüfen ob gültige Netzwerkinfo vorliegt, siehe setup-Schleife)
- * - Auslesen WLAN SSID und PW für Wifi.begin()
- * - Einbindung Bluetooth testen
- * - Ausgabe auf LEDs einbinden
+ * - Einbindung Bluetooth testen + Varianten mit RTOS prüfen
+ * - Auslesen und Speichern auf EEPROM testen
+ * - Ausgabe auf LEDs prüfen
  * - RTC auslesen nach der Synchronaisation führt zu Fehler in der ausgabe -->vermutlich auch im Bitmuster
  * 
  *
@@ -248,32 +247,45 @@ void setup()
     Serial.println();
     Serial.println(PRINT_SEPARATOR_LONG);
     /***************************************************************************
-     * Initialisierung EEPROM und Laden der Einstellungen
+     * Initialisierung EEPROM 
      **************************************************************************/
     
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Initialisieren des EEPROM");
     EEPROM.begin(EEPROM_SIZE);
-    settings.loadAllFromEEPROM();
     
-    /** Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind **/
+    /***************************************************************************
+     * Laden der Einstellungen aus dem EEPROM
+     **************************************************************************/
+    settings.loadAllFromEEPROM();
+    //Fehlerhandling durchführen: falls nicht alle Daten vorliegen soll Defaultsatz geschrieben werden
+    
+    /***************************************************************************
+     * Initializierung von Bluetooth + Verbindungsaufbau zur App
+     **************************************************************************/
+    _DEBUG_PRINTLN(PRINT_SEPARATOR);
+    SerialBT.begin(BT_DEVICE_NAME); //Bluetooth device name
+    _DEBUG_PRINTLN("Bluetooth gestartet");
+    _DEBUG_PRINT("Geraetename: ");
+    _DEBUG_PRINTLN(BT_DEVICE_NAME);
+    Serial.println("Bluetoothverbindung zur App muss noch implementiert werden");
+    
+    /****************************************
+     * Prüfen ob im Daten für SSID und PW in den Einstellungen hinterlegt sind
+     ****************************************/
     if(settings.getWifiSettingsAvailable() == true)
     {
-        /****************************************
-         * Verbindungsaufbau zum WLAN Netzwerk mit den gespeicherten WLAN Einstellungen
-         ****************************************/
+         /** Verbindungsaufbau zum WLAN Netzwerk mit den gespeicherten WLAN Einstellungen **/
         _DEBUG_PRINTLN(PRINT_SEPARATOR);
-        /** stationärer Modus = Verbindung zum Netzwerk **/
         WiFi.mode(WIFI_STA);
-        /** Auslesen der SSID und PW aus den Einstellungen **/
         WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
         //Name der Wordclock im Netzwerk (aktuell nicht funktionsfähig)
         //WiFi.setHostname("Name");
         _DEBUG_PRINTLN("WiFi STA Mode wird gestartet");
         _DEBUG_PRINT("Verbindung zur SSID: ");
         _DEBUG_PRINT(settings.getWifiSSID());
-        /** Starten des Verbindungsaufbaus zum Netzwerk **/
         
+        /** Starten des Verbindungsaufbaus zum Netzwerk **/
         while(WiFi.status() != WL_CONNECTED && WifiOK == true)
         {
             delay(500);
@@ -300,17 +312,9 @@ void setup()
         }
     }
     
-    
-    //---------------------------------------------------------------------------------
-    //Initializierung von Bluetooth
-    _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    SerialBT.begin(BT_DEVICE_NAME); //Bluetooth device name
-    _DEBUG_PRINTLN("Bluetooth gestartet");
-    _DEBUG_PRINT("Geraetename: ");
-    _DEBUG_PRINTLN(BT_DEVICE_NAME);
-    
-    //---------------------------------------------------------------------------------
-    //Initializierung von I2C Bus
+    /****************************************
+     * Initializierung von I2C Bus
+     ****************************************/
     Wire.begin(SDA_PIN, SCL_PIN);
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("I2C Bus gestartet");
@@ -319,8 +323,9 @@ void setup()
     _DEBUG_PRINT("SCL Pin: ");
     _DEBUG_PRINTLN(SCL_PIN);
     
-    //---------------------------------------------------------------------------------
-    //Initializierung der LED Streifen
+    /****************************************
+     * Initializierung der LED Streifen
+     ****************************************/
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Initialisierung der LEDs");
     _DEBUG_PRINT("LED Anschlusspin: ");
@@ -335,19 +340,24 @@ void setup()
     led_ausgabe.setPixelToMatrix(0,0);
     led_ausgabe.setPixelToMatrix(2);
     //while(1);
-    //---------------------------------------------------------------------------------
-    //Initializierung des NTP Servers
+    
+    /****************************************
+     * Initializierung des NTP Servers
+     ****************************************/
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("Starten des NTP Servers");
     timeClient.begin();
     timeClient.setTimeOffset(settings.getGmtTimeOffsetSec());
-    //---------------------------------------------------------------------------------
-    //definition of inouts / outputs
+    
+    /****************************************
+     * Initializierung der Inputs/Outputs
+     ****************************************/
     _DEBUG_PRINTLN(PRINT_SEPARATOR);
     _DEBUG_PRINTLN("defining input / output - not yet implemented");
-    //---------------------------------------------------------------------------------
-    //Starten Timer und Interrupt
-
+    
+    /****************************************
+     * Initializierung Timer + Interrupt
+     ****************************************/
     //Setzen des Timer0 mit Prescaler 80 --> 1us Taktung und Aufwärtszählung (true)
     timer = timerBegin(0, 80, true);
     //Interrupt an Timer0 koppeln
