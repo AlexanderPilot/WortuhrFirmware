@@ -258,6 +258,7 @@ void setup()
      * Laden der Einstellungen aus dem EEPROM
      **************************************************************************/
     settings.loadAllFromEEPROM();
+    Serial.println("EEPROM Fehlerhandling muss noch durchgefuehrt werden.");
     //Fehlerhandling durchführen: falls nicht alle Daten vorliegen soll Defaultsatz geschrieben werden
     
     /***************************************************************************

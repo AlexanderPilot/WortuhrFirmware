@@ -270,6 +270,7 @@ uint16_t Settings::getGmtTimeOffsetSec()
 
 void Settings::loadAllFromEEPROM()
 {
+    Serial.println("Einstellungen vom EEPROM laden aktiviert");;
     _Language = this->loadLanguageFromEEPROM();
     _Brightness = this->loadBrightnessFromEEPROM();
     _Color = this->loadColorFromEEPROM();
@@ -329,16 +330,16 @@ pixel_t Settings::loadColorFromEEPROM()
         Serial.print("Farbe aus EEPROM: ");
         Serial.print("rot: ");
         Serial.print(EEPROMcolor.red);
-        Serial.print("gruen: ");
+        Serial.print(" gruen: ");
         Serial.print(EEPROMcolor.green);
-        Serial.print("blau: ");
+        Serial.print(" blau: ");
         Serial.print(EEPROMcolor.blue);
         Serial.print(" wurde von den Adressen ");
         Serial.print("rot: ");
         Serial.print(EEPROM_ADDR_COLORRED);
-        Serial.print("gruen: ");
+        Serial.print(" gruen: ");
         Serial.print(EEPROM_ADDR_COLORGREEN);
-        Serial.print("blau: ");
+        Serial.print(" blau: ");
         Serial.print(EEPROM_ADDR_COLORBLUE);
         Serial.println(" gelesen");
     }
