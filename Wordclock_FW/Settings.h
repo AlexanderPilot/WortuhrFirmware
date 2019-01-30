@@ -91,16 +91,16 @@ class Settings
         byte loadStartpatternFromEEPROM();
         uint16_t loadGmtOffsetFromEEPROM();
         
-        void writeLanguageToEEPROM();
-        void writeBrightnessToEEPROM();
-        void writeColorToEEPROM();
-        void writeFadeModeFromEEPROM();
-        void writeCornerStartLedToEEPROM();
-        void writeCornerClockwiseToEEPROM();
-        void writeWifiSSIDToEEPROM();
-        void writeWifiPWToEEPROM();
-        void writeStartpatternToEEPROM();
-        void writeGmtOffsetToEEPROM();
+        void writeLanguageToEEPROM(byte language);
+        void writeBrightnessToEEPROM(byte brightness);
+        void writeColorToEEPROM(pixel_t color);
+        void writeFadeModeFromEEPROM(byte fademode);
+        void writeCornerStartLedToEEPROM(byte cornerstartled);
+        void writeCornerClockwiseToEEPROM(bool cornersclockwise);
+        void writeWifiSSIDToEEPROM(String wifiSSID);
+        void writeWifiPWToEEPROM(String wifiPW);
+        void writeStartpatternToEEPROM(byte startpattern);
+        void writeGmtOffsetToEEPROM(byte gmtoffset);
         
     private:
         /****************************************
