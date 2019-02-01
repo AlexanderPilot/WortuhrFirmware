@@ -267,6 +267,20 @@ uint16_t Settings::getGmtTimeOffsetSec()
 /****************************************
  * EEPROM Ansteuerung
  ***************************************/
+bool Settings::checkEEPROMData()
+{
+    bool EEPROMdataOK = true;
+    
+    Serial.println("Settings.cpp - checkEEPROMData Funktion muss noch implementiert werden, aktuell keine Pruefung der Daten");
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Daten aus dem EEPROM sind: ");
+        Serial.println(EEPROMdataOK ? "gueltig" : "ungueltig");
+    }
+    return EEPROMdataOK;
+}
 
 void Settings::loadAllFromEEPROM()
 {
