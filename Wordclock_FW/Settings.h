@@ -79,6 +79,8 @@ class Settings
         /****************************************
          * EEPROM Ansteuerung
          ***************************************/
+        bool checkEEPROMData();
+    
         void loadAllFromEEPROM();
         byte loadLanguageFromEEPROM();
         byte loadBrightnessFromEEPROM();
