@@ -267,6 +267,8 @@ uint16_t Settings::getGmtTimeOffsetSec()
 /****************************************
  * EEPROM Ansteuerung
  ***************************************/
+
+/** EEPROM schreiben **/
 bool Settings::checkEEPROMData()
 {
     bool EEPROMdataOK = true;
@@ -479,11 +481,12 @@ uint16_t Settings::loadGmtOffsetFromEEPROM()
     return EEPROMgmtOffset;
 }
 
-
+/** EEPROM schreiben **/
 void Settings::writeLanguageToEEPROM(byte language)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_LANGUAGE, language);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -500,6 +503,7 @@ void Settings::writeBrightnessToEEPROM(byte brightness)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_BRIGHTNESS, brightness);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -520,6 +524,7 @@ void Settings::writeColorToEEPROM(pixel_t color)
     EEPROMstorage_red = EEPROM.writeByte(EEPROM_ADDR_COLORRED, color.red);
     EEPROMstorage_green = EEPROM.writeByte(EEPROM_ADDR_COLORGREEN, color.green);
     EEPROMstorage_blue = EEPROM.writeByte(EEPROM_ADDR_COLORBLUE, color.blue);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -546,6 +551,7 @@ void Settings::writeFadeModeFromEEPROM(byte fademode)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_FADEMODE, fademode);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -562,6 +568,7 @@ void Settings::writeCornerStartLedToEEPROM(byte cornerstartled)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_CORNERSTARTLED, cornerstartled);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -578,6 +585,7 @@ void Settings::writeCornerClockwiseToEEPROM(bool cornersclockwise)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeBool(EEPROM_ADDR_CORNERCLOCKWISE, cornersclockwise);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -594,6 +602,7 @@ void Settings::writeWifiSSIDToEEPROM(String wifiSSID)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeString(EEPROM_ADDR_WIFISSID, wifiSSID);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -610,6 +619,7 @@ void Settings::writeWifiPWToEEPROM(String wifiPW)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeString(EEPROM_ADDR_WIFIPW, wifiPW);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -626,6 +636,7 @@ void Settings::writeStartpatternToEEPROM(byte startpattern)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_STARTPATTERN, startpattern);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
@@ -642,6 +653,7 @@ void Settings::writeGmtOffsetToEEPROM(uint16_t gmtoffset)
 {
     size_t EEPROMstorage;
     EEPROMstorage = EEPROM.writeUShort(EEPROM_ADDR_GMTOFFSET , gmtoffset);
+    EEPROM.commit();
     
     if(DEBUG_SETTINGS == 1)
     {
