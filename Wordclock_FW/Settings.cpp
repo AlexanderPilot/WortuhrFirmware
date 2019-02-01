@@ -40,7 +40,7 @@ Settings::Settings()
     //_WifiPW = "Tw11tYbolz@#";
     //_WifiSSID = "Internet_MH";
     //_WifiPW = "WZ78AG27MGFF27DL";
-    _StartPattern = 4;
+    _StartPattern = 1;
     _GmtTimeOffsetSec = 3600;
 }
 

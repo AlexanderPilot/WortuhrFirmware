@@ -95,6 +95,7 @@ void setup()
     led_ausgabe.clearLEDs();
     led_ausgabe.setPixelToMatrix(0,0);
     led_ausgabe.setPixelToMatrix(2);
+    delay(2000);
     //while(1);
         
     /****************************************
