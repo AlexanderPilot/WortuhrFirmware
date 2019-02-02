@@ -185,7 +185,7 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
     if(DEBUG_LEDAUSGABE == 1)
     {
         Serial.print("LED_Ausgabe.cpp - ");
-        Serial.print("Berechnung der zu setzenden LEDs aus Matrix");
+        Serial.println("Berechnung der zu setzenden LEDs aus Matrix");
     }
     
     for(byte yPos = 0; yPos <= 9; yPos++)         //Zeilen durchzählen

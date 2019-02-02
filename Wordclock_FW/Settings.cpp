@@ -28,9 +28,9 @@ Settings::Settings()
 {
     _Language = LANGUAGE_DE_DE;
     _Brightness = 100;
-    _Color.red = 255;
-    _Color.green = 255;
-    _Color.blue = 255;
+    _Color.red = 30;
+    _Color.green = 30;
+    _Color.blue = 30;
     _FadeMode = 0;
     _CornerStartLed = 0;
     _CornersClockwise = 1;

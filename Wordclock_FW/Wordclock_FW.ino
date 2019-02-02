@@ -35,6 +35,7 @@ word Matrix[11];
 byte ISRsec = 0;
 byte ISRmin = 0;
 byte ISRhour = 0;
+bool showSerial = false;
 
 /****************************************************************************************************************************************************************************************************************************/
 
@@ -66,6 +67,7 @@ void IRAM_ATTR ISR_Timer()
     }
     
     ISRsec++; //Sekunden hochzählen
+    showSerial = true;
 }
 
 /****************************************************************************************************************************************************************************************************************************/
@@ -90,12 +92,11 @@ void setup()
     led_ausgabe.clearLEDs();
     _DEBUG_PRINT("Startmuster: ");
     _DEBUG_PRINTLN(settings.getStartPattern());
-    led_ausgabe.LedStartUp(settings.getStartPattern());
-    delay(2000);
+    //led_ausgabe.LedStartUp(settings.getStartPattern());
+    //delay(2000);
+    //led_ausgabe.setPixelToMatrix(0,0);
+    //led_ausgabe.setPixelToMatrix(2);
     led_ausgabe.clearLEDs();
-    led_ausgabe.setPixelToMatrix(0,0);
-    led_ausgabe.setPixelToMatrix(2);
-    delay(2000);
     //while(1);
         
     /****************************************
@@ -106,7 +107,7 @@ void setup()
     //Interrupt an Timer0 koppeln
     timerAttachInterrupt(timer, &ISR_Timer, true);
     //Alarm wird jede Sekunde gesetzt, Alarm soll immer wieder wiederholt werden (true)
-    timerAlarmWrite(timer, 1000000, true);
+    timerAlarmWrite(timer, 1000*TIMER_VALUE_MS, true);
     // Start an alarm
     timerAlarmEnable(timer);
     
@@ -116,19 +117,23 @@ void setup()
 
 void loop()
 {
-    Serial.print("Uhrzeit: ");
-    Serial.print(ISRhour);
-    Serial.print(":");
-    Serial.print(ISRmin);
-    Serial.print(":");
-    Serial.println(ISRsec);
-    
-    //Rendern der Ecken aus der Uhrzeit
-    renderer.setCorners(ISRmin, 0, Matrix);
+    if(showSerial == true)
+    {
+        Serial.print("Uhrzeit: ");
+        Serial.print(ISRhour);
+        Serial.print(":");
+        Serial.print(ISRmin);
+        Serial.print(":");
+        Serial.println(ISRsec);
+        
+        //Rendern der Ecken aus der Uhrzeit
+        renderer.setCorners(ISRmin, 0, Matrix);
 
-    //Rendern der Matrix aus der Uhrzeit 
-    renderer.setTime(ISRhour, ISRmin, 0, Matrix);
+        //Rendern der Matrix aus der Uhrzeit 
+        renderer.setTime(ISRhour, ISRmin, 0, Matrix);
 
-    //Ausgabe der Matrix auf die LEDs
-    led_ausgabe.setMatrixToLEDs(Matrix);
+        //Ausgabe der Matrix auf die LEDs
+        led_ausgabe.setMatrixToLEDs(Matrix);
+        showSerial = false;
+    }
 }
