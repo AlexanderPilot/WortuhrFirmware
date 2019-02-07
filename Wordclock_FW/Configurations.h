@@ -99,8 +99,10 @@
  * LED Einstellungen
  **************************************************************************/
 #define LEDSTRIP_PIN        19
-#define LED_NUM             114
+#define LED_NUM             148
 #define STARTPATTERN_DELAY  50
+#define NUM_COLUMN          12 //0-11 für die Zählweise
+#define NUM_ROW             12 //0-11 für die Zählweise
 
 
 /***************************************************************************
@@ -108,7 +110,7 @@
  **************************************************************************/
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
-#define TIMER_VALUE_MS 1000
+#define TIMER_VALUE_MS 10
 
 /***************************************************************************
  * EEEPROM Einstellungen
