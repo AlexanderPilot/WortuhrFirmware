@@ -9,7 +9,6 @@
  * 
 **************************************************************************/
 
-
 /***************************************************************************
  * Einbinden von benötigten Bibliotheken
  **************************************************************************/
@@ -117,23 +116,57 @@ void setup()
 
 void loop()
 {
-    if(showSerial == true)
+    byte TestVar = 3;
+    
+    switch(TestVar)
     {
-        Serial.print("Uhrzeit: ");
-        Serial.print(ISRhour);
-        Serial.print(":");
-        Serial.print(ISRmin);
-        Serial.print(":");
-        Serial.println(ISRsec);
-        
-        //Rendern der Ecken aus der Uhrzeit
-        renderer.setCorners(ISRmin, 0, Matrix);
+        case 0: //alle LEDs nacheinander einschalten
+            for(int i = 0; i<=LED_NUM; i++)
+            {
+                led_ausgabe.setPixelToMatrix(i,30,30,30);
+                Serial.print("LED Nummer");
+                Serial.print(i);
+                Serial.println("leuchtet");
+                delay(50);
+            }
+            break;
+        case 1: //yPos konstant bis alle xPos durch sind, dann yPos weiter und wieder alle xPos hochzälen
+            for(int i=0; i<=NUM_COLUMN; i++)
+            {
+                for(int j=0; j<=NUM_ROW; j++)
+                {
+                    led_ausgabe.setPixelToMatrix(i,j,30,30,30);
+                    delay(100);
+                }
+            }
+            break;
+        case 2: //analog case 1 aber umgedreht
+            for(int j=0; j<=NUM_COLUMN; j++)
+            {
+                for(int i=0; i<=NUM_ROW; i++)
+                {
+                    led_ausgabe.setPixelToMatrix(i,j,30,30,30);
+                    delay(100);
+                }
+            }
+            break;
+        case 3: //Ausgabe der Uhrzeit
+            if(showSerial == true) //10ms Timer Interrupt
+            {
+                //Rendern der Ecken aus der Uhrzeit
+                renderer.setCorners(ISRmin, 0, Matrix);
 
-        //Rendern der Matrix aus der Uhrzeit 
-        renderer.setTime(ISRhour, ISRmin, 0, Matrix);
-
-        //Ausgabe der Matrix auf die LEDs
-        led_ausgabe.setMatrixToLEDs(Matrix);
-        showSerial = false;
+                //Rendern der Matrix aus der Uhrzeit 
+                renderer.setTime(ISRhour, ISRmin, 0, Matrix);
+                //Ausgabe der Matrix auf die LEDs
+                led_ausgabe.setMatrixToLEDs(Matrix);
+                Serial.print(ISRhour);
+                Serial.print(":");
+                Serial.print(ISRmin);
+                Serial.print(":");
+                Serial.println(ISRsec);
+                showSerial = false;
+            }
+            break;
     }
 }
