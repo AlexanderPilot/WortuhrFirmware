@@ -25,7 +25,7 @@ Settings settings;
 /***************************************************************************
  * Anlegen des Matrixspeichers
  **************************************************************************/
-word Matrix[11];
+word Matrix[12];
 
 /***************************************************************************
  * Anlegen von globalen Variablen
@@ -130,8 +130,8 @@ void loop()
                 delay(50);
             }
             break;
-        case 1: //yPos konstant bis alle xPos durch sind, dann yPos weiter und wieder alle xPos hochzälen
-            for(int i=0; i<=NUM_COLUMN; i++)
+        case 1: //yPos hochzählen während xPos gleich bleibt, dann nächste xPos
+            for(int i=0; i<=NUM_COLUMN; i++) //
             {
                 for(int j=0; j<=NUM_ROW; j++)
                 {
@@ -140,10 +140,10 @@ void loop()
                 }
             }
             break;
-        case 2: //analog case 1 aber umgedreht
-            for(int j=0; j<=NUM_COLUMN; j++)
+        case 2: //xPos hochzählen während yPos gleich bleibt, dann nächste yPos
+            for(int j=0; j<=NUM_ROW; j++)
             {
-                for(int i=0; i<=NUM_ROW; i++)
+                for(int i=0; i<=NUM_COLUMN; i++)
                 {
                     led_ausgabe.setPixelToMatrix(i,j,30,30,30);
                     delay(100);
