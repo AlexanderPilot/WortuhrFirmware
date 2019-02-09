@@ -14,7 +14,7 @@ Renderer::Renderer()
       
 }
 
-void Renderer::randomMatrix(word Matrix[11])
+void Renderer::randomMatrix(word Matrix[12])
 {
       for (byte i = 0; i < 11; i++)
       {
@@ -22,16 +22,18 @@ void Renderer::randomMatrix(word Matrix[11])
       }
 }
 
-void Renderer::setTime(byte Hours, byte Minutes, byte Language, word Matrix[11])
+void Renderer::setTime(byte Hours, byte Minutes, byte Language, word Matrix[12])
 {
-      switch (Language)
+    this->clearScreen(Matrix);
+      /* switch (Language)
       {
             //Sprache Deutsch
             case LANGUAGE_DE_DE:
             case LANGUAGE_DE_SW:
             case LANGUAGE_DE_BA:
             case LANGUAGE_DE_SA:
-                  DE_ESIST;
+            */
+                  DE_ESIST; 
                   switch(Minutes / 5)
                   {
                         case 0:
@@ -141,10 +143,11 @@ void Renderer::setTime(byte Hours, byte Minutes, byte Language, word Matrix[11])
                               DE_VOR;
                               setHours(Hours + 1, false, Language, Matrix);
                               break;
+                        default: break;
                   }
-                  break;
+/*                   break; */
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            case LANGUAGE_EN:
+           /*  case LANGUAGE_EN:
                   EN_ITIS;
                   
                   switch (Minutes / 5)
@@ -227,20 +230,22 @@ void Renderer::setTime(byte Hours, byte Minutes, byte Language, word Matrix[11])
             break;
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             //case XY
-     }
+     } */
 }
 
 
   
-void Renderer::setHours(byte Hours, boolean glatt, byte Language, word Matrix[11])
+void Renderer::setHours(byte Hours, boolean glatt, byte Language, word Matrix[12])
 {
-      switch (Language)
+/*       switch (Language)
       {
             _DEBUG_PRINTLN("Stunden schreiben");
             case LANGUAGE_DE_DE:
             case LANGUAGE_DE_SW:
             case LANGUAGE_DE_BA:
-            case LANGUAGE_DE_SA:
+            case LANGUAGE_DE_SA: */
+                  Serial.print("Wert von glatt: ");
+                  Serial.println(glatt);
                   if(glatt == true)
                   {
                         DE_UHR;
@@ -303,8 +308,9 @@ void Renderer::setHours(byte Hours, boolean glatt, byte Language, word Matrix[11
                         case 23:
                               DE_H_ELF;
                               break;
+                        default: break;
                   }
-                  break;
+ /*                  break;
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             case LANGUAGE_EN:
                   if (glatt)
@@ -365,66 +371,64 @@ void Renderer::setHours(byte Hours, boolean glatt, byte Language, word Matrix[11
             }
             break;
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      }
+      } */
 }
 
-void Renderer::setCorners(byte Minutes, boolean CornersClockwise, word Matrix[11])
+void Renderer::setCorners(byte Minutes, boolean CornersClockwise, word Matrix[12])
 {
-      if(CornersClockwise == true)
-      {
-            switch (Minutes % 5)
-            {
-                  case 0:
-                        break;
-                  case 1:
-                        Matrix[10] |= 0b0010000000000000;  //LED oben links
-                        break;
-                  case 2:
-                        Matrix[10] |= 0b0010000000000000;
-                        Matrix[10] |= 0b0100000000000000;  //LED oben rechts
-                        break;
-                  case 3:
-                        Matrix[10] |= 0b0010000000000000;
-                        Matrix[10] |= 0b0100000000000000;
-                        Matrix[10] |= 0b1000000000000000;  //LED unten rechts
-                        break;
-                  case 4:
-                        Matrix[10] |= 0b0010000000000000;
-                        Matrix[10] |= 0b0100000000000000;
-                        Matrix[10] |= 0b1000000000000000;
-                        Matrix[10] |= 0b0001000000000000;  //LED unten links
-                        break;
+    this->clearScreen(Matrix);
+    
+    if(CornersClockwise == true)
+    {
+        switch (Minutes % 5)
+        {
+              case 0:
+                    break;
+              case 1:
+                    Matrix[12] |= 0b0010;  //LED oben links
+                    break;
+              case 2:
+                    Matrix[12] |= 0b0010;
+                    Matrix[12] |= 0b0100;  //LED oben rechts
+                    break;
+              case 3:
+                    Matrix[12] |= 0b0010;
+                    Matrix[12] |= 0b0100;
+                    Matrix[12] |= 0b1000;  //LED unten rechts
+                    break;
+              case 4:
+                    Matrix[12] |= 0b0010;
+                    Matrix[12] |= 0b0100;
+                    Matrix[12] |= 0b1000;
+                    Matrix[12] |= 0b0001;  //LED unten links
+                    break;
+                default: break;
             }
       }
       else
       {
-            switch (Minutes % 5)
+            switch ((Minutes % 5))
             {
                   case 0:
                         break;
                   case 1:
-                        Matrix[10] |= 0b0010000000000000;  //LED oben links
+                        Matrix[12] |= 0b0001;  //eine Minute-LED
                         break;
                   case 2:
-                        Matrix[10] |= 0b0010000000000000;
-                        Matrix[10] |= 0b0001000000000000;  //LED unten links
+                        Matrix[12] |= 0b0011;  //zwei Minuten-LED
                         break;
                   case 3:
-                        Matrix[10] |= 0b0010000000000000;
-                        Matrix[10] |= 0b0001000000000000;
-                        Matrix[10] |= 0b1000000000000000;  //LED unten rechts
+                        Matrix[12] |= 0b0111;  //drei Minuten-LED
                         break;
                   case 4:
-                        Matrix[10] |= 0b0010000000000000;
-                        Matrix[10] |= 0b0001000000000000;
-                        Matrix[10] |= 0b1000000000000000;
-                        Matrix[10] |= 0b0100000000000000;  //LED oben rechts
+                        Matrix[12] |= 0b1111; //alle vier LEDs
                         break;
+                default: break;
             }
       }
 }
 
-void Renderer::cleanWordsMode(byte language, word Matrix[16])
+void Renderer::cleanWordsMode(byte language, word Matrix[12])
 {
       switch (language)
       {
@@ -440,17 +444,17 @@ void Renderer::cleanWordsMode(byte language, word Matrix[16])
       }
 }
 
-void Renderer::setAllScreenOn(word Matrix[11])
+void Renderer::setAllScreenOn(word Matrix[12])
 {
-      for( byte i = 0; i < 11; i++)
+      for( byte i = 0; i <= (NUM_COLUMN); i++)
       {
             Matrix[i] |= 0b1111111111111111;
       }
 }
 
-void Renderer::clearScreen(word Matrix[11])
+void Renderer::clearScreen(word Matrix[12])
 {
-      for( byte i = 0; i < 11; i++)
+      for( byte i = 0; i <= (NUM_COLUMN); i++)
       {
             Matrix[i] = 0;
       }

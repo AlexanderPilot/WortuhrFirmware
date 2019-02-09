@@ -65,7 +65,7 @@ void IRAM_ATTR ISR_Timer()
         ISRhour = 0;
     }
     
-    ISRsec++; //Sekunden hochzählen
+    ISRmin++; //Sekunden hochzählen
     showSerial = true;
 }
 
@@ -89,12 +89,12 @@ void setup()
     _DEBUG_PRINTLN(LEDSTRIP_PIN);
     randomSeed(micros());
     led_ausgabe.clearLEDs();
-    _DEBUG_PRINT("Startmuster: ");
-    _DEBUG_PRINTLN(settings.getStartPattern());
-    //led_ausgabe.LedStartUp(settings.getStartPattern());
-    //delay(2000);
-    //led_ausgabe.setPixelToMatrix(0,0);
-    //led_ausgabe.setPixelToMatrix(2);
+    _DEBUG_PRINTLN("Startmuster: 7");
+    led_ausgabe.LedStartUp(7);
+    delay(2000);
+    Serial.print("Anzahl der LEDs: ");
+    Serial.println(led_ausgabe.getPixelCount());
+    
     led_ausgabe.clearLEDs();
     //while(1);
         
@@ -128,45 +128,55 @@ void loop()
                 Serial.print(i);
                 Serial.println("leuchtet");
                 delay(50);
+                led_ausgabe.showLEDs();
             }
+            led_ausgabe.clearLEDs();
             break;
         case 1: //yPos hochzählen während xPos gleich bleibt, dann nächste xPos
-            for(int i=0; i<=NUM_COLUMN; i++) //
+            for(int i=0; i<=NUM_COLUMN-1; i++) //
             {
-                for(int j=0; j<=NUM_ROW; j++)
+                for(int j=0; j<=NUM_ROW-1; j++)
                 {
                     led_ausgabe.setPixelToMatrix(i,j,30,30,30);
-                    delay(100);
                 }
+                led_ausgabe.showLEDs();
+                delay(200);
             }
+            led_ausgabe.clearLEDs();
             break;
         case 2: //xPos hochzählen während yPos gleich bleibt, dann nächste yPos
-            for(int j=0; j<=NUM_ROW; j++)
+            for(int j=0; j<=NUM_ROW-1; j++)
             {
-                for(int i=0; i<=NUM_COLUMN; i++)
+                for(int i=0; i<=NUM_COLUMN-1; i++)
                 {
                     led_ausgabe.setPixelToMatrix(i,j,30,30,30);
-                    delay(100);
                 }
+                led_ausgabe.showLEDs();
+                delay(200);
             }
+            led_ausgabe.clearLEDs();
             break;
         case 3: //Ausgabe der Uhrzeit
             if(showSerial == true) //10ms Timer Interrupt
             {
                 //Rendern der Ecken aus der Uhrzeit
                 renderer.setCorners(ISRmin, 0, Matrix);
+                
 
                 //Rendern der Matrix aus der Uhrzeit 
                 renderer.setTime(ISRhour, ISRmin, 0, Matrix);
+                //renderer.setTime(0, 30, 0, Matrix);
+                
                 //Ausgabe der Matrix auf die LEDs
                 led_ausgabe.setMatrixToLEDs(Matrix);
+                led_ausgabe.showLEDs();
+                
                 Serial.print(ISRhour);
                 Serial.print(":");
                 Serial.print(ISRmin);
-                Serial.print(":");
-                Serial.println(ISRsec);
                 showSerial = false;
             }
             break;
+        default: break;
     }
 }
