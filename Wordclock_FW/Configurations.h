@@ -103,6 +103,10 @@
 #define STARTPATTERN_DELAY  50
 #define NUM_COLUMN          12 //0-11 für die Zählweise
 #define NUM_ROW             12 //0-11 für die Zählweise
+#define LED_EINE_MIN        146
+#define LED_ZWEI_MIN        147
+#define LED_DREI_MIN        144
+#define LED_VIER_MIN        145
 
 
 /***************************************************************************
@@ -110,7 +114,7 @@
  **************************************************************************/
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
-#define TIMER_VALUE_MS 10
+#define TIMER_VALUE_MS 1000
 
 /***************************************************************************
  * EEEPROM Einstellungen
