@@ -64,7 +64,7 @@ byte Settings::getLanguage()
 }
 
 /****************************************
- * LED Grundeinstellungen
+ * LED Helligkeit
  ***************************************/
 void Settings::setBrightnessPercent(byte Brightness)
 {
