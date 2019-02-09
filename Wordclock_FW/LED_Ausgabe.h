@@ -29,13 +29,20 @@ class LED_Ausgabe
         void setPixelToMatrix(byte index, byte red, byte green, byte blue);
         void setPixelToMatrix(byte xPos, byte yPos);
         void setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, byte blue);
-        void setMatrixToLEDs(word Matrix[11]);
+        void setMatrixToLEDs(word Matrix[12]);
         void clearLEDs();
+        void showLEDs();
         
         /****************************************
          * LED-Übergang
          ***************************************/
-        void MatrixToMatrixFade(word Matrix1[11],word Matrix2[11]);
+        void MatrixToMatrixFade(word Matrix1[12],word Matrix2[12]);
+        
+        /****************************************
+         * LED-Infos
+         ***************************************/
+        uint16_t getPixelCount();
+
          
     private:
         /****************************************

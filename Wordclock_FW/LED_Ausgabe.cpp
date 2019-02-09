@@ -155,13 +155,13 @@ void LED_Ausgabe::setPixelToMatrix(byte index)
     }
     
     this->_setPixel(index, _LEDsettings.getColor());
-    _strip->show();
+    //_strip->show();
 }
 
 void LED_Ausgabe::setPixelToMatrix(byte index, byte red, byte green, byte blue)
 {
     this->_setPixel(index, red, green, blue);
-    _strip->show();
+    //_strip->show();
 }
 
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, byte blue)
@@ -178,7 +178,7 @@ void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, b
     }
     
     this->_setPixel(xPos, yPos, red, green, blue);
-    _strip->show();
+    //_strip->show();
 }
 
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos)
@@ -195,53 +195,73 @@ void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos)
     }
     
     this->_setPixel(xPos, yPos, _LEDsettings.getColor());
-    _strip->show();
+    //_strip->show();
 }
 
-void LED_Ausgabe::setMatrixToLEDs(word Matrix[11])
+void LED_Ausgabe::setMatrixToLEDs(word Matrix[12])
 {
+    
     if(DEBUG_LEDAUSGABE == 1)
     {
         Serial.print("LED_Ausgabe.cpp - ");
         Serial.println("Berechnung der zu setzenden LEDs aus Matrix");
     }
-
-    this->clearLEDs();
-    for(byte yPos = 0; yPos <= 9; yPos++)         //Zeilen durchzählen
-    {
-          for(byte xPos = 5; xPos <= 15; xPos++)      //Spalten durchzählen
-          {
-                word BitMaske = 1 << xPos;
-                if((Matrix[yPos] & BitMaske) == BitMaske)
-                {
-                      //Bit in der Matrix ist eine 1 -> LED an
-                      this->_setPixel(15-xPos, yPos, _LEDsettings.getColor()); 
-                }
-          }
-    }
     
-    //Eck-LEDs umsetzen
-    if((Matrix[10] & 0b1000000000000000) == 0b1000000000000000)
+    for(byte yPos = 0; yPos <= (NUM_COLUMN-1); yPos++)         //Zeilen durchzählen
     {
-        this->_setPixel(110, _LEDsettings.getColor());
+        if(DEBUG_LEDAUSGABE == 1)
+        {
+            Serial.println(Matrix[yPos],BIN);
+        }          
+        for(byte xPos = 0; xPos <= (NUM_COLUMN-1); xPos++)      //Spalten durchzählen
+        {
+            if( Matrix[yPos] & ( 1 << xPos ) )
+            {
+                  //Bit in der Matrix ist eine 1 -> LED an
+                  this->_setPixel( (NUM_COLUMN-1)-xPos, yPos, _LEDsettings.getColor() ); 
+            }
+            else
+            {
+                  this->_setPixel( (NUM_COLUMN-1)-xPos, yPos, 0,0,0 ); 
+            }
+        }
+    }
+     //Eck-LEDs umsetzen
+    if((Matrix[12] & 0b0001) == 0b0001) 
+    {
+        this->_setPixel(LED_EINE_MIN, _LEDsettings.getColor());
+    }
+    else
+    {
+        this->_setPixel(LED_EINE_MIN, 0,0,0);
     }
       
-    if((Matrix[10] & 0b0100000000000000) == 0b0100000000000000)
+    if((Matrix[12] & 0b0010) == 0b0010)
     {
-        this->_setPixel(111, _LEDsettings.getColor());
+        this->_setPixel(LED_ZWEI_MIN, _LEDsettings.getColor());
+    }
+    else
+    {
+        this->_setPixel(LED_ZWEI_MIN, 0,0,0);
     }
 
-    if((Matrix[10] & 0b0010000000000000) == 0b0010000000000000)
+    if((Matrix[12] & 0b0100) == 0b0100)
     {
-        this->_setPixel(112, _LEDsettings.getColor());
+        this->_setPixel(LED_DREI_MIN, _LEDsettings.getColor());
+    }
+    else
+    {
+        this->_setPixel(LED_DREI_MIN, 0,0,0);
     }
 
-    if((Matrix[10] & 0b0001000000000000) == 0b0001000000000000)
+    if((Matrix[12] & 0b1000) == 0b1000)
     {
-        this->_setPixel(147, _LEDsettings.getColor());
+        this->_setPixel(LED_VIER_MIN, _LEDsettings.getColor());
     }
-    
-    _strip->show();
+    else
+    {
+        this->_setPixel(LED_VIER_MIN, 0,0,0);
+    }
 }
 
 void LED_Ausgabe::clearLEDs()
@@ -250,7 +270,12 @@ void LED_Ausgabe::clearLEDs()
     _strip->show();
 }
 
-void LED_Ausgabe::MatrixToMatrixFade(word MatrixIst[11], word MatrixSoll[11])
+void LED_Ausgabe::showLEDs()
+{
+    _strip->show();
+}
+
+void LED_Ausgabe::MatrixToMatrixFade(word MatrixIst[12], word MatrixSoll[12])
 {
     if(DEBUG_LEDAUSGABE == 1)
     {
@@ -277,6 +302,11 @@ void LED_Ausgabe::MatrixToMatrixFade(word MatrixIst[11], word MatrixSoll[11])
     
 }
 
+uint16_t LED_Ausgabe::getPixelCount()
+{
+    return _strip->getPixelCount();
+}
+
 /****************************************
  * private LED Funktionen
  ***************************************/
@@ -290,23 +320,44 @@ void LED_Ausgabe::_setPixel(byte xPos, byte yPos, byte red, byte green, byte blu
     
     if(yPos%2 == 0) //"gerade" Zeilenzahl (0, 2, 4, 6, 8, 10)
     {
+        if(DEBUG_LEDAUSGABE == 1)
+        {
+            Serial.print("LED_Ausgabe.cpp - ");
+            Serial.println("gerade Zeile");
+        }
         this->_setPixel(xPos + (yPos * NUM_COLUMN), color);
+        
     }
     else //ungerade Zeilenzahl (1, 3, 5, 7, 9, 11)
     {
-        this->_setPixel((yPos * NUM_COLUMN) - xPos + NUM_COLUMN - 1, color);
+        if(DEBUG_LEDAUSGABE == 1)
+        {
+            Serial.print("LED_Ausgabe.cpp - ");
+            Serial.println("ungerade Zeile");
+        }
+        this->_setPixel((yPos * NUM_COLUMN) + NUM_COLUMN - xPos - 1, color);
     }
 }
  
- void LED_Ausgabe::_setPixel(byte xPos, byte yPos, pixel_t color)
+ void LED_Ausgabe::_setPixel(byte xPos, byte yPos, pixel_t color) 
 {
     if(yPos%2 == 0) //"gerade" Zeilenzahl (0, 2, 4, 6, 8, 10)
     {
+        if(DEBUG_LEDAUSGABE == 1)
+        {
+            Serial.print("LED_Ausgabe.cpp - ");
+            Serial.println("gerade Zeile");
+        }
         this->_setPixel(xPos + (yPos * NUM_COLUMN), color);
     }
     else //ungerade Zeilenzahl (1, 3, 5, 7, 9, 11)
     {
-        this->_setPixel((yPos * NUM_COLUMN) - xPos + NUM_COLUMN - 1, color);
+        if(DEBUG_LEDAUSGABE == 1)
+        {
+            Serial.print("LED_Ausgabe.cpp - ");
+            Serial.println("ungerade Zeile");
+        }
+        this->_setPixel((yPos * NUM_COLUMN) + NUM_COLUMN - xPos - 1, color);
     }
 }
 
@@ -318,10 +369,22 @@ void LED_Ausgabe::_setPixel(byte LEDnum, byte red, byte green, byte blue)
     color.green = green;
     color.blue = blue;
     
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        Serial.print("LED_Ausgabe.cpp - ");
+        Serial.print("LED Nummer: ");
+        Serial.println(LEDnum);
+    }
     this->_setPixel(LEDnum, color);
 }
 
 void LED_Ausgabe::_setPixel(byte LEDnum, pixel_t color)
 {
-       _strip->setPixel(LEDnum, color);
+    if(DEBUG_LEDAUSGABE == 1)
+    {
+        Serial.print("LED_Ausgabe.cpp - ");
+        Serial.print("LED Nummer: ");
+        Serial.println(LEDnum);
+    }
+   _strip->setPixel(LEDnum, color);
 }
