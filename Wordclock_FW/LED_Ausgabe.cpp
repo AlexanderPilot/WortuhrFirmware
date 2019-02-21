@@ -229,6 +229,7 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[12])
      //Eck-LEDs umsetzen
     if((Matrix[12] & 0b0001) == 0b0001) 
     {
+        //Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_EINE_MIN, _LEDsettings.getColor());
     }
     else
@@ -238,6 +239,7 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[12])
       
     if((Matrix[12] & 0b0010) == 0b0010)
     {
+        //Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_ZWEI_MIN, _LEDsettings.getColor());
     }
     else
@@ -247,6 +249,7 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[12])
 
     if((Matrix[12] & 0b0100) == 0b0100)
     {
+        //Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_DREI_MIN, _LEDsettings.getColor());
     }
     else
@@ -256,6 +259,7 @@ void LED_Ausgabe::setMatrixToLEDs(word Matrix[12])
 
     if((Matrix[12] & 0b1000) == 0b1000)
     {
+        //Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_VIER_MIN, _LEDsettings.getColor());
     }
     else
