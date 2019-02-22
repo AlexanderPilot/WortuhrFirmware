@@ -311,7 +311,12 @@ void Settings::saveColorToEEPROM(uint8_t address, pixel_t color)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Der Wert ");
-        Serial.print(value);
+        Serial.print("rot: ");
+        Serial.print(color.red);
+        Serial.print("gruen: ");
+        Serial.print(color.green);
+        Serial.print("blau: ");
+        Serial.print(color.blue);
         Serial.print(" wird auf Adresse ");
         Serial.print(address);
         Serial.print(" des EEPROM geschrieben");
