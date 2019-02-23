@@ -21,11 +21,6 @@
  **************************************************************************/
 #include "Configurations.h"
 
-/***************************************************************************
- * Anlegen der RTOS Semaphoren
- **************************************************************************/
-SemaphoreHandle_t sema_ntp;
-SemaphoreHandle_t sema_i2c;
 
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
@@ -33,6 +28,7 @@ SemaphoreHandle_t sema_i2c;
 hw_timer_t * timer = NULL;
 BluetoothSerial SerialBT;
 Settings settings;
+AppInterpreter appinterpreter;
 
 
 /***************************************************************************
@@ -49,19 +45,6 @@ void IRAM_ATTR ISR_Timer()
 {
     
 }
-
-/***************************************************************************
- * RTOS Task für die Kommunikation mit der App über Bluetooth
- **************************************************************************/
-void BluetoothConnection(void *arg)
-{
-    while (1)
-    {
-        
-        vTaskDelay(10 / portTICK_RATE_MS); // delay 10ms
-    }
-}
-
 
 /****************************************************************************************************************************************************************************************************************************/
 
@@ -98,7 +81,7 @@ void setup()
     /***************************************************************************
      * Standardeinstellungen für Testzwecke, soll später aus dem EEPROM gelesen werden
      **************************************************************************/
-    settings.setLanguage(LANGUAGE_DE_DE);
+    settings.setLanguage(0);
     
     settings.setWifiSSID("ASUS");
     settings.setWifiPW("Br8#Pojg56");
@@ -128,10 +111,7 @@ void setup()
     _DEBUG_PRINTLN("Initialisieren des EEPROM");
     EEPROM.begin(EEPROM_SIZE);
     //---------------------------------------------------------------------------------
-    //definition of inouts / outputs
-    _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINTLN("defining input / output - not yet implemented");
-    //---------------------------------------------------------------------------------
+
     //Starten Timer und Interrupt
 
     //Setzen des Timer0 mit Prescaler 80 --> 1us Taktung und Aufwärtszählung (true)
@@ -142,27 +122,16 @@ void setup()
     timerAlarmWrite(timer, 1000000, true);
     // Start an alarm
     timerAlarmEnable(timer);
-    //---------------------------------------------------------------------------------
-    //intialization of peripherals finished
-    _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINTLN("initialization of peripherals finished");
-
-    //---------------------------------------------------------------------------------
-    _DEBUG_PRINTLN("");
-    _DEBUG_PRINTLN("starting RTOS initialization");
-
+    Serial.println("-------------------------------------------------------------------------------------------------------");
 }
 
 /****************************************************************************************************************************************************************************************************************************/
 
 void loop()
 {
-    if (Serial.available())
-        {
-            SerialBT.write(Serial.read());
-        }
-        if (SerialBT.available())
-        {
-            Serial.write(SerialBT.read());
-        }
+    char AppBefehl[11];
+    if (SerialBT.available())
+    {
+        Serial.write(SerialBT.read());
+    }
 }

@@ -23,16 +23,10 @@
  * Einbinden von benötigten Bibliotheken
  **************************************************************************/
 #include "WiFi.h"
-#include "WS2812B.h"
-#include "DS3231.h"
 #include "time.h"
-//#include "NtpTime.h"
-#include "NTPClient.h"
-#include <WiFiUdp.h>
 #include "BluetoothSerial.h"
-#include "Renderer.h"
 #include "Settings.h"
-#include "LED_Ausgabe.h"
+#include "AppInterpreter.h"
 
 /***************************************************************************
  * Serielle Verbindung
@@ -77,7 +71,7 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-#define BT_DEVICE_NAME    "Wordclock_"
+#define BT_DEVICE_NAME    "Wordclock_AS"
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
 
