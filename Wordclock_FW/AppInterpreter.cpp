@@ -35,13 +35,6 @@ AppInterpreter::AppInterpreter()
 }
 
 
-void AppInterpreter::setup()
-{
-    
-}
-
-
-
 
 
 /***************************************************************************
@@ -243,3 +236,120 @@ void AppInterpreter::deleteString(char a[])
     //  a = '\0';
     //}
 }
+
+
+/****************************************
+ * App Befehle einlesen
+ ***************************************/
+void AppInterpreter::getCommandFromApp(char AppBefehl[11])
+{
+    
+}
+
+void AppInterpreter::setCommandToApp(char AppBefehl[11])
+{
+    
+}
+
+
+/****************************************
+ * Einstellungen vom Mikrocontroller lesen
+ ***************************************/
+void AppInterpreter::loadSettingsFromUC()
+{
+    
+}
+
+void AppInterpreter::getLanguage(byte Language)
+{
+    
+}
+
+void AppInterpreter::getBrightnessPercent(byte Brightness)
+{
+    
+}
+
+void AppInterpreter::getColor(pixel_t color)    
+{
+    
+}
+
+void AppInterpreter::getFadeMode(byte fadeMode)
+{
+    
+}
+
+void AppInterpreter::getCornerStartLed(byte CornerStartLed)
+{
+    
+}
+
+void AppInterpreter::getCornersClockwise(boolean Clockwise)
+{
+    
+}
+
+void AppInterpreter::getStartPattern(byte StartPattern)
+{
+    
+}
+
+void AppInterpreter::getGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
+{
+    
+}
+
+/****************************************
+ * Einstellungen auf Mikrocontroller setzen
+ ***************************************/
+void AppInterpreter::setLanguage(byte Language)
+{
+    
+}
+
+void AppInterpreter::setBrightnessPercent(byte Brightness)
+{
+    
+}
+
+void AppInterpreter::setColor(pixel_t color)
+{
+    
+}
+
+void AppInterpreter::setFadeMode(byte fadeMode)
+{
+    
+}
+
+void AppInterpreter::setCornerStartLed(byte CornerStartLed)
+{
+    
+}
+
+void AppInterpreter::setCornersClockwise(boolean Clockwise)
+{
+    
+}
+
+void AppInterpreter::setWifiSSID(String Ssid)
+{
+    
+}
+
+void AppInterpreter::setWifiPW(String Password)
+{
+    
+}
+
+void AppInterpreter::setStartPattern(byte StartPattern)
+{
+    
+}
+
+void AppInterpreter::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
+{
+    
+}
+
