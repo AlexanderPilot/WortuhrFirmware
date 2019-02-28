@@ -8,11 +8,6 @@ class AppInterpreter
         //Konstruktor
         AppInterpreter();
         
-        /****************************************
-         * Setup d
-         ***************************************/
-        void setup();
-    
         // Muss in der main hinter dem serverClients[i].read(); aufgerufen werden
         // Liesst die Zeichen und stellt die Helligkeit, Farbe und Weiteres ein
         bool comevatiation(char getChar);
@@ -32,17 +27,21 @@ class AppInterpreter
          * App Befehle einlesen
          ***************************************/
         void getCommandFromApp(char AppBefehl[11]);
-        
-        
-        
-        
-        
-        
+        void setCommandToApp(char AppBefehl[11]);
         
         /****************************************
          * Einstellungen vom Mikrocontroller lesen
          ***************************************/
-        
+        void loadSettingsFromUC();
+        void getLanguage(byte Language);
+        void getBrightnessPercent(byte Brightness);
+        void getColor(pixel_t color);
+        void getColor(byte red, byte green, byte blue);
+        void getFadeMode(byte fadeMode);
+        void getCornerStartLed(byte CornerStartLed);
+        void getCornersClockwise(boolean Clockwise);
+        void getStartPattern(byte StartPattern);
+        void getGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
         
         /****************************************
          * Einstellungen auf Mikrocontroller setzen
