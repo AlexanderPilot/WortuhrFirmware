@@ -37,14 +37,14 @@ class AppInterpreter
          * Einstellungen vom Mikrocontroller lesen
          ***************************************/
         void loadSettingsFromUC();
-        void getLanguage(byte Language);
-        void getBrightnessPercent(byte Brightness);
-        void getColor(pixel_t color);
-        void getFadeMode(byte fadeMode);
-        void getCornerStartLed(byte CornerStartLed);
-        void getCornersClockwise(boolean Clockwise);
-        void getStartPattern(byte StartPattern);
-        void getGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+        byte getLanguage();
+        byte getBrightnessPercent();
+        pixel_t getColor();
+        byte getFadeMode();
+        byte getCornerStartLed();
+        boolen getCornersClockwise();
+        byte getStartPattern();
+        uint16_t getGmtTimeOffsetSec();
         
         /****************************************
          * Einstellungen auf Mikrocontroller setzen
