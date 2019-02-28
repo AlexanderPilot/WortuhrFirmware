@@ -123,8 +123,27 @@ void setup()
     // Start an alarm
     timerAlarmEnable(timer);
     Serial.println("-------------------------------------------------------------------------------------------------------");
-    Serial.print("Übergabe des Befehls +++#FF015C$");
-    Serial.println(appinterpreter.getCommandFromApp["+++#FF015C$"]);
+    Serial.print("Uebergabe des Befehls +++#FF015C$ - TBD");
+    
+   
+    char ArrayTest[11];
+    ArrayTest[0] = '+';
+    ArrayTest[1] = '+';
+    ArrayTest[2] = '+';
+    ArrayTest[3] = '#';
+    ArrayTest[4] = 'F';
+    ArrayTest[5] = 'F';
+    ArrayTest[6] = '0';
+    ArrayTest[7] = '1';
+    ArrayTest[8] = '5';
+    ArrayTest[9] = 'C';
+    ArrayTest[10] = '$';
+    
+    for (int i = 0; i<=12; i++)
+    {
+            ArrayTest[i];
+    }
+    appinterpreter.getCommandFromApp(ArrayTest);
 }
 
 /****************************************************************************************************************************************************************************************************************************/

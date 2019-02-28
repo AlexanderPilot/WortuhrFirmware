@@ -30,7 +30,7 @@ class AppInterpreter
         /****************************************
          * App Befehle einlesen
          ***************************************/
-        char *readCommandCharFromApp(char CommandChar)
+        char *readCommandCharFromApp(char CommandChar);
         void getCommandFromApp(char AppBefehl[11]);
         
         /****************************************
@@ -42,7 +42,7 @@ class AppInterpreter
         pixel_t getColor();
         byte getFadeMode();
         byte getCornerStartLed();
-        boolen getCornersClockwise();
+        bool getCornersClockwise();
         byte getStartPattern();
         uint16_t getGmtTimeOffsetSec();
         

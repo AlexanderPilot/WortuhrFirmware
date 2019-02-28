@@ -341,7 +341,7 @@ byte AppInterpreter::getCornerStartLed()
     return _interpretersettings.getCornerStartLed();
 }
 
-boolean AppInterpreter::getCornersClockwise()
+bool AppInterpreter::getCornersClockwise()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
