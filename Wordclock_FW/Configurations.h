@@ -78,6 +78,7 @@
 /***************************************************************************
  * App Interpreter Einstellungen
  **************************************************************************/
+#define NUM_COMMAND_COUNT 11
 #define START_SIGN  "+"
 #define END_SIGN    "$"
 #define NUM_SIGN_CATEGORY 3
