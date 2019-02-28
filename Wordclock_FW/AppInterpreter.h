@@ -36,7 +36,6 @@ class AppInterpreter
         void getLanguage(byte Language);
         void getBrightnessPercent(byte Brightness);
         void getColor(pixel_t color);
-        void getColor(byte red, byte green, byte blue);
         void getFadeMode(byte fadeMode);
         void getCornerStartLed(byte CornerStartLed);
         void getCornersClockwise(boolean Clockwise);
@@ -49,7 +48,6 @@ class AppInterpreter
         void setLanguage(byte Language);
         void setBrightnessPercent(byte Brightness);
         void setColor(pixel_t color);
-        void setColor(byte red, byte green, byte blue);
         void setFadeMode(byte fadeMode);
         void setCornerStartLed(byte CornerStartLed);
         void setCornersClockwise(boolean Clockwise);
