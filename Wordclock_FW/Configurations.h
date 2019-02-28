@@ -82,7 +82,7 @@
 #define END_SIGN    "$"
 #define SIGN_COLOR "#"
 #define SIGN_BRIGHTNESS "!"
-#deine SIGN_MISC "%"
+#define SIGN_MISC "%"
 
 /***************************************************************************
  * I2C Einstellungen
