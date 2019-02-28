@@ -246,20 +246,24 @@ void AppInterpreter::deleteString(char a[])
  ***************************************/
 void AppInterpreter::getCommandFromApp(char AppBefehl[11])
 {
-    
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("");
     }
+    
+    
 }
 
 void AppInterpreter::setCommandToApp(char AppBefehl[11])
 {
-    
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("");
     }
+    
+    
 }
 
 
@@ -268,11 +272,13 @@ void AppInterpreter::setCommandToApp(char AppBefehl[11])
  ***************************************/
 void AppInterpreter::loadSettingsFromUC()
 {
-    
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Abrufen der Einstellungen vom Mikrocontroller");
     }
+    
+    
 }
 
 byte AppInterpreter::getLanguage()
@@ -280,8 +286,11 @@ byte AppInterpreter::getLanguage()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Sprache");
     }
+    
+    return _interpretersettings.getLanguage();
 }
 
 byte AppInterpreter::getBrightnessPercent()
@@ -289,8 +298,11 @@ byte AppInterpreter::getBrightnessPercent()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Helligkeit");
     }
+    
+    return _interpretersettings.getBrightnessPercent();
 }
 
 pixel_t AppInterpreter::getColor()    
@@ -298,8 +310,11 @@ pixel_t AppInterpreter::getColor()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Farbe");
     }
+    
+    return _interpretersettings.getColor();
 }
 
 byte AppInterpreter::getFadeMode()
@@ -307,8 +322,11 @@ byte AppInterpreter::getFadeMode()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen des Fademodus");
     }
+    
+    return _interpretersettings.getFadeMode();
 }
 
 byte AppInterpreter::getCornerStartLed()
@@ -316,8 +334,11 @@ byte AppInterpreter::getCornerStartLed()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Ecke der Start LED");
     }
+    
+    return _interpretersettings.getCornerStartLed();
 }
 
 boolean AppInterpreter::getCornersClockwise()
@@ -325,8 +346,11 @@ boolean AppInterpreter::getCornersClockwise()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Laufrichtugn der Eck-LEDs");
     }
+    
+    return _interpretersettings.getCornersClockwise();
 }
 
 byte AppInterpreter::getStartPattern()
@@ -334,17 +358,22 @@ byte AppInterpreter::getStartPattern()
     
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen des Startmusters");
     }
+    
+    return _interpretersettings.getStartPattern();
 }
 
 uint16_t AppInterpreter::getGmtTimeOffsetSec()
 {
-    
     if(DEBUG_APPINTERPRETER == 1)
     {
-        
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen des GMT Offsets");
     }
+    
+    return _interpretersettings.getGmtTimeOffsetSec();
 }
 
 /****************************************
@@ -352,101 +381,111 @@ uint16_t AppInterpreter::getGmtTimeOffsetSec()
  ***************************************/
 void AppInterpreter::setLanguage(byte Language)
 {
-    _interpretersettings.setLanguage(Language);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe der Sprache");
     }
+    
+    _interpretersettings.setLanguage(Language);
 }
 
 void AppInterpreter::setBrightnessPercent(byte Brightness)
 {
-    _interpretersettings.setBrightnessPercent(Brightness);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe der Helligkeit");
     }
+    
+    _interpretersettings.setBrightnessPercent(Brightness);
 }
 
 void AppInterpreter::setColor(pixel_t color)
 {
-    _interpretersettings.setColor(color);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe der Farbe");
     }
+    
+    _interpretersettings.setColor(color);
 }
 
 void AppInterpreter::setFadeMode(byte fadeMode)
 {
-    _interpretersettings.setFadeMode(fadeMode);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe des Fademodus");
     }
+    
+    _interpretersettings.setFadeMode(fadeMode);
 }
 
 void AppInterpreter::setCornerStartLed(byte CornerStartLed)
 {
-    _interpretersettings.setCornerStartLed(CornerStartLed);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe der Ecke der Start LED");
     }
+    
+    _interpretersettings.setCornerStartLed(CornerStartLed);
 }
 
 void AppInterpreter::setCornersClockwise(boolean Clockwise)
 {
-    _interpretersettings.setCornersClockwise(Clockwise);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe der Laufrichtung der Eck LEDs");
     }
+    
+    _interpretersettings.setCornersClockwise(Clockwise);
 }
 
 void AppInterpreter::setWifiSSID(String Ssid)
 {
-    _interpretersettings.setWifiSSID(Ssid);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe der WIFI SSID");
     }
+    
+    _interpretersettings.setWifiSSID(Ssid);
 }
 
 void AppInterpreter::setWifiPW(String Password)
 {
-    _interpretersettings.setWifiPW(Password);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe des WIFI Passwords");
     }
+    
+    _interpretersettings.setWifiPW(Password);
 }
 
 void AppInterpreter::setStartPattern(byte StartPattern)
 {
-    _interpretersettings.setStartPattern(StartPattern);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe des Startmusters");
     }
+    
+    _interpretersettings.setStartPattern(StartPattern);
 }
 
 void AppInterpreter::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 {
-     _interpretersettings.setGmtTimeOffsetSec(GmtTimeOffsetSec);
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Übergabe des GMT Offsets");
     }
+    
+    _interpretersettings.setGmtTimeOffsetSec(GmtTimeOffsetSec);
 }
 
