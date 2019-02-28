@@ -249,7 +249,7 @@ char* AppInterpreter::readCommandCharFromApp(char CommandChar)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("");
+        Serial.print("read Command from App");
     }
     
     
@@ -260,7 +260,7 @@ void AppInterpreter::getCommandFromApp(char AppBefehl[11])
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("");
+        Serial.print("get Command from App");
     }
     
     
