@@ -30,8 +30,8 @@ class AppInterpreter
         /****************************************
          * App Befehle einlesen
          ***************************************/
+        char *readCommandCharFromApp(char CommandChar)
         void getCommandFromApp(char AppBefehl[11]);
-        void setCommandToApp(char AppBefehl[11]);
         
         /****************************************
          * Einstellungen vom Mikrocontroller lesen
