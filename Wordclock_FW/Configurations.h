@@ -80,6 +80,7 @@
  **************************************************************************/
 #define START_SIGN  "+"
 #define END_SIGN    "$"
+#define NUM_SIGN_CATEGORY 3
 #define SIGN_COLOR "#"
 #define SIGN_BRIGHTNESS "!"
 #define SIGN_MISC "%"
