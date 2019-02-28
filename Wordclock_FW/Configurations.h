@@ -80,6 +80,9 @@
  **************************************************************************/
 #define START_SIGN  "+"
 #define END_SIGN    "$"
+#define SIGN_COLOR "#"
+#define SIGN_BRIGHTNESS "!"
+#deine SIGN_MISC "%"
 
 /***************************************************************************
  * I2C Einstellungen
