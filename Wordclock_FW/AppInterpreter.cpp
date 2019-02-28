@@ -244,7 +244,7 @@ void AppInterpreter::deleteString(char a[])
 /****************************************
  * App Befehle einlesen
  ***************************************/
-void AppInterpreter::getCommandFromApp(char AppBefehl[11])
+char* AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -255,7 +255,7 @@ void AppInterpreter::getCommandFromApp(char AppBefehl[11])
     
 }
 
-void AppInterpreter::setCommandToApp(char AppBefehl[11])
+void AppInterpreter::getCommandFromApp(char AppBefehl[11])
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -275,7 +275,7 @@ void AppInterpreter::loadSettingsFromUC()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Abrufen der Einstellungen vom Mikrocontroller");
+        Serial.print("Abrufen der Einstellungen vom Mikrocontroller - TBD");
     }
     
     
