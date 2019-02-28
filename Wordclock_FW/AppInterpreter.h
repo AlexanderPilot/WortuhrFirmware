@@ -1,6 +1,10 @@
 #pragma once
 
+#include "Arduino.h"
+#include "Configurations.h"
 #include "Settings.h"
+
+#define DEBUG_APPINTERPRETER 1
 
 class AppInterpreter
 {
