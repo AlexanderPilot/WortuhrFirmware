@@ -169,38 +169,13 @@ void setUpColor( void )
     */
 }
 
-/********************************************************************
- * In dieser Funktion werden die Befehle ausgewertet und in die
- * globalen Variablen geschrieben.
- *
- * Input:
- * Globale Variable: bufferReader[6];
- * Output:
- * Globale Variable: helligkeit; (in %)             -> '!'
- * Globale Variable: farbe[6]; (in HTML Farbcodes)  -> '#'
- * Globale Variable: befehl[6]; (tbd.)              -> '%'
- ********************************************************************/
-
-// Loeschen eines Strings
-void AppInterpreter::deleteString(char a[])
-{
-    uint8_t i = 0;
-    for(i=0;i<=sizeof(*a);i++)
-    {
-    a[i] = '\0';
-    }
-    //while( sizeof(*a) < i )
-    //{
-    //  a = '\0';
-    //}
-}
-
 
 /****************************************
  * App Befehle einlesen
  ***************************************/
-char* AppInterpreter::readCommandCharFromApp(char CommandChar)
+void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
+    bool newCommand = false;
     char _AppBefehl[11];
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -209,12 +184,17 @@ char* AppInterpreter::readCommandCharFromApp(char CommandChar)
         Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array");
     }
     
+    //Abfrage ob gültiger Befehl per APP versendet wurde
     if ((_AppBefehl[0] == START_SIGN) && (_AppBefehl[1] == START_SIGN) && (_AppBefehl[2] == START_SIGN) && (_AppBefehl[NUM_COMMAND_COUNT] == END_SIGN))
     {
-        //vollständiger Befehl wurde erkannt
+        newCommand = true; //vollständiger Befehl wurde erkannt
     }
     
-    retrun _AppBefehl;
+    //Aufruf der Funktion zur auswertung des gesamten App Befehls
+    if(newCommand == true)
+    {
+        this->getCommandFromApp(_AppBefehl);
+    }
 }
 
 
@@ -245,7 +225,7 @@ char* AppInterpreter::readCommandCharFromApp(char CommandChar)
  *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
  *  
 */
-void AppInterpreter::getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
+void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
 {
     pixel_t AppColor;
     uint32_t Data;
@@ -272,7 +252,7 @@ void AppInterpreter::getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
             AppColor.green = AppBefehl[NUM_SIGN_CATEGORY+3] << 4 + AppBefehl[NUM_SIGN_CATEGORY+4];
             Appcolor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
             
-            this->setColor(AppColor);
+            this->_setColor(AppColor);
             break;
             
         case SIGN_BRIGHTNESS:
@@ -282,7 +262,7 @@ void AppInterpreter::getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
                 Serial.print("Helligkeit");
             }
             
-            this->setBrightness(Data);
+            this->_setBrightness(Data);
             break;
             
         case SIGN_MISC:
@@ -323,7 +303,7 @@ void AppInterpreter::getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
 /****************************************
  * Einstellungen vom Mikrocontroller lesen
  ***************************************/
-void AppInterpreter::loadSettingsFromUC()
+void AppInterpreter::_loadSettingsFromUC()
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -334,7 +314,7 @@ void AppInterpreter::loadSettingsFromUC()
     
 }
 
-byte AppInterpreter::getLanguage()
+byte AppInterpreter::_getLanguage()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -346,7 +326,7 @@ byte AppInterpreter::getLanguage()
     return _interpretersettings.getLanguage();
 }
 
-byte AppInterpreter::getBrightnessPercent()
+byte AppInterpreter::_getBrightnessPercent()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -358,7 +338,7 @@ byte AppInterpreter::getBrightnessPercent()
     return _interpretersettings.getBrightnessPercent();
 }
 
-pixel_t AppInterpreter::getColor()    
+pixel_t AppInterpreter::_getColor()    
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -370,7 +350,7 @@ pixel_t AppInterpreter::getColor()
     return _interpretersettings.getColor();
 }
 
-byte AppInterpreter::getFadeMode()
+byte AppInterpreter::_getFadeMode()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -382,7 +362,7 @@ byte AppInterpreter::getFadeMode()
     return _interpretersettings.getFadeMode();
 }
 
-byte AppInterpreter::getCornerStartLed()
+byte AppInterpreter::_getCornerStartLed()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -394,7 +374,7 @@ byte AppInterpreter::getCornerStartLed()
     return _interpretersettings.getCornerStartLed();
 }
 
-boolean AppInterpreter::getCornersClockwise()
+boolean AppInterpreter::_getCornersClockwise()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -406,7 +386,7 @@ boolean AppInterpreter::getCornersClockwise()
     return _interpretersettings.getCornersClockwise();
 }
 
-byte AppInterpreter::getStartPattern()
+byte AppInterpreter::_getStartPattern()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -418,7 +398,7 @@ byte AppInterpreter::getStartPattern()
     return _interpretersettings.getStartPattern();
 }
 
-uint16_t AppInterpreter::getGmtTimeOffsetSec()
+uint16_t AppInterpreter::_getGmtTimeOffsetSec()
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -432,7 +412,7 @@ uint16_t AppInterpreter::getGmtTimeOffsetSec()
 /****************************************
  * Einstellungen auf Mikrocontroller setzen
  ***************************************/
-void AppInterpreter::setLanguage(byte Language)
+void AppInterpreter::_setLanguage(byte Language)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -443,7 +423,7 @@ void AppInterpreter::setLanguage(byte Language)
     _interpretersettings.setLanguage(Language);
 }
 
-void AppInterpreter::setBrightnessPercent(byte Brightness)
+void AppInterpreter::_setBrightnessPercent(byte Brightness)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -454,7 +434,7 @@ void AppInterpreter::setBrightnessPercent(byte Brightness)
     _interpretersettings.setBrightnessPercent(Brightness);
 }
 
-void AppInterpreter::setColor(pixel_t color)
+void AppInterpreter::_setColor(pixel_t color)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -465,7 +445,7 @@ void AppInterpreter::setColor(pixel_t color)
     _interpretersettings.setColor(color);
 }
 
-void AppInterpreter::setFadeMode(byte fadeMode)
+void AppInterpreter::_setFadeMode(byte fadeMode)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -476,7 +456,7 @@ void AppInterpreter::setFadeMode(byte fadeMode)
     _interpretersettings.setFadeMode(fadeMode);
 }
 
-void AppInterpreter::setCornerStartLed(byte CornerStartLed)
+void AppInterpreter::_setCornerStartLed(byte CornerStartLed)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -487,7 +467,7 @@ void AppInterpreter::setCornerStartLed(byte CornerStartLed)
     _interpretersettings.setCornerStartLed(CornerStartLed);
 }
 
-void AppInterpreter::setCornersClockwise(boolean Clockwise)
+void AppInterpreter::_setCornersClockwise(boolean Clockwise)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -498,7 +478,7 @@ void AppInterpreter::setCornersClockwise(boolean Clockwise)
     _interpretersettings.setCornersClockwise(Clockwise);
 }
 
-void AppInterpreter::setWifiSSID(String Ssid)
+void AppInterpreter::_setWifiSSID(String Ssid)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -509,7 +489,7 @@ void AppInterpreter::setWifiSSID(String Ssid)
     _interpretersettings.setWifiSSID(Ssid);
 }
 
-void AppInterpreter::setWifiPW(String Password)
+void AppInterpreter::_setWifiPW(String Password)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -520,7 +500,7 @@ void AppInterpreter::setWifiPW(String Password)
     _interpretersettings.setWifiPW(Password);
 }
 
-void AppInterpreter::setStartPattern(byte StartPattern)
+void AppInterpreter::_setStartPattern(byte StartPattern)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -531,7 +511,7 @@ void AppInterpreter::setStartPattern(byte StartPattern)
     _interpretersettings.setStartPattern(StartPattern);
 }
 
-void AppInterpreter::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
+void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 {
     if(DEBUG_APPINTERPRETER == 1)
     {
