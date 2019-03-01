@@ -228,7 +228,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
 */
 
 //Funktion für Einstellungen (ohne WIFI_SSID und WIFI_PW)
-void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
+void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
 {
     byte counter;
     pixel_t AppColor;
@@ -264,6 +264,8 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
             {
                 Serial.print("AppInterpreter.cpp - ");
                 Serial.print("Farbeinstellung");
+                Serial.print(uint8_t(AppBefehl[NUM_SIGN_CATEGORY+1]));
+                Serial.print(" ");
             }
             //Zuordnung der Zeichenkette zur Farbe
             AppColor.red = AppBefehl[NUM_SIGN_CATEGORY+1] << 4 + AppBefehl[NUM_SIGN_CATEGORY+2];
@@ -567,21 +569,43 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 /****************************************
  * Hilfsfunktionen für Datenkonvertierung
  ***************************************/
-byte AppInterpreter::_convertArrayDataToByte(char ArrayData[NUM_COMMAND_COUNT])
+byte AppInterpreter::_convertArrayDataToByte(char ArrayData[11])
 {
     Serial.println("Funktion _convertArrayDataToByte muss noch implementiert werden");
     return 0;
 }
 
-bool AppInterpreter::_convertArrayDataToBool(char ArrayData[NUM_COMMAND_COUNT])
+bool AppInterpreter::_convertArrayDataToBool(char ArrayData[11])
 {
     Serial.println("Funktion _convertArrayDataToBool muss noch implementiert werden");
     return 0;
 }
 
-uint16_t AppInterpreter::_convertArrayDataToUint16(char ArrayData[NUM_COMMAND_COUNT])
+uint16_t AppInterpreter::_convertArrayDataToUint16(char ArrayData[11])
 {
     Serial.println("Funktion _convertArrayDataToUint16 muss noch implementiert werden");
     return 0;
 }
 
+int AppInterpreter::x2i(char charArr[11])
+{
+    int i = 0;
+    int x = 0;
+    for(i=0; i>=11 ;i++)
+    {
+        char c = charArr[i];
+        if (c >= '0' && c <= '9')
+        {
+            x *= 16;
+            x += c - '0'; 
+        }
+        else if (c >= 'A' && c <= 'F')
+        {
+            x *= 16;
+            x += (c - 'A') + 10; 
+        }
+        else break;
+        //s++;
+    }
+    return x;
+}

@@ -130,7 +130,7 @@ void setup()
     ArrayTest[0] = '+';
     ArrayTest[1] = '+';
     ArrayTest[2] = '+';
-    ArrayTest[3] = '#';
+    ArrayTest[3] = '$';
     ArrayTest[4] = 'F';
     ArrayTest[5] = 'F';
     ArrayTest[6] = '0';
@@ -144,7 +144,7 @@ void setup()
             Serial.print(ArrayTest[i]);
     }
     Serial.println("");
-    appinterpreter.getCommandFromApp(ArrayTest);
+    appinterpreter._getCommandFromApp(ArrayTest);
 }
 
 /****************************************************************************************************************************************************************************************************************************/

@@ -18,7 +18,7 @@ class AppInterpreter
         void readCommandCharFromApp(char CommandChar);
     
     public://muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
-        void _getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT ]);
+        void _getCommandFromApp(char AppBefehl[11 ]);
         
         /****************************************
          * Einstellungen vom Mikrocontroller lesen
@@ -50,7 +50,8 @@ class AppInterpreter
         /****************************************
          * Hilfsfunktionen für Datenkonvertierung
          ***************************************/
-        byte _convertArrayDataToByte(char ArrayData[NUM_COMMAND_COUNT ]);
-        bool _convertArrayDataToBool(char ArrayData[NUM_COMMAND_COUNT ]);
-        uint16_t _convertArrayDataToUint16(char ArrayData[NUM_COMMAND_COUNT ]);
+        byte _convertArrayDataToByte(char ArrayData[11 ]);
+        bool _convertArrayDataToBool(char ArrayData[11 ]);
+        uint16_t _convertArrayDataToUint16(char ArrayData[11 ]);
+        int x2i(char charArr[11]);
 };
