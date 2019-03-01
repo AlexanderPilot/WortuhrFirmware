@@ -17,9 +17,9 @@ AppInterpreter::AppInterpreter()
  * in:  je ein Zeichen aus der Bluetooth-Kommunikation
  * out: boolean zur Anzeige wenn ein neues Kommando angekommen ist
  **************************************************************************/
-bool AppInterpreter::comevatiation(char getChar)
+/*bool AppInterpreter::comevatiation(char getChar)
 {
-    /*
+  
     // Indikator ob ein Kommando vollstaendig angekommen ist
     static bool newComAv = false;
     static int zaehler = 0;
@@ -108,8 +108,8 @@ bool AppInterpreter::comevatiation(char getChar)
         setUpCommand( );
     }
     return newComAv;
-    */
-}
+    
+}*/
 
 /***************************************************************************
  * Funktion zum konvertieren von char zu int --> zum Feststellen
@@ -194,7 +194,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
     //Aufruf der Funktion zur auswertung des gesamten App Befehls
     if(newCommand == true)
     {
-        this->getCommandFromApp(_AppBefehl);
+        this->_getCommandFromApp(_AppBefehl);
     }
 }
 
@@ -231,6 +231,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
 void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
 {
     byte counter;
+    pixel_t AppColor;
         
     //Auswertung der Befehle
     switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
@@ -267,7 +268,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
             //Zuordnung der Zeichenkette zur Farbe
             AppColor.red = AppBefehl[NUM_SIGN_CATEGORY+1] << 4 + AppBefehl[NUM_SIGN_CATEGORY+2];
             AppColor.green = AppBefehl[NUM_SIGN_CATEGORY+3] << 4 + AppBefehl[NUM_SIGN_CATEGORY+4];
-            Appcolor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
+            AppColor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
             
             if(DEBUG_APPINTERPRETER == 1)
             {
@@ -566,19 +567,19 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 /****************************************
  * Hilfsfunktionen für Datenkonvertierung
  ***************************************/
-byte AppInterpreter::_convertArrayDataToByte(ArrayData[NUM_COMMAND_COUNT])
+byte AppInterpreter::_convertArrayDataToByte(char ArrayData[NUM_COMMAND_COUNT])
 {
     Serial.println("Funktion _convertArrayDataToByte muss noch implementiert werden");
     return 0;
 }
 
-bool AppInterpreter::_convertArrayDataToBool(ArrayData[NUM_COMMAND_COUNT])
+bool AppInterpreter::_convertArrayDataToBool(char ArrayData[NUM_COMMAND_COUNT])
 {
     Serial.println("Funktion _convertArrayDataToBool muss noch implementiert werden");
-    retrun 0;
+    return 0;
 }
 
-uint16_t AppInterpreter::_convertArrayDataToUint16(ArrayData[NUM_COMMAND_COUNT])
+uint16_t AppInterpreter::_convertArrayDataToUint16(char ArrayData[NUM_COMMAND_COUNT])
 {
     Serial.println("Funktion _convertArrayDataToUint16 muss noch implementiert werden");
     return 0;

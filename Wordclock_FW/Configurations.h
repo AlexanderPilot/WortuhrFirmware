@@ -80,16 +80,16 @@
  **************************************************************************/
 #define NUM_COMMAND_COUNT 11
 #define NUM_SIGN_CATEGORY 3
-#define START_SIGN  "+"
-#define END_SIGN    "$"
-#define SIGN_LANGUAGE "!"
-#define SIGN_BRIGHTNESS "§"
-#define SIGN_COLOR "$"
-#define SIGN_FADEMODE "%"
-#define SIGN_CORNERSTARTLED "&"
-#define SIGN_CORNERSCLOCKWISE "/"
-#define SIGN_STARTPATTERN "#"
-#define SIGN_GMTOFFSET "?"
+#define START_SIGN  '+'
+#define END_SIGN    '$'
+#define SIGN_LANGUAGE '!'
+#define SIGN_BRIGHTNESS '§'
+#define SIGN_COLOR '$'
+#define SIGN_FADEMODE '%'
+#define SIGN_CORNERSTARTLED '&'
+#define SIGN_CORNERSCLOCKWISE '/'
+#define SIGN_STARTPATTERN '#'
+#define SIGN_GMTOFFSET '?'
 
 /***************************************************************************
  * I2C Einstellungen

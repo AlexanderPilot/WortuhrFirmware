@@ -50,7 +50,7 @@ class AppInterpreter
         /****************************************
          * Hilfsfunktionen für Datenkonvertierung
          ***************************************/
-        byte _convertArrayDataToByte(ArrayData[NUM_COMMAND_COUNT ]);
-        bool _convertArrayDataToBool(ArrayData[NUM_COMMAND_COUNT ]);
-        uint16_t _convertArrayDataToUint16(ArrayData[NUM_COMMAND_COUNT ]);
+        byte _convertArrayDataToByte(char ArrayData[NUM_COMMAND_COUNT ]);
+        bool _convertArrayDataToBool(char ArrayData[NUM_COMMAND_COUNT ]);
+        uint16_t _convertArrayDataToUint16(char ArrayData[NUM_COMMAND_COUNT ]);
 };
