@@ -1,45 +1,13 @@
 
 
 #include "AppInterpreter.h"
-/** =======================================================
- *  | Befehlsstruktur:                                    |
- *  |-----------------+----------------------------+------|
- *  | Start/Erkennung | Eigentlicher Befehl        | Ende |
- *  |-----------------+----------------------------+------+
- *  | "+++"           | Z X X X X X X              | '\n' |
- *  |-----------------+----------------------------+------|
- *  
- *  Z entspricht:
- *  '#' Einstellen der Farbe --> char farbe[6] --> RGB-Wert
- *      In Hexadezimalzahlen:
- *      +-------+-------+-------+
- *      | Rot   | Gruen | Blau  |
- *      +-------+-------+-------+
- *      | msb   |       | lsb   |
- *      +-------+-------+-------+
- *      | X X   | X X   | X X   |
- *      |[0][1] |[2][3] |[4][5] |
- *      +-------+-------+-------+
- *      Nur Grossbuchstaben und Zahlen benutzen!
- *  '!' Einstellen der Helligkeit  --> char helligkeit[6] --> In %
- *  	Eingang: Zahl [0 - 999999] --> nachfolgendes Convert in 0 - 100%
- *  '%' Weitere Befehle --> char befehl[6] --> tbd.
- *
- *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
- *  
-*/
+
+Settings _interpretersettings;
 
 AppInterpreter::AppInterpreter()
 {
     
 }
-
-
-void AppInterpreter::setup()
-{
-    
-}
-
 
 
 
@@ -212,23 +180,6 @@ void setUpColor( void )
  * Globale Variable: farbe[6]; (in HTML Farbcodes)  -> '#'
  * Globale Variable: befehl[6]; (tbd.)              -> '%'
  ********************************************************************/
-void AppInterpreter::setUpCommand( void )
-{
-    /*
-    switch ( bufferReader[0] )
-    {
-        case '!':
-            helligkeit = charToInt();
-            break;
-        case '#':
-            setUpColor(); break;
-        case '%':
-            break;
-        default:
-            break;
-    }
-    */
-}
 
 // Loeschen eines Strings
 void AppInterpreter::deleteString(char a[])
@@ -243,3 +194,351 @@ void AppInterpreter::deleteString(char a[])
     //  a = '\0';
     //}
 }
+
+
+/****************************************
+ * App Befehle einlesen
+ ***************************************/
+char* AppInterpreter::readCommandCharFromApp(char CommandChar)
+{
+    char _AppBefehl[11];
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array");
+    }
+    
+    if ((_AppBefehl[0] == START_SIGN) && (_AppBefehl[1] == START_SIGN) && (_AppBefehl[2] == START_SIGN) && (_AppBefehl[NUM_COMMAND_COUNT] == END_SIGN))
+    {
+        //vollständiger Befehl wurde erkannt
+    }
+    
+    retrun _AppBefehl;
+}
+
+
+/** =======================================================
+ *  | Befehlsstruktur:                                    |
+ *  |-----------------+----------------------------+------|
+ *  | Start/Erkennung | Eigentlicher Befehl        | Ende |
+ *  |-----------------+----------------------------+------+
+ *  | "+++"           | Z X X X X X X              | '$\n' |
+ *  |-----------------+----------------------------+------|
+ *  
+ *  Z entspricht:
+ *  '#' Einstellen der Farbe --> char farbe[6] --> RGB-Wert
+ *      In Hexadezimalzahlen:
+ *      +-------+-------+-------+
+ *      | Rot   | Gruen | Blau  |
+ *      +-------+-------+-------+
+ *      | msb   |       | lsb   |
+ *      +-------+-------+-------+
+ *      | X X   | X X   | X X   |
+ *      |[0][1] |[2][3] |[4][5] |
+ *      +-------+-------+-------+
+ *      Nur Grossbuchstaben und Zahlen benutzen!
+ *  '!' Einstellen der Helligkeit  --> char helligkeit[6] --> In %
+ *  	Eingang: Zahl [0 - 999999] --> nachfolgendes Convert in 0 - 100%
+ *  '%' Weitere Befehle --> char befehl[6] --> tbd.
+ *
+ *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
+ *  
+*/
+void AppInterpreter::getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
+{
+    pixel_t AppColor;
+    uint32_t Data;
+    byte counter; 
+    
+    //Daten aus dem Befehlsarray auslesen, in Abhängigkeit von NUM_COMMAND_COUNT
+    for(counter = NUM_SIGN_CATEGORY + 1; counter <= NUM_COMMAND_COUNT; counter++)
+    {
+        //Befüllung der Variable Data
+    }
+        
+    //Auswertung der Befehle
+    switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
+    {
+        //Farbeinstellung
+        case SIGN_COLOR:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Farbeinstellung");
+            }
+            
+            AppColor.red = AppBefehl[NUM_SIGN_CATEGORY+1] << 4 + AppBefehl[NUM_SIGN_CATEGORY+2];
+            AppColor.green = AppBefehl[NUM_SIGN_CATEGORY+3] << 4 + AppBefehl[NUM_SIGN_CATEGORY+4];
+            Appcolor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
+            
+            this->setColor(AppColor);
+            break;
+            
+        case SIGN_BRIGHTNESS:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Helligkeit");
+            }
+            
+            this->setBrightness(Data);
+            break;
+            
+        case SIGN_MISC:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("weitere Einstellungen");
+            }
+            
+            switch(AppBefehl[NUM_SIGN_CATEGORY+1])
+            {
+                case '!':
+                    break;
+                case '$':
+                    break;
+                case '%':
+                    break;
+                case '&':
+                    break;
+                case '#':
+                    break;
+                case '+':
+                    break;
+                case '*':
+                    break;
+                case '=':
+                    break;
+                deafault:
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+
+/****************************************
+ * Einstellungen vom Mikrocontroller lesen
+ ***************************************/
+void AppInterpreter::loadSettingsFromUC()
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Abrufen der Einstellungen vom Mikrocontroller - TBD");
+    }
+    
+    
+}
+
+byte AppInterpreter::getLanguage()
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Sprache");
+    }
+    
+    return _interpretersettings.getLanguage();
+}
+
+byte AppInterpreter::getBrightnessPercent()
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Helligkeit");
+    }
+    
+    return _interpretersettings.getBrightnessPercent();
+}
+
+pixel_t AppInterpreter::getColor()    
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Farbe");
+    }
+    
+    return _interpretersettings.getColor();
+}
+
+byte AppInterpreter::getFadeMode()
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen des Fademodus");
+    }
+    
+    return _interpretersettings.getFadeMode();
+}
+
+byte AppInterpreter::getCornerStartLed()
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Ecke der Start LED");
+    }
+    
+    return _interpretersettings.getCornerStartLed();
+}
+
+boolean AppInterpreter::getCornersClockwise()
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen der Laufrichtugn der Eck-LEDs");
+    }
+    
+    return _interpretersettings.getCornersClockwise();
+}
+
+byte AppInterpreter::getStartPattern()
+{
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen des Startmusters");
+    }
+    
+    return _interpretersettings.getStartPattern();
+}
+
+uint16_t AppInterpreter::getGmtTimeOffsetSec()
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Auslesen des GMT Offsets");
+    }
+    
+    return _interpretersettings.getGmtTimeOffsetSec();
+}
+
+/****************************************
+ * Einstellungen auf Mikrocontroller setzen
+ ***************************************/
+void AppInterpreter::setLanguage(byte Language)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe der Sprache");
+    }
+    
+    _interpretersettings.setLanguage(Language);
+}
+
+void AppInterpreter::setBrightnessPercent(byte Brightness)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe der Helligkeit");
+    }
+    
+    _interpretersettings.setBrightnessPercent(Brightness);
+}
+
+void AppInterpreter::setColor(pixel_t color)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe der Farbe");
+    }
+    
+    _interpretersettings.setColor(color);
+}
+
+void AppInterpreter::setFadeMode(byte fadeMode)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe des Fademodus");
+    }
+    
+    _interpretersettings.setFadeMode(fadeMode);
+}
+
+void AppInterpreter::setCornerStartLed(byte CornerStartLed)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe der Ecke der Start LED");
+    }
+    
+    _interpretersettings.setCornerStartLed(CornerStartLed);
+}
+
+void AppInterpreter::setCornersClockwise(boolean Clockwise)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe der Laufrichtung der Eck LEDs");
+    }
+    
+    _interpretersettings.setCornersClockwise(Clockwise);
+}
+
+void AppInterpreter::setWifiSSID(String Ssid)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe der WIFI SSID");
+    }
+    
+    _interpretersettings.setWifiSSID(Ssid);
+}
+
+void AppInterpreter::setWifiPW(String Password)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe des WIFI Passwords");
+    }
+    
+    _interpretersettings.setWifiPW(Password);
+}
+
+void AppInterpreter::setStartPattern(byte StartPattern)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe des Startmusters");
+    }
+    
+    _interpretersettings.setStartPattern(StartPattern);
+}
+
+void AppInterpreter::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
+{
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Übergabe des GMT Offsets");
+    }
+    
+    _interpretersettings.setGmtTimeOffsetSec(GmtTimeOffsetSec);
+}
+
