@@ -18,7 +18,7 @@ class AppInterpreter
         void readCommandCharFromApp(char CommandChar);
     
     public://muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
-        void _getCommandFromApp(char AppBefehl[11]);
+        void _getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT ]);
         
         /****************************************
          * Einstellungen vom Mikrocontroller lesen
@@ -46,4 +46,11 @@ class AppInterpreter
         void _setWifiPW(String Password);
         void _setStartPattern(byte StartPattern);
         void _setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+    
+        /****************************************
+         * Hilfsfunktionen für Datenkonvertierung
+         ***************************************/
+        byte _convertArrayDataToByte(ArrayData[NUM_COMMAND_COUNT ]);
+        bool _convertArrayDataToBool(ArrayData[NUM_COMMAND_COUNT ]);
+        uint16_t _convertArrayDataToUint16(ArrayData[NUM_COMMAND_COUNT ]);
 };
