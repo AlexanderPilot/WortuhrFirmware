@@ -132,44 +132,6 @@ unsigned int charToInt( void )
     */
 }
 
-/***************************************************************************
- * Funktion zum Einlesen der Farben
- * in:  globale Variable: bufferReader[...]
- * out: globale Variable: farbe (in HTML Farbcodes-Werten)
- *      globale Variable: farbanteile (Struktur aufgeteil in Rot, Gruen
- *                        und Blau)
- **************************************************************************/
-void setUpColor( void )
-{
-    /*
-    // Keinschreibung in Grossschreibung umwandeln
-    unsigned int iVal = 1;
-    while( iVal < sizeof(bufferReader) )
-    {
-        if( (bufferReader[iVal] >= 'a') && (bufferReader[iVal] <= 'z') )
-            bufferReader[iVal] = bufferReader[iVal] - 32;
-        iVal ++;
-    }
-    iVal = 0;
-    while( iVal < sizeof(farbe) )
-    {
-        farbe[iVal] = bufferReader[iVal+1];
-        iVal++;
-    }
-
-    farbanteile.red     = 0;
-    farbanteile.green   = 0;
-    farbanteile.blue    = 0;
-    farbanteile.red     = (farbe[0] >= 'A') ? ((farbe[0] - 'A' + 10)*16) : ((farbe[0] - '0')*16);
-    farbanteile.red     = (farbe[1] >= 'A') ? (farbanteile.red +(farbe[1] - 'A' + 10)) : (farbanteile.red +(farbe[1] - '0'));
-    farbanteile.green   = (farbe[2] >= 'A') ? ((farbe[2] - 'A' + 10)*16) : ((farbe[2] - '0')*16);
-    farbanteile.green   = (farbe[3] >= 'A') ? (farbanteile.green+(farbe[3] - 'A' + 10)) : (farbanteile.green+(farbe[3] - '0'));
-    farbanteile.blue    = (farbe[4] >= 'A') ? ((farbe[4] - 'A' + 10)*16) : ((farbe[4] - '0')*16);
-    farbanteile.blue    = (farbe[5] >= 'A') ? (farbanteile.blue+(farbe[5] - 'A' + 10)) : (farbanteile.blue+(farbe[5] - '0'));
-    */
-}
-
-
 /****************************************
  * App Befehle einlesen
  ***************************************/
@@ -264,17 +226,19 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             {
                 Serial.print("AppInterpreter.cpp - ");
                 Serial.print("Farbeinstellung");
-                Serial.print(uint8_t(AppBefehl[NUM_SIGN_CATEGORY+1]));
-                Serial.print(" ");
             }
+            
             //Zuordnung der Zeichenkette zur Farbe
-            AppColor.red = AppBefehl[NUM_SIGN_CATEGORY+1] << 4 + AppBefehl[NUM_SIGN_CATEGORY+2];
-            AppColor.green = AppBefehl[NUM_SIGN_CATEGORY+3] << 4 + AppBefehl[NUM_SIGN_CATEGORY+4];
-            AppColor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
+            AppColor.red   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)*16) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')*16)) +
+                             ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10))    : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')));
+            AppColor.green = ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)*16) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')*16)) +
+                             ((AppBefehl[NUM_SIGN_CATEGORY+4] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+4] - 'A' + 10))    : ((AppBefehl[NUM_SIGN_CATEGORY+4] - '0')));
+            AppColor.blue  = ((AppBefehl[NUM_SIGN_CATEGORY+5] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+5] - 'A' + 10)*16) : ((AppBefehl[NUM_SIGN_CATEGORY+5] - '0')*16)) +
+                             ((AppBefehl[NUM_SIGN_CATEGORY+6] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+6] - 'A' + 10))    : ((AppBefehl[NUM_SIGN_CATEGORY+6] - '0')));
             
             if(DEBUG_APPINTERPRETER == 1)
             {
-                Serial.print("rot: ");
+                Serial.print(" rot: ");
                 Serial.print(AppColor.red);
                 Serial.print(" gruen: ");
                 Serial.print(AppColor.green);
@@ -482,7 +446,7 @@ void AppInterpreter::_setColor(pixel_t color)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe der Farbe");
+        Serial.print("Uebergabe der Farbe");
     }
     
     _interpretersettings.setColor(color);
@@ -571,41 +535,26 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
  ***************************************/
 byte AppInterpreter::_convertArrayDataToByte(char ArrayData[11])
 {
+    byte var;
     Serial.println("Funktion _convertArrayDataToByte muss noch implementiert werden");
     return 0;
 }
 
 bool AppInterpreter::_convertArrayDataToBool(char ArrayData[11])
 {
-    Serial.println("Funktion _convertArrayDataToBool muss noch implementiert werden");
-    return 0;
+    bool var = false;
+    
+    if(ArrayData[NUM_COMMAND_COUNT] >= 1)
+    {
+        var= true;
+    }
+    
+    return var;
 }
 
 uint16_t AppInterpreter::_convertArrayDataToUint16(char ArrayData[11])
 {
+    uint16_t var = 0;
     Serial.println("Funktion _convertArrayDataToUint16 muss noch implementiert werden");
     return 0;
-}
-
-int AppInterpreter::x2i(char charArr[11])
-{
-    int i = 0;
-    int x = 0;
-    for(i=0; i>=11 ;i++)
-    {
-        char c = charArr[i];
-        if (c >= '0' && c <= '9')
-        {
-            x *= 16;
-            x += c - '0'; 
-        }
-        else if (c >= 'A' && c <= 'F')
-        {
-            x *= 16;
-            x += (c - 'A') + 10; 
-        }
-        else break;
-        //s++;
-    }
-    return x;
 }
