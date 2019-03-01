@@ -11,54 +11,39 @@ class AppInterpreter
     public:
         //Konstruktor
         AppInterpreter();
-        
-        // Muss in der main hinter dem serverClients[i].read(); aufgerufen werden
-        // Liesst die Zeichen und stellt die Helligkeit, Farbe und Weiteres ein
-        bool comevatiation(char getChar);
-    
-        // Aufzurufen wenn comevatiation() ein true liefert
-        // Setzt den Eingangsstring um
-        void setUpCommand();
-    
-        // Loeschen eines Strings
-        void deleteString(char a[]);
-        
-        
-        
-        
-        
+       
         /****************************************
          * App Befehle einlesen
          ***************************************/
         void readCommandCharFromApp(char CommandChar);
     
     public://muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
-        void getCommandFromApp(char AppBefehl[11]);
+        void _getCommandFromApp(char AppBefehl[11]);
         
         /****************************************
          * Einstellungen vom Mikrocontroller lesen
          ***************************************/
-        void loadSettingsFromUC();
-        byte getLanguage();
-        byte getBrightnessPercent();
-        pixel_t getColor();
-        byte getFadeMode();
-        byte getCornerStartLed();
-        bool getCornersClockwise();
-        byte getStartPattern();
-        uint16_t getGmtTimeOffsetSec();
+        void _loadSettingsFromUC();
+        byte _getLanguage();
+        byte _getBrightnessPercent();
+        pixel_t _getColor();
+        byte _getFadeMode();
+        byte _getCornerStartLed();
+        bool _getCornersClockwise();
+        byte _getStartPattern();
+        uint16_t _getGmtTimeOffsetSec();
         
         /****************************************
          * Einstellungen auf Mikrocontroller setzen
          ***************************************/
-        void setLanguage(byte Language);
-        void setBrightnessPercent(byte Brightness);
-        void setColor(pixel_t color);
-        void setFadeMode(byte fadeMode);
-        void setCornerStartLed(byte CornerStartLed);
-        void setCornersClockwise(boolean Clockwise);
-        void setWifiSSID(String Ssid);
-        void setWifiPW(String Password);
-        void setStartPattern(byte StartPattern);
-        void setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+        void _setLanguage(byte Language);
+        void _setBrightnessPercent(byte Brightness);
+        void _setColor(pixel_t color);
+        void _setFadeMode(byte fadeMode);
+        void _setCornerStartLed(byte CornerStartLed);
+        void _setCornersClockwise(boolean Clockwise);
+        void _setWifiSSID(String Ssid);
+        void _setWifiPW(String Password);
+        void _setStartPattern(byte StartPattern);
+        void _setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
 };
