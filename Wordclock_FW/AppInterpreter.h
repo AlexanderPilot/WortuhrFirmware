@@ -30,7 +30,9 @@ class AppInterpreter
         /****************************************
          * App Befehle einlesen
          ***************************************/
-        char *readCommandCharFromApp(char CommandChar);
+        void readCommandCharFromApp(char CommandChar);
+    
+    public://muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
         void getCommandFromApp(char AppBefehl[11]);
         
         /****************************************
