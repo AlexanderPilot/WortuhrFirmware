@@ -176,6 +176,7 @@ void setUpColor( void )
 void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     bool newCommand = false;
+    bool newPWSSIDCommand = false;
     char _AppBefehl[11];
     
     if(DEBUG_APPINTERPRETER == 1)
@@ -225,21 +226,37 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
  *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
  *  
 */
+
+//Funktion für Einstellungen (ohne WIFI_SSID und WIFI_PW)
 void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
 {
-    pixel_t AppColor;
-    uint32_t Data;
-    byte counter; 
-    
-    //Daten aus dem Befehlsarray auslesen, in Abhängigkeit von NUM_COMMAND_COUNT
-    for(counter = NUM_SIGN_CATEGORY + 1; counter <= NUM_COMMAND_COUNT; counter++)
-    {
-        //Befüllung der Variable Data
-    }
+    byte counter;
         
     //Auswertung der Befehle
     switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
     {
+        //Spracheinstellung
+        case SIGN_LANGUAGE:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Spracheinstellung: ");
+            }
+            
+            //this->_setLanguage(convertArrayDataToByte(AppBefehl));
+            break;
+        
+        //Helligkeitseinstellung
+        case SIGN_BRIGHTNESS:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Helligkeitswert: ");
+            }
+            
+            //this->_setBrightness(convertArrayDataToByte(AppBefehl));
+            break;
+            
         //Farbeinstellung
         case SIGN_COLOR:
             if(DEBUG_APPINTERPRETER == 1)
@@ -247,53 +264,76 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
                 Serial.print("AppInterpreter.cpp - ");
                 Serial.print("Farbeinstellung");
             }
-            
+            //Zuordnung der Zeichenkette zur Farbe
             AppColor.red = AppBefehl[NUM_SIGN_CATEGORY+1] << 4 + AppBefehl[NUM_SIGN_CATEGORY+2];
             AppColor.green = AppBefehl[NUM_SIGN_CATEGORY+3] << 4 + AppBefehl[NUM_SIGN_CATEGORY+4];
             Appcolor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
             
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("rot: ");
+                Serial.print(AppColor.red);
+                Serial.print(" gruen: ");
+                Serial.print(AppColor.green);
+                Serial.print(" blau: ");
+                Serial.println(AppColor.blue);
+            }
+            
             this->_setColor(AppColor);
             break;
             
-        case SIGN_BRIGHTNESS:
+        //Fade Mode Einstellung
+        case SIGN_FADEMODE:
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Helligkeit");
+                Serial.print("FadeMode");
             }
             
-            this->_setBrightness(Data);
+            //this->_setFadeMode(convertArrayDataToByte(AppBefehl));
             break;
             
-        case SIGN_MISC:
+        //Start Ecke der Ecke-LED Einstellung
+        case SIGN_CORNERSTARTLED:
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("weitere Einstellungen");
+                Serial.print("Ecke der Start LED");
             }
             
-            switch(AppBefehl[NUM_SIGN_CATEGORY+1])
-            {
-                case '!':
-                    break;
-                case '$':
-                    break;
-                case '%':
-                    break;
-                case '&':
-                    break;
-                case '#':
-                    break;
-                case '+':
-                    break;
-                case '*':
-                    break;
-                case '=':
-                    break;
-                deafault:
-                    break;
-            }
+            //this->_setCornerStartLed(convertArrayDataToByte(AppBefehl));
             break;
+            
+        case SIGN_CORNERSCLOCKWISE:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn");
+            }
+
+            //this->_setCornerStartLed(convertArrayDataToBool(AppBefehl));
+            break;
+
+        case SIGN_STARTPATTERN:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Startmuster");
+            }
+
+            //this->_setStartPattern(convertArrayDataToByte(AppBefehl));
+            break;
+            
+        case SIGN_GMTOFFSET:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("GMT Offset in Sekunden");
+            }
+
+            //this->_setGmtTimeOffsetSec(convertArrayDataToUint16(AppBefehl));
+            break;
+            
         default:
             break;
     }
@@ -520,5 +560,27 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
     }
     
     _interpretersettings.setGmtTimeOffsetSec(GmtTimeOffsetSec);
+}
+
+
+/****************************************
+ * Hilfsfunktionen für Datenkonvertierung
+ ***************************************/
+byte AppInterpreter::_convertArrayDataToByte(ArrayData[NUM_COMMAND_COUNT])
+{
+    Serial.println("Funktion _convertArrayDataToByte muss noch implementiert werden");
+    return 0;
+}
+
+bool AppInterpreter::_convertArrayDataToBool(ArrayData[NUM_COMMAND_COUNT])
+{
+    Serial.println("Funktion _convertArrayDataToBool muss noch implementiert werden");
+    retrun 0;
+}
+
+uint16_t AppInterpreter::_convertArrayDataToUint16(ArrayData[NUM_COMMAND_COUNT])
+{
+    Serial.println("Funktion _convertArrayDataToUint16 muss noch implementiert werden");
+    return 0;
 }
 
