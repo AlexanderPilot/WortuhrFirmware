@@ -4,34 +4,6 @@
 
 Settings _interpretersettings;
 
-/** =======================================================
- *  | Befehlsstruktur:                                    |
- *  |-----------------+----------------------------+------|
- *  | Start/Erkennung | Eigentlicher Befehl        | Ende |
- *  |-----------------+----------------------------+------+
- *  | "+++"           | Z X X X X X X              | '\n' |
- *  |-----------------+----------------------------+------|
- *  
- *  Z entspricht:
- *  '#' Einstellen der Farbe --> char farbe[6] --> RGB-Wert
- *      In Hexadezimalzahlen:
- *      +-------+-------+-------+
- *      | Rot   | Gruen | Blau  |
- *      +-------+-------+-------+
- *      | msb   |       | lsb   |
- *      +-------+-------+-------+
- *      | X X   | X X   | X X   |
- *      |[0][1] |[2][3] |[4][5] |
- *      +-------+-------+-------+
- *      Nur Grossbuchstaben und Zahlen benutzen!
- *  '!' Einstellen der Helligkeit  --> char helligkeit[6] --> In %
- *  	Eingang: Zahl [0 - 999999] --> nachfolgendes Convert in 0 - 100%
- *  '%' Weitere Befehle --> char befehl[6] --> tbd.
- *
- *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
- *  
-*/
-
 AppInterpreter::AppInterpreter()
 {
     
@@ -208,23 +180,6 @@ void setUpColor( void )
  * Globale Variable: farbe[6]; (in HTML Farbcodes)  -> '#'
  * Globale Variable: befehl[6]; (tbd.)              -> '%'
  ********************************************************************/
-void AppInterpreter::setUpCommand( void )
-{
-    /*
-    switch ( bufferReader[0] )
-    {
-        case '!':
-            helligkeit = charToInt();
-            break;
-        case '#':
-            setUpColor(); break;
-        case '%':
-            break;
-        default:
-            break;
-    }
-    */
-}
 
 // Loeschen eines Strings
 void AppInterpreter::deleteString(char a[])
@@ -246,24 +201,122 @@ void AppInterpreter::deleteString(char a[])
  ***************************************/
 char* AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
+    char _AppBefehl[11];
+    
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("read Command from App");
+        Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array");
     }
     
+    if ((_AppBefehl[0] == START_SIGN) && (_AppBefehl[1] == START_SIGN) && (_AppBefehl[2] == START_SIGN) && (_AppBefehl[NUM_COMMAND_COUNT] == END_SIGN))
+    {
+        //vollständiger Befehl wurde erkannt
+    }
     
+    retrun _AppBefehl;
 }
 
-void AppInterpreter::getCommandFromApp(char AppBefehl[11])
+
+/** =======================================================
+ *  | Befehlsstruktur:                                    |
+ *  |-----------------+----------------------------+------|
+ *  | Start/Erkennung | Eigentlicher Befehl        | Ende |
+ *  |-----------------+----------------------------+------+
+ *  | "+++"           | Z X X X X X X              | '$\n' |
+ *  |-----------------+----------------------------+------|
+ *  
+ *  Z entspricht:
+ *  '#' Einstellen der Farbe --> char farbe[6] --> RGB-Wert
+ *      In Hexadezimalzahlen:
+ *      +-------+-------+-------+
+ *      | Rot   | Gruen | Blau  |
+ *      +-------+-------+-------+
+ *      | msb   |       | lsb   |
+ *      +-------+-------+-------+
+ *      | X X   | X X   | X X   |
+ *      |[0][1] |[2][3] |[4][5] |
+ *      +-------+-------+-------+
+ *      Nur Grossbuchstaben und Zahlen benutzen!
+ *  '!' Einstellen der Helligkeit  --> char helligkeit[6] --> In %
+ *  	Eingang: Zahl [0 - 999999] --> nachfolgendes Convert in 0 - 100%
+ *  '%' Weitere Befehle --> char befehl[6] --> tbd.
+ *
+ *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
+ *  
+*/
+void AppInterpreter::getCommandFromApp(char AppBefehl[NUM_COMMAND_COUNT])
 {
-    if(DEBUG_APPINTERPRETER == 1)
+    pixel_t AppColor;
+    uint32_t Data;
+    byte counter; 
+    
+    //Daten aus dem Befehlsarray auslesen, in Abhängigkeit von NUM_COMMAND_COUNT
+    for(counter = NUM_SIGN_CATEGORY + 1; counter <= NUM_COMMAND_COUNT; counter++)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("get Command from App");
+        //Befüllung der Variable Data
     }
-    
-    
+        
+    //Auswertung der Befehle
+    switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
+    {
+        //Farbeinstellung
+        case SIGN_COLOR:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Farbeinstellung");
+            }
+            
+            AppColor.red = AppBefehl[NUM_SIGN_CATEGORY+1] << 4 + AppBefehl[NUM_SIGN_CATEGORY+2];
+            AppColor.green = AppBefehl[NUM_SIGN_CATEGORY+3] << 4 + AppBefehl[NUM_SIGN_CATEGORY+4];
+            Appcolor.blue = AppBefehl[NUM_SIGN_CATEGORY+5] << 4 + AppBefehl[NUM_SIGN_CATEGORY+6];
+            
+            this->setColor(AppColor);
+            break;
+            
+        case SIGN_BRIGHTNESS:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Helligkeit");
+            }
+            
+            this->setBrightness(Data);
+            break;
+            
+        case SIGN_MISC:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("weitere Einstellungen");
+            }
+            
+            switch(AppBefehl[NUM_SIGN_CATEGORY+1])
+            {
+                case '!':
+                    break;
+                case '$':
+                    break;
+                case '%':
+                    break;
+                case '&':
+                    break;
+                case '#':
+                    break;
+                case '+':
+                    break;
+                case '*':
+                    break;
+                case '=':
+                    break;
+                deafault:
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 
@@ -341,7 +394,7 @@ byte AppInterpreter::getCornerStartLed()
     return _interpretersettings.getCornerStartLed();
 }
 
-bool AppInterpreter::getCornersClockwise()
+boolean AppInterpreter::getCornersClockwise()
 {
     
     if(DEBUG_APPINTERPRETER == 1)
