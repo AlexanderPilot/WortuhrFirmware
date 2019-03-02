@@ -17,7 +17,7 @@ class AppInterpreter
          ***************************************/
         void readCommandCharFromApp(char CommandChar);
     
-    public://muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
+    public: //muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
         void _getCommandFromApp(char AppBefehl[11 ]);
         
         /****************************************

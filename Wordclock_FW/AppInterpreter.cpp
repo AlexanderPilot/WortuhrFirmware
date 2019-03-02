@@ -541,8 +541,14 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 byte AppInterpreter::_convertVarToByte(uint32_t ArrayData)
 {
     byte var;
-    
-    var = map(ArrayData, 0, 0xFFFFFF, 0, 0xFF);
+    if(CONV_VERSION == 1)
+    {
+        var = map(ArrayData, 0, 0xFFFFFF, 0, 0xFF);
+    }
+    else if(CONV_VERSION == 2)
+    {
+        var = ArrayData & 0xFF;
+    }
     
     return var;
 }
@@ -550,10 +556,16 @@ byte AppInterpreter::_convertVarToByte(uint32_t ArrayData)
 bool AppInterpreter::_convertVarToBool(uint32_t ArrayData)
 {
     bool var = false;
-    
-    if(ArrayData >= 1)
+    if(CONV_VERSION == 1)
     {
-        var = true;
+        if(ArrayData >= 1)
+        {
+            var = true;
+        }
+    }
+    else if(CONV_VERSION == 2)
+    {
+        var = ArrayData & 0x1;
     }
     
     return var;
@@ -563,7 +575,14 @@ uint16_t AppInterpreter::_convertVarToUint16(uint32_t ArrayData)
 {
     uint16_t var = 0;
     
-    var = map(ArrayData, 0, 0xFFFFFF, 0, 0xFFFF);
+    if(CONV_VERSION == 1)
+    {
+        var = map(ArrayData, 0, 0xFFFFFF, 0, 0xFFFF);
+    }
+    else if(CONV_VERSION == 2)
+    {
+        var = ArrayData & 0xFFFF;
+    }
     
     return var;
 }

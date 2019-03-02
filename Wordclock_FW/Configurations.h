@@ -90,6 +90,7 @@
 #define SIGN_CORNERSCLOCKWISE '/'
 #define SIGN_STARTPATTERN '#'
 #define SIGN_GMTOFFSET '?'
+#define CONV_VERSION 2
 
 /***************************************************************************
  * I2C Einstellungen
