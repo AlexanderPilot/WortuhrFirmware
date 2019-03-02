@@ -194,7 +194,15 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
 {
     byte counter;
     pixel_t AppColor;
-        
+    uint32_t var;
+    
+    var   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)<<20) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')<<20)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10)<<16) : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')<<16)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)<<12) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')<<12)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+4] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+4] - 'A' + 10)<<8)  : ((AppBefehl[NUM_SIGN_CATEGORY+4] - '0')<<8)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+5] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+5] - 'A' + 10)<<4)  : ((AppBefehl[NUM_SIGN_CATEGORY+5] - '0')<<4)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+6] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+6] - 'A' + 10))     : ((AppBefehl[NUM_SIGN_CATEGORY+6] - '0')));
+    
     //Auswertung der Befehle
     switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
     {
@@ -206,7 +214,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("Spracheinstellung: ");
             }
             
-            //this->_setLanguage(convertArrayDataToByte(AppBefehl));
+            this->_setLanguage(_convertVarToByte(var));
             break;
         
         //Helligkeitseinstellung
@@ -217,7 +225,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("Helligkeitswert: ");
             }
             
-            //this->_setBrightness(convertArrayDataToByte(AppBefehl));
+            this->_setBrightnessPercent(map(_convertVarToByte(var), 0, 255, 0, 100));
             break;
             
         //Farbeinstellung
@@ -229,12 +237,9 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             }
             
             //Zuordnung der Zeichenkette zur Farbe
-            AppColor.red   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)*16) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')*16)) +
-                             ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10))    : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')));
-            AppColor.green = ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)*16) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')*16)) +
-                             ((AppBefehl[NUM_SIGN_CATEGORY+4] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+4] - 'A' + 10))    : ((AppBefehl[NUM_SIGN_CATEGORY+4] - '0')));
-            AppColor.blue  = ((AppBefehl[NUM_SIGN_CATEGORY+5] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+5] - 'A' + 10)*16) : ((AppBefehl[NUM_SIGN_CATEGORY+5] - '0')*16)) +
-                             ((AppBefehl[NUM_SIGN_CATEGORY+6] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+6] - 'A' + 10))    : ((AppBefehl[NUM_SIGN_CATEGORY+6] - '0')));
+            AppColor.red   = (var & 0xFF0000) >> 16;
+            AppColor.green = (var & 0x00FF00) >> 8;
+            AppColor.blue   = (var & 0x0000FF);
             
             if(DEBUG_APPINTERPRETER == 1)
             {
@@ -257,7 +262,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("FadeMode");
             }
             
-            //this->_setFadeMode(convertArrayDataToByte(AppBefehl));
+            this->_setFadeMode(_convertVarToByte(var));
             break;
             
         //Start Ecke der Ecke-LED Einstellung
@@ -268,7 +273,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("Ecke der Start LED");
             }
             
-            //this->_setCornerStartLed(convertArrayDataToByte(AppBefehl));
+            this->_setCornerStartLed(_convertVarToByte(var));
             break;
             
         case SIGN_CORNERSCLOCKWISE:
@@ -278,7 +283,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn");
             }
 
-            //this->_setCornerStartLed(convertArrayDataToBool(AppBefehl));
+            this->_setCornerStartLed(_convertVarToBool(var));
             break;
 
         case SIGN_STARTPATTERN:
@@ -288,7 +293,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("Startmuster");
             }
 
-            //this->_setStartPattern(convertArrayDataToByte(AppBefehl));
+            this->_setStartPattern(_convertVarToByte(var));
             break;
             
         case SIGN_GMTOFFSET:
@@ -298,7 +303,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
                 Serial.print("GMT Offset in Sekunden");
             }
 
-            //this->_setGmtTimeOffsetSec(convertArrayDataToUint16(AppBefehl));
+            this->_setGmtTimeOffsetSec(_convertVarToUint16(var));
             break;
             
         default:
@@ -533,28 +538,32 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 /****************************************
  * Hilfsfunktionen für Datenkonvertierung
  ***************************************/
-byte AppInterpreter::_convertArrayDataToByte(char ArrayData[11])
+byte AppInterpreter::_convertVarToByte(uint32_t ArrayData)
 {
     byte var;
-    Serial.println("Funktion _convertArrayDataToByte muss noch implementiert werden");
-    return 0;
+    
+    var = map(ArrayData, 0, 0xFFFFFF, 0, 0xFF);
+    
+    return var;
 }
 
-bool AppInterpreter::_convertArrayDataToBool(char ArrayData[11])
+bool AppInterpreter::_convertVarToBool(uint32_t ArrayData)
 {
     bool var = false;
     
-    if(ArrayData[NUM_COMMAND_COUNT] >= 1)
+    if(ArrayData >= 1)
     {
-        var= true;
+        var = true;
     }
     
     return var;
 }
 
-uint16_t AppInterpreter::_convertArrayDataToUint16(char ArrayData[11])
+uint16_t AppInterpreter::_convertVarToUint16(uint32_t ArrayData)
 {
     uint16_t var = 0;
-    Serial.println("Funktion _convertArrayDataToUint16 muss noch implementiert werden");
-    return 0;
+    
+    var = map(ArrayData, 0, 0xFFFFFF, 0, 0xFFFF);
+    
+    return var;
 }
