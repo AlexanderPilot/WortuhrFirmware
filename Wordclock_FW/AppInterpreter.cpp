@@ -111,41 +111,23 @@ AppInterpreter::AppInterpreter()
     
 }*/
 
-/***************************************************************************
- * Funktion zum konvertieren von char zu int --> zum Feststellen
- * der Helligkeit.
- * in:  globale Variable: bufferReader[...]
- * out: unsigned integer zwischen 0 und 100 [%]
- **************************************************************************/
-unsigned int charToInt( void )
-{
-    /*
-    unsigned int convert[] = {0,100000,10000,1000,100,10,1};
-    unsigned int iRet = 0;
-    unsigned int iVal = 1;
-    while( iVal < sizeof(bufferReader) )
-    {
-        iRet = iRet + (bufferReader[iVal] - '0') * convert[iVal];
-        iVal ++;
-    }
-    return ( (iRet+1) * 100 / 999999 );
-    */
-}
-
 /****************************************
  * App Befehle einlesen
  ***************************************/
 void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
-    bool newCommand = false;
-    bool newPWSSIDCommand = false;
-    char _AppBefehl[11];
+    static bool newCommand = false;
+    static bool newPWSSIDCommand = false;
+    static char _AppBefehlBuffer[11];
+    static byte counter;
     
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array");
     }
+    
+    
     
     //Abfrage ob gültiger Befehl per APP versendet wurde
     if ((_AppBefehl[0] == START_SIGN) && (_AppBefehl[1] == START_SIGN) && (_AppBefehl[2] == START_SIGN) && (_AppBefehl[NUM_COMMAND_COUNT] == END_SIGN))
