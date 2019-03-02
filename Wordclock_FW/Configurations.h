@@ -78,19 +78,19 @@
 /***************************************************************************
  * App Interpreter Einstellungen
  **************************************************************************/
-#define NUM_COMMAND_COUNT 11
-#define NUM_SIGN_CATEGORY 3
-#define START_SIGN  '+'
-#define END_SIGN    '$'
-#define SIGN_LANGUAGE '!'
-#define SIGN_BRIGHTNESS '§'
-#define SIGN_COLOR '$'
-#define SIGN_FADEMODE '%'
-#define SIGN_CORNERSTARTLED '&'
-#define SIGN_CORNERSCLOCKWISE '/'
-#define SIGN_STARTPATTERN '#'
-#define SIGN_GMTOFFSET '?'
-#define CONV_VERSION 2
+#define NUM_COMMAND_COUNT       11
+#define NUM_SIGN_CATEGORY       3
+#define START_SIGN              '+'
+#define END_SIGN                '$'
+#define SIGN_LANGUAGE           '!'
+#define SIGN_BRIGHTNESS         '§'
+#define SIGN_COLOR              '$'
+#define SIGN_FADEMODE           '%'
+#define SIGN_CORNERSTARTLED     '&'
+#define SIGN_CORNERSCLOCKWISE   '/'
+#define SIGN_STARTPATTERN       '#'
+#define SIGN_GMTOFFSET          '?'
+#define CONV_VERSION            2
 
 /***************************************************************************
  * I2C Einstellungen
@@ -117,16 +117,16 @@
 /***************************************************************************
  * EEEPROM Einstellungen
  **************************************************************************/
-#define EEPROM_SIZE 10
-#define EEPROM_ADDRESS_LANGUAGE 1
-#define EEPROM_ADDRESS_BRIGHTNESS 2
-#define EEPROM_ADDRESS_COLOR_RED 3
-#define EEPROM_ADDRESS_COLOR_GREEN 4
-#define EEPROM_ADDRESS_COLOR_BLUE 5
-#define EEPROM_ADDRESS_FADEMODE 6
-#define EEPROM_ADDRESS_CORNERSTARTLED 7
+#define EEPROM_SIZE                     10
+#define EEPROM_ADDRESS_LANGUAGE         1
+#define EEPROM_ADDRESS_BRIGHTNESS       2
+#define EEPROM_ADDRESS_COLOR_RED        3
+#define EEPROM_ADDRESS_COLOR_GREEN      4
+#define EEPROM_ADDRESS_COLOR_BLUE       5
+#define EEPROM_ADDRESS_FADEMODE         6
+#define EEPROM_ADDRESS_CORNERSTARTLED   7
 #define EEPROM_ADDRESS_CORNERSCLOCKWISE 8
-#define EEPROM_ADDRESS_WIFISSID 9
-#define EEPROM_ADDRESS_WIFIPW 10
-#define EEPROM_ADDRESS_STARTPATTERN 11
-#define EEPROM_ADDRESS_GMTOFFSET 12
+#define EEPROM_ADDRESS_WIFISSID         9
+#define EEPROM_ADDRESS_WIFIPW           10
+#define EEPROM_ADDRESS_STARTPATTERN     11
+#define EEPROM_ADDRESS_GMTOFFSET        12
