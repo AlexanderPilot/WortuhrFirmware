@@ -130,7 +130,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
     
     
     //Abfrage ob gültiger Befehl per APP versendet wurde
-    if ((_AppBefehl[0] == START_SIGN) && (_AppBefehl[1] == START_SIGN) && (_AppBefehl[2] == START_SIGN) && (_AppBefehl[NUM_COMMAND_COUNT] == END_SIGN))
+    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[1] == START_SIGN) && (_AppBefehlBuffer[2] == START_SIGN) && (_AppBefehlBuffer[NUM_COMMAND_COUNT] == END_SIGN))
     {
         newCommand = true; //vollständiger Befehl wurde erkannt
     }
@@ -138,7 +138,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
     //Aufruf der Funktion zur auswertung des gesamten App Befehls
     if(newCommand == true)
     {
-        this->_getCommandFromApp(_AppBefehl);
+        this->_getCommandFromApp(_AppBefehlBuffer);
     }
 }
 
@@ -178,6 +178,12 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
     pixel_t AppColor;
     uint32_t var;
     
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.println("Auswertung des App Befehls");
+    }
+    
     var   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)<<20) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')<<20)) +
             ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10)<<16) : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')<<16)) +
             ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)<<12) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')<<12)) +
@@ -194,6 +200,9 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             {
                 Serial.print("AppInterpreter.cpp - ");
                 Serial.print("Spracheinstellung: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
             }
             
             this->_setLanguage(_convertVarToByte(var));
@@ -205,6 +214,9 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             {
                 Serial.print("AppInterpreter.cpp - ");
                 Serial.print("Helligkeitswert: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
             }
             
             this->_setBrightnessPercent(map(_convertVarToByte(var), 0, 255, 0, 100));
@@ -215,7 +227,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Farbeinstellung");
+                Serial.print("Farbeinstellung: ");
             }
             
             //Zuordnung der Zeichenkette zur Farbe
@@ -225,7 +237,7 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             
             if(DEBUG_APPINTERPRETER == 1)
             {
-                Serial.print(" rot: ");
+                Serial.print("rot: ");
                 Serial.print(AppColor.red);
                 Serial.print(" gruen: ");
                 Serial.print(AppColor.green);
@@ -241,7 +253,10 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("FadeMode");
+                Serial.print("FadeMode: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
             }
             
             this->_setFadeMode(_convertVarToByte(var));
@@ -252,7 +267,10 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Ecke der Start LED");
+                Serial.print("Ecke der Start LED: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
             }
             
             this->_setCornerStartLed(_convertVarToByte(var));
@@ -262,7 +280,10 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn");
+                Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToBool(var));
             }
 
             this->_setCornerStartLed(_convertVarToBool(var));
@@ -272,7 +293,10 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Startmuster");
+                Serial.print("Startmuster: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
             }
 
             this->_setStartPattern(_convertVarToByte(var));
@@ -282,7 +306,10 @@ void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
             if(DEBUG_APPINTERPRETER == 1)
             {
                 Serial.print("AppInterpreter.cpp - ");
-                Serial.print("GMT Offset in Sekunden");
+                Serial.print("GMT Offset in Sekunden: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToUint16(var));
             }
 
             this->_setGmtTimeOffsetSec(_convertVarToUint16(var));
@@ -314,7 +341,7 @@ byte AppInterpreter::_getLanguage()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Sprache");
+        Serial.print("Auslesen der Sprache aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getLanguage();
@@ -326,7 +353,7 @@ byte AppInterpreter::_getBrightnessPercent()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Helligkeit");
+        Serial.print("Auslesen der Helligkeit aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getBrightnessPercent();
@@ -338,7 +365,7 @@ pixel_t AppInterpreter::_getColor()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Farbe");
+        Serial.print("Auslesen der Farbe aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getColor();
@@ -350,7 +377,7 @@ byte AppInterpreter::_getFadeMode()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen des Fademodus");
+        Serial.print("Auslesen des Fademodus aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getFadeMode();
@@ -362,7 +389,7 @@ byte AppInterpreter::_getCornerStartLed()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Ecke der Start LED");
+        Serial.print("Auslesen der Ecke der Start LED aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getCornerStartLed();
@@ -374,7 +401,7 @@ boolean AppInterpreter::_getCornersClockwise()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Laufrichtugn der Eck-LEDs");
+        Serial.print("Auslesen der Laufrichtung der Eck-LEDs aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getCornersClockwise();
@@ -386,7 +413,7 @@ byte AppInterpreter::_getStartPattern()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen des Startmusters");
+        Serial.print("Auslesen des Startmusters aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getStartPattern();
@@ -397,7 +424,7 @@ uint16_t AppInterpreter::_getGmtTimeOffsetSec()
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen des GMT Offsets");
+        Serial.print("Auslesen des GMT Offsets aus der Einstellungen-Klasse");
     }
     
     return _interpretersettings.getGmtTimeOffsetSec();
@@ -411,7 +438,7 @@ void AppInterpreter::_setLanguage(byte Language)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe der Sprache");
+        Serial.println("Uebergabe der Sprache an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setLanguage(Language);
@@ -422,7 +449,7 @@ void AppInterpreter::_setBrightnessPercent(byte Brightness)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe der Helligkeit");
+        Serial.println("Uebergabe der Helligkeit an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setBrightnessPercent(Brightness);
@@ -433,7 +460,7 @@ void AppInterpreter::_setColor(pixel_t color)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Uebergabe der Farbe");
+        Serial.println("Uebergabe der Farbe an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setColor(color);
@@ -444,7 +471,7 @@ void AppInterpreter::_setFadeMode(byte fadeMode)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe des Fademodus");
+        Serial.println("Uebergabe des Fademodus an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setFadeMode(fadeMode);
@@ -455,7 +482,7 @@ void AppInterpreter::_setCornerStartLed(byte CornerStartLed)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe der Ecke der Start LED");
+        Serial.println("Uebergabe der Ecke der Start LED an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setCornerStartLed(CornerStartLed);
@@ -466,7 +493,7 @@ void AppInterpreter::_setCornersClockwise(boolean Clockwise)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe der Laufrichtung der Eck LEDs");
+        Serial.println("Uebergabe der Laufrichtung der Eck LEDs an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setCornersClockwise(Clockwise);
@@ -477,7 +504,7 @@ void AppInterpreter::_setWifiSSID(String Ssid)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe der WIFI SSID");
+        Serial.println("Uebergabe der WIFI SSID an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setWifiSSID(Ssid);
@@ -488,7 +515,7 @@ void AppInterpreter::_setWifiPW(String Password)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe des WIFI Passwords");
+        Serial.println("Uebergabe des WIFI Passwords an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setWifiPW(Password);
@@ -499,7 +526,7 @@ void AppInterpreter::_setStartPattern(byte StartPattern)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe des Startmusters");
+        Serial.println("Uebergabe des Startmusters an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setStartPattern(StartPattern);
@@ -510,7 +537,7 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
     if(DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Übergabe des GMT Offsets");
+        Serial.println("Uebergabe des GMT Offsets an die Einstellungen-Klasse");
     }
     
     _interpretersettings.setGmtTimeOffsetSec(GmtTimeOffsetSec);

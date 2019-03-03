@@ -82,14 +82,14 @@
 #define NUM_SIGN_CATEGORY       3
 #define START_SIGN              '+'
 #define END_SIGN                '$'
-#define SIGN_LANGUAGE           '!'
-#define SIGN_BRIGHTNESS         '§'
-#define SIGN_COLOR              '$'
-#define SIGN_FADEMODE           '%'
-#define SIGN_CORNERSTARTLED     '&'
-#define SIGN_CORNERSCLOCKWISE   '/'
-#define SIGN_STARTPATTERN       '#'
-#define SIGN_GMTOFFSET          '?'
+#define SIGN_LANGUAGE           'A'
+#define SIGN_BRIGHTNESS         'B'
+#define SIGN_COLOR              'C'
+#define SIGN_FADEMODE           'D'
+#define SIGN_CORNERSTARTLED     'E'
+#define SIGN_CORNERSCLOCKWISE   'F'
+#define SIGN_STARTPATTERN       'G'
+#define SIGN_GMTOFFSET          'H'
 #define CONV_VERSION            2
 
 /***************************************************************************

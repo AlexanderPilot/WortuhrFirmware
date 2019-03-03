@@ -123,30 +123,115 @@ void setup()
     // Start an alarm
     timerAlarmEnable(timer);
     Serial.println("-------------------------------------------------------------------------------------------------------");
-    Serial.print("Uebergabe des Befehls ");
-    
    
     char ArrayTest[11];
+    
     ArrayTest[0] = '+';
     ArrayTest[1] = '+';
     ArrayTest[2] = '+';
-    ArrayTest[3] = '$';
-    ArrayTest[4] = 'F';
-    ArrayTest[5] = 'F';
-    ArrayTest[6] = '0';
-    ArrayTest[7] = '1';
-    ArrayTest[8] = '5';
-    ArrayTest[9] = 'C';
     ArrayTest[10] = '$';
     
-    for (int i = 0; i<=11; i++)
+    for (int j = 0; j <= 7; j++)
     {
-            Serial.print(ArrayTest[i]);
+        if (j == 0) //Sprache
+        {
+            ArrayTest[3] = SIGN_LANGUAGE;
+            ArrayTest[4] = '0';
+            ArrayTest[5] = '0';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = '0';
+            ArrayTest[8] = '0';
+            ArrayTest[9] = '0';
+        }
+        
+        if (j == 1) //Helligkeit
+        {
+            ArrayTest[3] = SIGN_BRIGHTNESS;
+            ArrayTest[4] = 'F';
+            ArrayTest[5] = 'F';
+            ArrayTest[6] = 'F';
+            ArrayTest[7] = 'F';
+            ArrayTest[8] = 'F';
+            ArrayTest[9] = 'F';
+        }
+        
+        if (j == 2) //Farbe
+        {
+            ArrayTest[3] = SIGN_COLOR;
+            ArrayTest[4] = 'F';
+            ArrayTest[5] = 'F';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = '1';
+            ArrayTest[8] = '5';
+            ArrayTest[9] = 'C';
+        }
+        
+        if (j == 3) //Fademode
+        {
+            ArrayTest[3] = SIGN_FADEMODE;
+            ArrayTest[4] = '0';
+            ArrayTest[5] = '0';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = '0';
+            ArrayTest[8] = '0';
+            ArrayTest[9] = '0';
+        }
+        
+        if (j == 4) //CornerstartLED
+        {
+            ArrayTest[3] = SIGN_CORNERSTARTLED;
+            ArrayTest[4] = '0';
+            ArrayTest[5] = '0';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = '0';
+            ArrayTest[8] = '0';
+            ArrayTest[9] = '4';
+        }
+        
+        if (j == 5) //Cornerclockwise
+        {
+            ArrayTest[3] = SIGN_CORNERSCLOCKWISE;
+            ArrayTest[4] = '0';
+            ArrayTest[5] = '0';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = '0';
+            ArrayTest[8] = '0';
+            ArrayTest[9] = '1';
+        }
+        
+        if (j == 6) //Startpattern
+        {
+            ArrayTest[3] = SIGN_STARTPATTERN;
+            ArrayTest[4] = '0';
+            ArrayTest[5] = '0';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = '0';
+            ArrayTest[8] = '0';
+            ArrayTest[9] = '1';
+        }
+        
+        if (j == 7) //GMT Offset
+        {
+            ArrayTest[3] = SIGN_GMTOFFSET;
+            ArrayTest[4] = '0';
+            ArrayTest[5] = '0';
+            ArrayTest[6] = '0';
+            ArrayTest[7] = 'E';
+            ArrayTest[8] = '1';
+            ArrayTest[9] = '0';
+        }
+        
+        Serial.print("Befehl (hex): ");
+        for (int i = 0; i < 11; i++)
+        {
+                Serial.print(ArrayTest[i]);
+        }
+        
+        Serial.println(" erhalten");
+        appinterpreter._getCommandFromApp(ArrayTest);
+        
+        delay(1000);
     }
-    Serial.println(" ");
-    appinterpreter._getCommandFromApp(ArrayTest);
-
-    
 }
 
 /****************************************************************************************************************************************************************************************************************************/
