@@ -33,6 +33,7 @@
 #include "Renderer.h"
 #include "Settings.h"
 #include "LED_Ausgabe.h"
+#include "AppInterpreter.h"
 
 /***************************************************************************
  * Serielle Verbindung
@@ -77,15 +78,26 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-#define BT_DEVICE_NAME    "Wordclock_"
+#define BT_DEVICE_NAME    "Wordclock_AS"
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
 
 /***************************************************************************
  * App Interpreter Einstellungen
  **************************************************************************/
-#define START_SIGN  "+"
-#define END_SIGN    "$"
+#define NUM_COMMAND_COUNT       11
+#define NUM_SIGN_CATEGORY       3
+#define START_SIGN              '+'
+#define END_SIGN                '$'
+#define SIGN_LANGUAGE           'A'
+#define SIGN_BRIGHTNESS         'B'
+#define SIGN_COLOR              'C'
+#define SIGN_FADEMODE           'D'
+#define SIGN_CORNERSTARTLED     'E'
+#define SIGN_CORNERSCLOCKWISE   'F'
+#define SIGN_STARTPATTERN       'G'
+#define SIGN_GMTOFFSET          'H'
+#define CONV_VERSION            2
 
 /***************************************************************************
  * I2C Einstellungen
