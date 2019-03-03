@@ -267,6 +267,21 @@ uint16_t Settings::getGmtTimeOffsetSec()
 /****************************************
  * EEPROM Ansteuerung
  ***************************************/
+void Settings::loadAllFromEEPROM()
+{
+    _Language = loadFromEEPROM(EEPROM_ADDRESS_LANGUAGE);
+    _Brightness = loadFromEEPROM(EEPROM_ADDRESS_BRIGHTNESS);
+    _Color.red = loadFromEEPROM(EEPROM_ADDRESS_COLOR_RED);
+    _Color.green = loadFromEEPROM(EEPROM_ADDRESS_COLOR_GREEN);
+    _Color.blue = loadFromEEPROM(EEPROM_ADDRESS_COLOR_BLUE);
+    _FadeMode = loadFromEEPROM(EEPROM_ADDRESS_FADEMODE);
+    _CornerStartLed = loadFromEEPROM(EEPROM_ADDRESS_CORNERSTARTLED);
+    _CornersClockwise = loadFromEEPROM(EEPROM_ADDRESS_CORNERSCLOCKWISE);
+    _WifiSSID = loadFromEEPROM(EEPROM_ADDRESS_WIFISSID);
+    _WifiPW = loadFromEEPROM(EEPROM_ADDRESS_WIFIPW);
+    _StartPattern = loadFromEEPROM(EEPROM_ADDRESS_STARTPATTERN);
+    _GmtTimeOffsetSec = loadFromEEPROM(EEPROM_ADDRESS_GMTOFFSET);
+}
 
 /** EEPROM schreiben **/
 bool Settings::checkEEPROMData()
@@ -663,5 +678,26 @@ void Settings::writeGmtOffsetToEEPROM(uint16_t gmtoffset)
         Serial.print(" wird auf EEPROM Adresse ");
         Serial.print(EEPROM_ADDR_GMTOFFSET);
         Serial.println(" geschrieben");
+    }
+}
+
+void Settings::saveColorToEEPROM(uint8_t address, pixel_t color)
+{
+    EEPROM.write(address, color.red);
+    EEPROM.commit();
+    
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.print("Der Wert ");
+        Serial.print("rot: ");
+        Serial.print(color.red);
+        Serial.print("gruen: ");
+        Serial.print(color.green);
+        Serial.print("blau: ");
+        Serial.print(color.blue);
+        Serial.print(" wird auf Adresse ");
+        Serial.print(address);
+        Serial.print(" des EEPROM geschrieben");
     }
 }
