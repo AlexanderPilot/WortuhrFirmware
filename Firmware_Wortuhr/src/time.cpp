@@ -19,15 +19,14 @@ void time::setTimeDate(timedate_t TimeDate)
     _TimeDate = TimeDate;
 }
 
-void time::setTimeDate(uint8_t Hours; uint8_t Minutes; uint8_t Seconds; uint8_t Date; uint8_t Month; uint8_t Year; uint8_t DayOfWeek)
+void time::setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, uint8_t Date, uint8_t Month, uint8_t Year, uint8_t DayOfWeek)
 {
     _TimeDate.hours = Hours;
     _TimeDate.minutes = Minutes;
     _TimeDate.seconds = Seconds;
     _TimeDate.date = Date;
     _TimeDate.dayOfWeek = DayOfWeek;
-    _TimeDate.month = Month
-    _TimeDate.
+    _TimeDate.month = Month;
 }
 
 void time::setSeconds(uint8_t Seconds)
@@ -67,17 +66,17 @@ void time::setYear(uint8_t Year)
 
 uint8_t time::getSeconds()
 {
-    return _TimeDate.second;
+    return _TimeDate.seconds;
 }
 
 uint8_t time::getMinutes()
 {
-    return _TimeDate.minute;
+    return _TimeDate.minutes;
 }
 
 uint8_t time::getHours()
 {
-    return _TimeDate.hour;
+    return _TimeDate.hours;
 }
 
 uint8_t time::getDate()
