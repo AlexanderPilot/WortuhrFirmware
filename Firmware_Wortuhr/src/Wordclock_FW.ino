@@ -15,12 +15,14 @@
  *
 **************************************************************************/
 
-
 /***************************************************************************
  * Einbinden von benötigten Bibliotheken
  **************************************************************************/
 #include "Configurations.h"
+#include "LED_Ausgabe.h"
+#include "Muster.h"
 
+#define LED_PIN 26
 
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
@@ -36,13 +38,6 @@ AppInterpreter appinterpreter;
  **************************************************************************/
 //Für debug-Zwecke
 uint32_t ISRcounter = 0;
-
-
-/***************************************************************************
- * Testdefines
- **************************************************************************/
-#define on 646464;
-#define off 0;
 
 /***************************************************************************
  * ISR für Timer Interrupt
@@ -64,7 +59,6 @@ void setup()
     uint8_t WifiTimeToConnect = 0;
   
     
-    
     /***************************************************************************
      * Aufbauen der seriellen Kommunikation
      **************************************************************************/
@@ -72,84 +66,37 @@ void setup()
     _DEBUG_BEGIN(SERIAL_SPEED);
     delay(10);
     
-    /***************************************************************************
-     * Ausgabe der Versionsnummer
-     **************************************************************************/
-    Serial.println();
-    Serial.println(PRINT_SEPARATOR_LONG);
-    Serial.println();
-    Serial.print("\tWordclock v");
-    Serial.println(VERSION);
-    Serial.println();
-    Serial.println(PRINT_SEPARATOR_LONG);
-    
     /** Lesen der Einstellungen aus dem EEPROM **/
     //settings.loadFromEEPROM();
     /***************************************************************************
      * Standardeinstellungen für Testzwecke, soll später aus dem EEPROM gelesen werden
      **************************************************************************/
     settings.setLanguage(0);
-    
-    settings.setWifiSSID("ASUS");
-    settings.setWifiPW("Br8#Pojg56");
-    //settings.setWifiSSID("UPC68EE18B");
-    //settings.setWifiPW("Tw11tYbolz@#");
-    //settings.setWifiSSID("Internet_MH");
-    //settings.setWifiPW("WZ78AG27MGFF27DL");
-    
-    settings.setStartPattern(4);
-    settings.setFadeMode(0);
-    settings.setGmtTimeOffsetSec(3600);
-    settings.setBrightnessPercent(100);
-    settings.setCornerStartLed(0);
-    settings.setColor(20, 20, 20);
-    settings.setBrightnessPercent(100);
-    
-    //---------------------------------------------------------------------------------
-    //Initializierung von Bluetooth
-    _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    SerialBT.begin(BT_DEVICE_NAME); //Bluetooth device name
-    _DEBUG_PRINTLN("Bluetooth gestartet");
-    _DEBUG_PRINT("Geraetename: ");
-    _DEBUG_PRINTLN(BT_DEVICE_NAME);
-    //---------------------------------------------------------------------------------
-    //Initializierung des EEPROMS
-    _DEBUG_PRINTLN(PRINT_SEPARATOR);
-    _DEBUG_PRINTLN("Initialisieren des EEPROM");
-    EEPROM.begin(EEPROM_SIZE);
-    //---------------------------------------------------------------------------------
 
-    //Starten Timer und Interrupt
-
-    //Setzen des Timer0 mit Prescaler 80 --> 1us Taktung und Aufwärtszählung (true)
-    timer = timerBegin(0, 80, true);
-    //Interrupt an Timer0 koppeln
-    timerAttachInterrupt(timer, &ISR_Timer, true);
-    //Alarm wird jede Sekunde gesetzt, Alarm soll immer wieder wiederholt werden (true)
-    timerAlarmWrite(timer, 1000000, true);
-    // Start an alarm
-    timerAlarmEnable(timer);
     Serial.println("-------------------------------------------------------------------------------------------------------");
     
     /***************************************************************************
-     * Ausgabe der Startsequenz
+     * Ausgabe der Startsequenz & Test
      **************************************************************************/
-    word mMatrix[12][12] = {{on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on},
-                            {on,on,on,on,on,on,on,on,on,on,on,on}};
-    LED_Ausgabe myLED;
-    myLED.setPixelToMatrix();
-    
-    delay(1000);
+
+    LED_Ausgabe mLedausgabe((gpio_num_t)LED_PIN, 144);
+    mLedausgabe.setPixelTestT();
+    Muster myMuster;
+
+    int dir = 1;
+    int lauf = 0;
+
+    while( 1 )
+    {
+        myMuster.BuildMusterMatrix( myMuster.getArbsMatrix(), 3, lauf);
+        mLedausgabe.setPixelToColorMatrix( myMuster.getArbsMatrix() );
+        delay(100);
+        lauf ++;
+        if( lauf > 5 )
+        {
+            lauf = 0;
+        }
+    }
 }
 
 /****************************************************************************************************************************************************************************************************************************/

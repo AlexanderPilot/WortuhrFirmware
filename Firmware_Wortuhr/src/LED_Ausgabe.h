@@ -16,6 +16,7 @@ class LED_Ausgabe
 {
     public:
         LED_Ausgabe();
+        LED_Ausgabe(gpio_num_t gpioNum, uint16_t pixelCount);
         
         /****************************************
          * Startmuster der Wortuhr
@@ -30,8 +31,15 @@ class LED_Ausgabe
         void setPixelToMatrix(byte xPos, byte yPos);
         void setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, byte blue);
         void setMatrixToLEDs(word Matrix[12]);
+        void setPixelToColorMatrix(pixel_t *Matrix );
+        void setPixelTestT();
         void clearLEDs();
         void showLEDs();
+
+        /****************************************
+         * Für Tests
+         ***************************************/
+        pixel_t getColorFromMatrix( pixel_t Matrix[12][12], int first, int second );
         
         /****************************************
          * LED-Übergang

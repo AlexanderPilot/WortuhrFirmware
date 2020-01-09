@@ -110,8 +110,8 @@
 /***************************************************************************
  * LED Einstellungen
  **************************************************************************/
-#define LEDSTRIP_PIN        19
-#define LED_NUM             148
+#define LEDSTRIP_PIN        32
+#define LED_NUM             144
 #define STARTPATTERN_DELAY  50
 #define NUM_COLUMN          12 //0-11 für die Zählweise
 #define NUM_ROW             12 //0-11 für die Zählweise

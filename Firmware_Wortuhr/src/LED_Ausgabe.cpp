@@ -16,6 +16,11 @@ LED_Ausgabe::LED_Ausgabe()
     _strip = new WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
 }
 
+LED_Ausgabe::LED_Ausgabe(gpio_num_t gpioNum, uint16_t pixelCount)
+{
+    _strip = new WS2812(gpioNum,pixelCount,0);
+}
+
 void LED_Ausgabe::LedStartUp(uint8_t Startpattern)
 {
     if(DEBUG_LEDAUSGABE == 1)
@@ -158,10 +163,64 @@ void LED_Ausgabe::setPixelToMatrix(byte index)
     //_strip->show();
 }
 
+/***************************************************************************
+     * Setzt gesamte Matrix inkl Farbdefinitionen auf die Ausgabe
+     * Übergabeparameter: pixel_t Matrix[12][12];
+     * Rückgabe: kein
+***************************************************************************/
+void LED_Ausgabe::setPixelToColorMatrix( pixel_t *Matrix )
+{
+    int cLed = 0, hp;
+    pixel_t mPixel = {0,0,0};
+    _strip->setAllPixels(0,0,0);
+    for(int j = 0; j < 12; j++)
+    {
+        for(int i = 0; i < 12; i++)
+        {
+            if( j%2 )
+            {
+                hp = (11-i);
+            }
+            else
+            {
+                hp = i;
+            }
+            mPixel = *(Matrix + 12*j + hp);
+            _strip->setPixel(cLed, mPixel.red, mPixel.green, mPixel.blue);
+            cLed++;
+        }
+    }
+    _strip->show();
+}
+/***************************************************************************
+     * Gibt die Farbe einer bestimmten Zelle zurück
+     * Übergabeparameter: pixel_t Matrix[12][12]; x-Position und y-Position
+     * Rückgabe: Farbe einer gestimmten LED
+***************************************************************************/
+pixel_t getColorFromMatrix( pixel_t Matrix[12][12], int first, int second )
+{
+    return Matrix[first][second];
+}
+/***************************************************************************
+     * Nur zum Testen von RGB - wird später nicht mehr gebraucht
+***************************************************************************/
+void LED_Ausgabe::setPixelTestT()
+{
+    _strip->setAllPixels(0,30,0);
+    _strip->show();
+    delay(1000);
+    _strip->setAllPixels(30,0,0);
+    _strip->show();
+    delay(1000);
+    _strip->setAllPixels(0,0,30);
+    _strip->show();
+    delay(1000);
+}
+
 void LED_Ausgabe::setPixelToMatrix(byte index, byte red, byte green, byte blue)
 {
     this->_setPixel(index, red, green, blue);
-    //_strip->show();
+    //_strip->show();  
 }
 
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, byte blue)

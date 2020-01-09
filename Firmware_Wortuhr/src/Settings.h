@@ -12,7 +12,7 @@
 #include "WS2812B.h"
 #include "Configurations.h"
 
-#define DEBUG_SETTINGS 1
+#define DEBUG_SETTINGS 0
 
 class Settings
 {
