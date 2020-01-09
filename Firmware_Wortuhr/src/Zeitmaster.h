@@ -19,10 +19,10 @@ typedef struct {
       uint8_t year;
 } timedate_t;
 
-class time
+class Zeitmaster
 {
     public:
-        time();
+        Zeitmaster();
         
         timedate_t getTimeDate();
         void setTimeDate(timedate_t TimeDate);
@@ -43,6 +43,8 @@ class time
         uint8_t getDayOfWeek();
         uint8_t getMonth();
         uint8_t getYear();
+
+        void printZeitmasterTime();
         
     private:
         timedate_t _TimeDate;

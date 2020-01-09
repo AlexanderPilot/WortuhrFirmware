@@ -19,8 +19,7 @@
  * Einbinden von benötigten Bibliotheken
  **************************************************************************/
 #include "Configurations.h"
-#include "LED_Ausgabe.h"
-#include "Muster.h"
+#include "Zeitmaster.h"
 
 #define LED_PIN 26
 
@@ -31,6 +30,8 @@ hw_timer_t * timer = NULL;
 BluetoothSerial SerialBT;
 Settings settings;
 AppInterpreter appinterpreter;
+Zeitmaster zeitmaster;
+DS3231 ds3231(DS3231_ADDRESS);
 
 
 /***************************************************************************
@@ -57,7 +58,7 @@ void setup()
      **************************************************************************/
     bool WifiOK = true;
     uint8_t WifiTimeToConnect = 0;
-  
+    Wire.begin(SDA, SCL); //I2C Bus aktivieren
     
     /***************************************************************************
      * Aufbauen der seriellen Kommunikation
@@ -75,6 +76,18 @@ void setup()
 
     Serial.println("-------------------------------------------------------------------------------------------------------");
     
+    /***************************************************************************
+     * Abfrage und Speicherung der Uhrzeit
+     **************************************************************************/
+    ds3231.writeTime(12,0,0,0,1,1,20);
+
+    while(1)
+    {
+        zeitmaster.setTimeDate(ds3231.readTime());
+        zeitmaster.printZeitmasterTime();
+        delay(900);
+    }
+
     /***************************************************************************
      * Ausgabe der Startsequenz & Test
      **************************************************************************/
