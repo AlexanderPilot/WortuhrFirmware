@@ -3,6 +3,10 @@
  *
  **************************************************************************/
 
+/** Vermeidung Doppeldefinitionen **/
+#pragma once
+
+/** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
 
 typedef struct {
