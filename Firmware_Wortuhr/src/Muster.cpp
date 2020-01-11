@@ -75,13 +75,31 @@ void Muster::setArbsMatrix( pixel_t *iMatrix )
 }
 
 /***************************************************************************
+ * Bildet die Uhrzeit ab
+ * Übergabeparameter: kein
+ * RückgabeParameter: Referenz auf Zeitmatrix
+ **************************************************************************/
+uint8_t* Muster::getTimeMatrixFut()
+{
+    return &TimeMatrixFut[0][0]; 
+}
+
+void Muster::setTimeMatrixFut( uint8_t *iMatrix )
+{
+    uint8_t *ptr = &TimeMatrixFut[0][0];
+    for( int i = 0; i < 144; i++)
+    {
+        *(ptr+i) = *(iMatrix+i);
+    }
+}
+
+/***************************************************************************
  * Erstelle Zufallsfarben
  **************************************************************************/
 pixel_t createRandomColor( void )
 {
     return {(uint8_t)random(0,80),(uint8_t)random(0,80),(uint8_t)random(0,80)};
 }
-
 
 /***************************************************************************
  * Funktion zum erstellen von Mustern
@@ -184,4 +202,117 @@ uint8_t Muster::BuildMusterMatrix( pixel_t *Matrix, int typ, int pos)
         iRet = 0; // Fehler, da diese Option nicht verfügbar ist
     }
     return iRet;
+}
+
+/***********************************************************************************************************
+ * Diese Funktion erstell eine 12 x 12 Zeitmatrix, die anzeigt welche LED leuchten muss,
+ * damit die Zeit richtig angezeigt wird
+ * 
+ * Übergabeparameter:
+ *          eine [12][12] matrix des Datentyps uint8_t (nur Referenz)
+ *          Stunden aus der aktuellen Zeit, der Form: uint8_t stunden
+ *          Minuten aus der akteellen Zeit, der Form: uint8_t minuten
+ * 
+ * RückgabeParameter:
+ *          keine
+ * 
+***********************************************************************************************************/
+void Muster::setTimeMatrix( uint8_t *iMatrix, uint8_t hou, uint8_t min )
+{
+    word myTimeMatrix[12];
+    int i = 0, j = 0;
+
+    // Hole Zeit in der Alternform und Zwischenspeicherung in myTimeMatrix[12]. Zuvor: Reseten der Zeitmatrix --> alles auf 0
+    Renderer myClass = Renderer();
+    myClass.clearScreen( myTimeMatrix );
+    myClass.setTime( hou, min, 1, myTimeMatrix );
+    myClass.setCorners( min, myTimeMatrix );
+
+    // In die neue Form wandeln und in der uint8_t *iMatrix ablegen
+    word mask[12] = {1,2,4,8,16,32,64,128,256,512,1024,2048};
+    j = 0;
+    i = 0;
+
+    // Kopieren der Bitmaske in die Zeitmatrix
+    while ( j < 12 )
+    {
+        while( i < 12 )
+        {
+            *(iMatrix + 12*j + i) = ((myTimeMatrix[j]&mask[11-i]) >> (11-i));
+            i ++;
+        }
+        
+        i = 0;
+        j ++;
+    }
+
+    // Nur zum Debuggen:
+    printTimeMatrixTestDebug( iMatrix );
+
+}
+
+/***********************************************************************************************************
+ * Laden der Zeitmatrix auf die Ausgabematrix ohne weiterer Übergangseffekte. D.h. die erstellte Zeitmatrix (t_Matrix)
+ * wid mit der gewünschten Farbe auf die Anzeigematrix (iMatrix) geschrieben. Die erstellte anzeigematrix kann dann
+ * mittels Funktion (z.B.): mLedausgabe.setPixelToColorMatrix( meineMatrix ) wiedergegeben werden.
+ * 
+ * Übergabeparameter:
+ *          Die zeitmatrix t_Matrix der Form: uint8_t Matrix[12][12]
+ *          Die Anzeigematrix die später wiedergegeben werden kann, der Form: pixel_t Matrix[12][12]
+ *          Die gewünschte Farbe, der Form: pixel_t color, oder direkt z.B.: {50, 0, 0} für rot
+ * 
+ * Rükgabeparameter:
+ *          keine
+ * 
+***********************************************************************************************************/
+void Muster::setSimpleTimeNoEffects( uint8_t *t_Matrix, pixel_t *iMatrix, pixel_t color )
+{
+    for(int i = 0; i < 144; i++)
+    {
+        if( *(t_Matrix+i) == 1)
+        {
+            *(iMatrix+i) = {color.red,color.green,color.blue};
+        }
+        else
+        {
+            *(iMatrix+i) = {0,0,0};
+        }
+    }
+}
+
+
+
+
+/*************************************************************************************************************
+ * 
+ * Ende der Hauptfunktionen der Klassen - ab hier lediglich Funktionen zum Debuggen
+ * 
+*************************************************************************************************************/
+
+// Gibt die Zeitmatrix auf des seriellen Monitor aus
+void Muster::printTimeMatrixTestDebug( uint8_t *iMatrix )
+{
+    //DEBUG
+    Serial.println("-------------------------------------------------------------------------------------------------------"); 
+    int j = 0;
+    int i = 0;
+    while(i<12)
+    {
+        while (j<12)
+        {
+            if(j!=11)
+            {
+                Serial.print(*(iMatrix+12*i+j)); Serial.print("  ");
+            }
+            else
+            {
+                Serial.println(*(iMatrix+12*i+j));
+            }
+            j++;
+        }
+        
+        j=0;
+        i++;
+    }
+    Serial.println("-------------------------------------------------------------------------------------------------------");
 }

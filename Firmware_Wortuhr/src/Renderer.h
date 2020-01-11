@@ -29,11 +29,9 @@ class Renderer
 {
     public:
         Renderer();
-        
-        void randomMatrix(word Matrix[11]);
-        
+
         void setTime(byte Hours, byte Minutes, byte Language, word Matrix[11]);
-        void setCorners(byte Minutes, boolean CornersClockwise, word Matrix[11]);
+        void setCorners(byte Minutes, word Matrix[12]);
         
         void cleanWordsMode(byte Language, word Matrix[11]);
         void setAllScreenOn(word Matrix[11]);

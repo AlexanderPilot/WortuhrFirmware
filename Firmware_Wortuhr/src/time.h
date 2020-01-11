@@ -43,3 +43,4 @@ class time
     private:
         timedate_t _TimeDate;
 };
+
