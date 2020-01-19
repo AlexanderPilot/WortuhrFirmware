@@ -6,14 +6,26 @@
 
 
 /* Funktionen */
+
+/***************************************************************************
+ * Konstruktor der Klasse DS3231
+ * Übergabeparameter: I2C-Adresse des DS3231 Chips im hex-Format
+ * Rückgabeparameter: kein
+ **************************************************************************/
 DS3231::DS3231(int address)
 {
     _address = address;
 }
 
-void DS3231::readTime()
+/***************************************************************************
+ * Liest die aktuelle Uhrzeit aus dem DS3231 Chip aus und speichert diese in einem Zeit und Datums Struct
+ * Übergabeparameter: kein
+ * Rückgabeparameter: kein
+ **************************************************************************/
+timedate_t DS3231::readTime()
 {
     uint8_t count = 0;
+    timedate_t tmpTimeDate;
 
     //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
     Wire.beginTransmission(_address);
@@ -27,13 +39,13 @@ void DS3231::readTime()
     if(count == 7)
     {
         //Alle 7 Bits sind vorhanden
-        _Seconds = BCDToDec(Wire.read() & 0x7F); //Maske um nur die notwendigen Bits auszulesen
-        _Minutes = BCDToDec(Wire.read()); 
-        _Hours = BCDToDec(Wire.read() & 0x3F);
-        _DayOfWeek = BCDToDec(Wire.read());
-        _Date = BCDToDec(Wire.read());
-        _Month = BCDToDec(Wire.read());
-        _Year = BCDToDec(Wire.read());
+        tmpTimeDate.seconds = BCDToDec(Wire.read() & 0x7F); //Maske um nur die notwendigen Bits auszulesen
+        tmpTimeDate.minutes = BCDToDec(Wire.read()); 
+        tmpTimeDate.hours = BCDToDec(Wire.read() & 0x3F);
+        tmpTimeDate.dayOfWeek = BCDToDec(Wire.read());
+        tmpTimeDate.date = BCDToDec(Wire.read());
+        tmpTimeDate.month = BCDToDec(Wire.read());
+        tmpTimeDate.year = BCDToDec(Wire.read());
     }
     else
     {
@@ -41,117 +53,81 @@ void DS3231::readTime()
     }
 
     Wire.endTransmission();
+
+    return tmpTimeDate;
 }
 
-void DS3231::writeTime()
+/***************************************************************************
+ * Schreibt die Uhrzeit aus dem Zeit und Datums Struct auf den DS3231 Chip 
+ * Übergabeparameter: kein
+ * Rückgabeparameter: kein
+ **************************************************************************/
+void DS3231::writeTime(timedate_t tmpTimeDate)
+{    
+    //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
+    Wire.beginTransmission(_address);
+
+    //Schreibe an die Anfangsadresse (ab welcher Adresse soll ausgelesen werden)
+    Wire.write((uint8_t)0x00);
+    Wire.write(DecToBCD(tmpTimeDate.seconds));
+    Wire.write(DecToBCD(tmpTimeDate.minutes));
+    Wire.write(DecToBCD(tmpTimeDate.hours));
+    Wire.write(DecToBCD(tmpTimeDate.dayOfWeek));
+    Wire.write(DecToBCD(tmpTimeDate.date));
+    Wire.write(DecToBCD(tmpTimeDate.month));
+    Wire.write(DecToBCD(tmpTimeDate.year));
+
+    Wire.endTransmission();
+}
+
+void DS3231::writeTime(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t dayOfWeek, uint8_t date, uint8_t month, uint8_t year)
 {
     //Beginne die I2C-Kommunikation mit dem DS3231 an der Adresse _address
     Wire.beginTransmission(_address);
 
     //Schreibe an die Anfangsadresse (ab welcher Adresse soll ausgelesen werden)
     Wire.write((uint8_t)0x00);
-
-    Wire.write(DecToBCD(_Seconds));
-    Wire.write(DecToBCD(_Minutes));
-    Wire.write(DecToBCD(_Hours));
-    Wire.write(DecToBCD(_DayOfWeek));
-    Wire.write(DecToBCD(_Date));
-    Wire.write(DecToBCD(_Month));
-    Wire.write(DecToBCD(_Year));
+    Wire.write(DecToBCD(seconds));
+    Wire.write(DecToBCD(minutes));
+    Wire.write(DecToBCD(hours));
+    Wire.write(DecToBCD(dayOfWeek));
+    Wire.write(DecToBCD(date));
+    Wire.write(DecToBCD(month));
+    Wire.write(DecToBCD(year));
 
     Wire.endTransmission();
 }
 
-void DS3231::printRTCTime(void)
+/***************************************************************************
+ * Liest die Temperatur des DS3231 Chips
+ * Übergabeparameter: kein
+ * Rückgabeparameter: Temperatur des DS3231 Chips
+ **************************************************************************/
+uint8_t DS3231::getTemp()
 {
-    Serial.print("Uhrzeit: ");
-    Serial.print(getHours());
-    Serial.print(":");
-    Serial.print(getMinutes());
-    Serial.print(":");
-    Serial.println(getSeconds());
+    return 0;
 }
 
-void DS3231::setSeconds(uint8_t Seconds)
-{
-    _Seconds = Seconds;
-}
-
-void DS3231::setMinutes(uint8_t Minutes)
-{
-    _Minutes = Minutes;
-}
-
-void DS3231::setHours(uint8_t Hours)
-{
-    _Hours = Hours;
-}
-
-void DS3231::setDayOfWeek(uint8_t DayOfWeek)
-{
-    _DayOfWeek = DayOfWeek;
-}
-
-void DS3231::setDate(uint8_t Date)
-{
-    _Date = Date;
-}
-
-void DS3231::setMonth(uint8_t Month)
-{
-    _Month = Month;
-}
-
-void DS3231::setYear(uint8_t Year)
-{
-    _Year = Year;
-}
-
-uint8_t DS3231::getSeconds()
-{
-    return _Seconds;  
-}
-
-uint8_t DS3231::getMinutes()
-{
-    return _Minutes;  
-}
-
-uint8_t DS3231::getHours()
-{
-    return _Hours;  
-}
-
-uint8_t DS3231::getDayOfWeek()
-{
-    return _DayOfWeek;  
-}
-
-uint8_t DS3231::getDate()
-{
-    return _Date;  
-}
-
-uint8_t DS3231::getMonth()
-{
-    return _Month;  
-}
-
-uint8_t DS3231::getYear()
-{
-    return _Year; 
-}
 
 //Binary Code Decimal = Dateiformat der DS3231 Register
 
-//Konvertiert decimal > bcd
+/***************************************************************************
+ * Konvertiert die Zeit und Datumsinformationen in BCD Format für die Beschreibung des DS3231 Chips
+ * Übergabeparameter: Dezimalwert der in BCD umgerechnet werden soll
+ * Rückgabeparameter: Umgerechneter Wert im BCD Format
+ **************************************************************************/
 uint8_t DS3231::DecToBCD(uint8_t value)
 {
     return((value / 10 * 16) + (value % 10));
 }
 
-//Konvertiert bcd > decimal
+/***************************************************************************
+ * Konvertiert die Zeit und Datumsinformationen in BCD Format des DS3231 Chips in Dezimalwerte um 
+ * Übergabeparameter: BCD-Wert der in dezimal umgerechnet werden soll
+ * Rückgabeparameter: Umgerechneter Wert im dezimal Format
+ **************************************************************************/
 uint8_t DS3231::BCDToDec(uint8_t value)
 {
     return((value / 16 * 10) + (value % 16));
 }
+

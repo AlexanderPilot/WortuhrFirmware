@@ -34,6 +34,7 @@
 #include "Settings.h"
 #include "LED_Ausgabe.h"
 #include "AppInterpreter.h"
+#include "Muster.h"
 
 /***************************************************************************
  * Serielle Verbindung
