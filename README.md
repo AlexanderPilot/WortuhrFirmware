@@ -1,5 +1,4 @@
 # WortuhrFirmware
-Firmware der Wortuhr für den ESP32
 
 ## Features
 - WiFi Anbindung zum Erhalt der Uhrzeit aus NTP Server
