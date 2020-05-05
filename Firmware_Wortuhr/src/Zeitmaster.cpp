@@ -15,8 +15,11 @@ Zeitmaster::Zeitmaster()
 {
     if (! myRTCDS3231.begin() )
     {
-        Serial.println("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
-        while (1);
+        while (1)
+        {
+            Serial.println("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
+            delay(3000);
+        }
     }
 
     if (myRTCDS3231.lostPower())
@@ -51,7 +54,7 @@ timedate_t Zeitmaster::getTimeDate()
  **************************************************************************/
 void Zeitmaster::setTimeDate(timedate_t TimeDate)
 {
-    _TimeDate = TimeDate;
+    myRTCDS3231.adjust( DateTime( TimeDate.year, TimeDate.month, TimeDate.date, TimeDate.hours, TimeDate.minutes, TimeDate.seconds ) );
 }
 
 /***************************************************************************
@@ -213,9 +216,9 @@ uint8_t Zeitmaster::getYear()
 void Zeitmaster::printZeitmasterTime(void)
 {
     Serial.print("Uhrzeit: ");
-    Serial.print(_TimeDate.hours);
+    Serial.print(myRTCDS3231.now().hour());
     Serial.print(":");
-    Serial.print(_TimeDate.minutes);
+    Serial.print(myRTCDS3231.now().minute());
     Serial.print(":");
-    Serial.println(_TimeDate.seconds);
+    Serial.println(myRTCDS3231.now().second());
 }
