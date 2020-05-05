@@ -12,7 +12,7 @@
 #include "Zeitmaster.h"
 
 /* Klasse DS3231 */
-class DS3231 : Zeitmaster
+class DS3231
 {
     public:
         DS3231(int address);

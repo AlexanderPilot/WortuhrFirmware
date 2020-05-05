@@ -133,8 +133,6 @@ void Renderer::setTime(byte Hours, byte Minutes, byte Language, word Matrix[12])
   
 void Renderer::setHours(byte Hours, boolean glatt, byte Language, word Matrix[12])
 {
-      Serial.print("Wert von glatt: ");
-      Serial.println(glatt);
       if(glatt == true)
       {
             DE_UHR;

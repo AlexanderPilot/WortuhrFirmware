@@ -247,7 +247,7 @@ void Muster::setTimeMatrix( uint8_t *iMatrix, uint8_t hou, uint8_t min )
     }
 
     // Nur zum Debuggen:
-    printTimeMatrixTestDebug( iMatrix );
+    // printTimeMatrixTestDebug( iMatrix );
 
 }
 

@@ -2,6 +2,7 @@
 
 /* Einbinden von Headerdateien */
 #include "Zeitmaster.h"
+#include "RTClib.h"
 
 /* Funktionen */
 
@@ -12,18 +13,34 @@
  **************************************************************************/
 Zeitmaster::Zeitmaster()
 {
-    _TimeDate.seconds = 10;
-    _TimeDate.minutes = 5;
-    _TimeDate.hours = 12;
+    if (! myRTCDS3231.begin() )
+    {
+        Serial.println("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
+        while (1);
+    }
+
+    if (myRTCDS3231.lostPower())
+    {
+        Serial.println("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
+        myRTCDS3231.adjust(DateTime(2020, 5, 4, 0, 0, 0));
+    }
 }
 
 /***************************************************************************
  * Auslesen der gesamten Zeit und Datums Informationen
- * Übergabeparameter: kein
+ * Übergabeparameter: kein, da die Zeit direkt vom DS3231 gelesen wird
  * Rückgabeparameter: gesamtes Zeit und Datums Struct
  **************************************************************************/
 timedate_t Zeitmaster::getTimeDate()
 {
+    // ToDo wochentag fehlt
+    _TimeDate.year      = myRTCDS3231.now().year();
+    _TimeDate.month     = myRTCDS3231.now().month();
+    _TimeDate.date      = myRTCDS3231.now().day();
+    _TimeDate.hours     = myRTCDS3231.now().hour();
+    _TimeDate.minutes   = myRTCDS3231.now().minute();
+    _TimeDate.seconds   = myRTCDS3231.now().second();
+
     return _TimeDate;
 }
 
@@ -42,15 +59,9 @@ void Zeitmaster::setTimeDate(timedate_t TimeDate)
  * Übergabeparameter: alle Zeit und Datums Informationen als einzelne Werte
  * Rückgabeparameter: kein
  **************************************************************************/
-void Zeitmaster::setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, uint8_t Date, uint8_t Month, uint8_t Year, uint8_t DayOfWeek)
+void Zeitmaster::setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, uint8_t Date, uint8_t Month, uint8_t Year)
 {
-    _TimeDate.hours = Hours;
-    _TimeDate.minutes = Minutes;
-    _TimeDate.seconds = Seconds;
-    _TimeDate.date = Date;
-    _TimeDate.dayOfWeek = DayOfWeek;
-    _TimeDate.month = Month;
-    _TimeDate.year = Year;
+    myRTCDS3231.adjust( DateTime( Year, Month, Date, Hours, Minutes, Seconds ) );
 }
 
 /***************************************************************************
@@ -130,7 +141,7 @@ void Zeitmaster::setYear(uint8_t Year)
  **************************************************************************/
 uint8_t Zeitmaster::getSeconds()
 {
-    return _TimeDate.seconds;
+    return myRTCDS3231.now().second();
 }
 
 /***************************************************************************
@@ -140,7 +151,7 @@ uint8_t Zeitmaster::getSeconds()
  **************************************************************************/
 uint8_t Zeitmaster::getMinutes()
 {
-    return _TimeDate.minutes;
+    return myRTCDS3231.now().minute();
 }
 
 /***************************************************************************
@@ -150,7 +161,7 @@ uint8_t Zeitmaster::getMinutes()
  **************************************************************************/
 uint8_t Zeitmaster::getHours()
 {
-    return _TimeDate.hours;
+    return myRTCDS3231.now().hour();
 }
 
 /***************************************************************************
@@ -160,7 +171,7 @@ uint8_t Zeitmaster::getHours()
  **************************************************************************/
 uint8_t Zeitmaster::getDate()
 {
-    return _TimeDate.date;
+    return myRTCDS3231.now().day();
 }
 
 /***************************************************************************
@@ -170,6 +181,7 @@ uint8_t Zeitmaster::getDate()
  **************************************************************************/
 uint8_t Zeitmaster::getDayOfWeek()
 {
+    // ??? TODO
     return _TimeDate.dayOfWeek;
 }
 
@@ -180,7 +192,7 @@ uint8_t Zeitmaster::getDayOfWeek()
  **************************************************************************/
 uint8_t Zeitmaster::getMonth()
 {
-    return _TimeDate.month;
+    return myRTCDS3231.now().month();
 }
 
 /***************************************************************************
@@ -190,7 +202,7 @@ uint8_t Zeitmaster::getMonth()
  **************************************************************************/
 uint8_t Zeitmaster::getYear()
 {
-    return _TimeDate.year;
+    return myRTCDS3231.now().year();
 }
 
 /***************************************************************************
