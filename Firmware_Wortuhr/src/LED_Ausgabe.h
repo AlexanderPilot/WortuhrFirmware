@@ -61,5 +61,6 @@ class LED_Ausgabe
         void _setPixel(byte LEDnum, byte red, byte green, byte blue);
         void _setPixel(byte LEDnum, pixel_t color);
         
+        // ToDo: evtl. aus Pointer --> WS2812 _strip;
         WS2812 *_strip;
 };

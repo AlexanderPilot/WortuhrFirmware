@@ -4,7 +4,6 @@
  *
  **************************************************************************/
 
-
 /* Vermeidung Doppeldefinitionen */
 #pragma once
 
@@ -18,13 +17,11 @@
  **************************************************************************/
 #define VERSION "0.2"
 
-
 /***************************************************************************
  * Einbinden von benötigten Bibliotheken
  **************************************************************************/
 #include "WiFi.h"
 #include "WS2812B.h"
-#include "DS3231.h"
 #include "time.h"
 //#include "NtpTime.h"
 #include "NTPClient.h"
@@ -35,6 +32,11 @@
 #include "LED_Ausgabe.h"
 #include "AppInterpreter.h"
 #include "Muster.h"
+#include <Arduino.h>
+#include "Zeitmaster.h"
+
+// Pin for LED control
+#define LED_PIN 26
 
 /***************************************************************************
  * Serielle Verbindung
@@ -82,6 +84,11 @@
 #define BT_DEVICE_NAME    "Wordclock_AS"
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
+
+/***************************************************************************
+ * Spracheinstellungen
+ **************************************************************************/
+#define GERMAN 0
 
 /***************************************************************************
  * App Interpreter Einstellungen

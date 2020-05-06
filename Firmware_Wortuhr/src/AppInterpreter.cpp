@@ -117,9 +117,9 @@ AppInterpreter::AppInterpreter()
 void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     static bool newCommand = false;
-    static bool newPWSSIDCommand = false;
+    // !!! static bool newPWSSIDCommand = false;
     static char _AppBefehlBuffer[11];
-    static byte counter;
+    // !!! static byte counter;
     
     if(DEBUG_APPINTERPRETER == 1)
     {
@@ -130,7 +130,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
     
     
     //Abfrage ob gültiger Befehl per APP versendet wurde
-    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[1] == START_SIGN) && (_AppBefehlBuffer[2] == START_SIGN) && (_AppBefehlBuffer[NUM_COMMAND_COUNT] == END_SIGN))
+    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[1] == START_SIGN) && (_AppBefehlBuffer[2] == START_SIGN) && (_AppBefehlBuffer[NUM_COMMAND_COUNT-1] == END_SIGN))
     {
         newCommand = true; //vollständiger Befehl wurde erkannt
     }
@@ -174,7 +174,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
 //Funktion für Einstellungen (ohne WIFI_SSID und WIFI_PW)
 void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
 {
-    byte counter;
+    // !!! byte counter;
     pixel_t AppColor;
     uint32_t var;
     

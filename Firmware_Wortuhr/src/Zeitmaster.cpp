@@ -2,7 +2,6 @@
 
 /* Einbinden von Headerdateien */
 #include "Zeitmaster.h"
-#include "RTClib.h"
 
 /* Funktionen */
 
@@ -13,7 +12,7 @@
  **************************************************************************/
 Zeitmaster::Zeitmaster()
 {
-    if (! myRTCDS3231.begin() )
+    if ( ! myRTCDS3231.begin() )
     {
         while (1)
         {
@@ -37,12 +36,12 @@ Zeitmaster::Zeitmaster()
 timedate_t Zeitmaster::getTimeDate()
 {
     // ToDo wochentag fehlt
-    _TimeDate.year      = myRTCDS3231.now().year();
-    _TimeDate.month     = myRTCDS3231.now().month();
-    _TimeDate.date      = myRTCDS3231.now().day();
-    _TimeDate.hours     = myRTCDS3231.now().hour();
-    _TimeDate.minutes   = myRTCDS3231.now().minute();
-    _TimeDate.seconds   = myRTCDS3231.now().second();
+    _TimeDate.year      =   myRTCDS3231.now().year();
+    _TimeDate.month     =   myRTCDS3231.now().month();
+    _TimeDate.date      =   myRTCDS3231.now().day();
+    _TimeDate.hours     =   myRTCDS3231.now().hour();
+    _TimeDate.minutes   =   myRTCDS3231.now().minute();
+    _TimeDate.seconds   =   myRTCDS3231.now().second();
 
     return _TimeDate;
 }
