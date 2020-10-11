@@ -18,6 +18,7 @@ class Muster
         void printTimeMatrixTestDebug( uint8_t *iMatrix );
     
     public:
+        Muster();
         //Zeigt verschiedene Muster an
         //Übergabe Parameter m für welches Muster es sich hierbei handelt
         //Rückgabeparameter zeigt an ob die Funktion fertig ist

@@ -19,7 +19,7 @@
 #define DE_VOR          Matrix[4]   |= 0b001110000000  //4
 #define DE_NACH         Matrix[4]   |= 0b000000011110  //4
 #define DE_HALB         Matrix[5]   |= 0b111100000000  //5
-#define DE_H_SIEBEN     Matrix[5]   |= 0b000000111111  //5
+#define DE_H_SIEBEN     Matrix[5]   |= 0b000001111111  //5
 #define DE_H_FUENF      Matrix[6]   |= 0b001111000000  //6
 #define DE_H_EIN        Matrix[6]   |= 0b000000001110  //6
 #define DE_H_EINS       Matrix[6]   |= 0b000000001111  //6

@@ -595,3 +595,35 @@ uint16_t AppInterpreter::_convertVarToUint16(uint32_t ArrayData)
     
     return var;
 }
+
+void deleteSerialIn()
+{
+    while( Serial.available() )
+        Serial.read();
+}
+
+void AppInterpreter::serialTestRead( pixel_t *param )
+{
+    int8_t i = 0;
+    char val;
+    uint8_t myColor[3]; 
+    while( Serial.available() && ( i < 3 ))
+    {
+        val = Serial.read();
+        if( val != ' ' )
+        {
+            myColor[i] = (uint8_t)val;
+            i ++;
+        }
+        
+        if( i == 2)
+        {
+            param->red = myColor[0];
+            param->green = myColor[1];
+            param->blue = myColor[2];
+        }
+    } 
+    deleteSerialIn();
+}
+
+u

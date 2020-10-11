@@ -11,6 +11,10 @@
 #define l_on (100, 100, 100)
 #define l_off (0, 0, 0)
 
+Muster::Muster()
+{
+    // nop
+}
 
 /***************************************************************************
  * Bildet den Istzustand der Uhr ab

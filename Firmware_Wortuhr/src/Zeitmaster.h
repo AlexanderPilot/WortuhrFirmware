@@ -46,6 +46,8 @@ class Zeitmaster
         uint8_t getYear();
 
         void printZeitmasterTime();
+        void printZeitmasterTimeMinuteByMinute();
+        bool timeTrigger();
         
     private:
         timedate_t _TimeDate;

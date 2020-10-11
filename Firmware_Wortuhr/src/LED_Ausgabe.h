@@ -15,7 +15,7 @@
 class LED_Ausgabe
 {
     public:
-        LED_Ausgabe();
+        //LED_Ausgabe();
         LED_Ausgabe(gpio_num_t gpioNum, uint16_t pixelCount);
         
         /****************************************

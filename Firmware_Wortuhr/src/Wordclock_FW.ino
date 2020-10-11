@@ -12,6 +12,9 @@
 #include "Muster.h"
 #include "RTClib.h"
 
+#define STARTINTERRUPT (timerAlarmEnable(timer))
+#define STOPINTERRUPT (timerAlarmDisable(timer))
+
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
  **************************************************************************/
@@ -20,7 +23,7 @@ Settings settings;
 AppInterpreter appinterpreter;
 LED_Ausgabe *pLedausgabe;
 Zeitmaster *pZeit;
-Muster myMuster;
+Muster *pMuster;
 
 /***************************************************************************
  * Timer; Eventrtigger
@@ -33,8 +36,11 @@ void IRAM_ATTR onTimer()
     eventtrigger = true;
 }
 
-/* START SETUP ************************************************************/
+// Start to delete after tests
+pixel_t _color = {30,10,0} ;
+// End to "delete"
 
+/* START SETUP ************************************************************/
 void setup()
 {
     /***************************************************************************
@@ -42,18 +48,6 @@ void setup()
      **************************************************************************/
     Serial.begin(SERIAL_SPEED);
     delay(100); Serial.println("--- Setup gestartet ---");
-
-    /***********************************************************************
-     * Initialisierung des Timers
-     **********************************************************************/
-    // Time 1: 1/(80MHZ/80) = 1us and count up
-    timer = timerBegin(0, 80, true);
-    // Attach onTimer function
-    timerAttachInterrupt(timer, &onTimer, true);
-    // Set alarm to 500 ms and repeat it (true)
-    timerAlarmWrite(timer, 500000, true);
-    // Start an alarm
-    timerAlarmEnable(timer);
     
     /***************************************************************************
      * Weitere Einstellungen und Initialisierungen
@@ -64,12 +58,27 @@ void setup()
     // Start der Funktionen für die LED-Ausgabe
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
 
+    pMuster = new Muster();
+
     // Zeitfunktionen
     pZeit = new Zeitmaster();
-    pZeit->setTimeDate(22,10,31,15,4,45); // ToDo: Sollte gelöscht werden, wenn die NTP Zeit bzw. App Zeiteinstellung funktioniert
+    pZeit->setTimeDate(6,0,49,15,4,45); // ToDo: Sollte gelöscht werden, wenn die NTP Zeit bzw. App Zeiteinstellung funktioniert
+
+    /***********************************************************************
+     * Initialisierung des Timers
+     **********************************************************************/
+    // Time 1: 1/(80MHZ/80) = 1us and count up
+    timer = timerBegin(0, 80, true);
+    // Attach onTimer function
+    timerAttachInterrupt(timer, &onTimer, true);
+    // Set alarm to 1000 ms and repeat it (true)
+    timerAlarmWrite(timer, 1000000, true);
+    // Start an alarm
+    STARTINTERRUPT;
 
     // Ender der Setup
     Serial.println("--- Setup beendet ---");
+
 }
 
 /*************************************************************************************************************************
@@ -77,21 +86,30 @@ void setup()
 **************************************************************************************************************************/
 void loop()
 {
-    // Wird alle 500 ms getriggert in der ISR (siehe globale Einstellungen)
+    // Wird jede 1s getriggert in der ISR (siehe globale Einstellungen)
     if( eventtrigger )
     {
+        STOPINTERRUPT;
+         
         // Update the clock
-        myMuster.setTimeMatrix( myMuster.getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes() );
-        myMuster.setSimpleTimeNoEffects( myMuster.getTimeMatrixFut(), myMuster.getArbsMatrix(), {60,0,0} );
-        pLedausgabe->setPixelToColorMatrix( myMuster.getArbsMatrix() );
+        pMuster->setTimeMatrix( pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes() );
+        pMuster->setSimpleTimeNoEffects( pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), _color );
+        pLedausgabe->setPixelToColorMatrix( pMuster->getArbsMatrix() );
+        
+        // Verzoegerung evtl. nicht erforderlich
+        // delay( 10 );
+        
         // reset trigger
         eventtrigger = false;
+
+        STARTINTERRUPT;
     }
 
     // Empfange Befehle aus der App
-    if (SerialBT.available())
-    {
-        // ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
-        Serial.write(SerialBT.read());
-    }
+    //if ( SerialBT.available() )
+    //{
+    //    // ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
+    //    Serial.write(SerialBT.read());
+    //}
+    serialTestRead();
 }

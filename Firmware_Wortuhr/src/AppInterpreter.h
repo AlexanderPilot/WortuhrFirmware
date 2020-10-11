@@ -16,10 +16,11 @@ class AppInterpreter
          * App Befehle einlesen
          ***************************************/
         void readCommandCharFromApp(char CommandChar);
+        void serialTestRead( pixel_t *myColor );
     
     public: //muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
         void _getCommandFromApp(char AppBefehl[11 ]);
-    
+
     private:
         /****************************************
          * Einstellungen vom Mikrocontroller lesen

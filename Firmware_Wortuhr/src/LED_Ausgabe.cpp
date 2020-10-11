@@ -11,11 +11,6 @@
 
 Settings _LEDsettings;
 
-LED_Ausgabe::LED_Ausgabe()
-{
-    _strip = new WS2812((gpio_num_t)LEDSTRIP_PIN,LED_NUM,0);
-}
-
 LED_Ausgabe::LED_Ausgabe(gpio_num_t gpioNum, uint16_t pixelCount)
 {
     _strip = new WS2812(gpioNum,pixelCount,0);

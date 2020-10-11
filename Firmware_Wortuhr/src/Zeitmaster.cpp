@@ -221,3 +221,27 @@ void Zeitmaster::printZeitmasterTime(void)
     Serial.print(":");
     Serial.println(myRTCDS3231.now().second());
 }
+
+
+void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
+{
+    static uint8_t oldMinuteVal = 61;
+
+    if( oldMinuteVal != myRTCDS3231.now().minute() )
+    {
+        oldMinuteVal = myRTCDS3231.now().minute();
+
+        Serial.print("Uhrzeit: ");
+        Serial.print(myRTCDS3231.now().hour());
+        Serial.print(":");
+        Serial.println(myRTCDS3231.now().minute());
+    }   
+}
+
+bool Zeitmaster::timeTrigger()
+{
+    static uint8_t oldMinuteVal = 61;
+
+    if( oldMinuteVal != myRTCDS3231.now().minute() )
+        oldMinuteVal = myRTCDS3231.now().minute();
+}
