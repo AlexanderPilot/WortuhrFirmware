@@ -89,20 +89,17 @@ void loop()
     // Wird jede 1s getriggert in der ISR (siehe globale Einstellungen)
     if( eventtrigger )
     {
-        STOPINTERRUPT;
+        //STOPINTERRUPT;
          
         // Update the clock
         pMuster->setTimeMatrix( pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes() );
         pMuster->setSimpleTimeNoEffects( pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), _color );
         pLedausgabe->setPixelToColorMatrix( pMuster->getArbsMatrix() );
         
-        // Verzoegerung evtl. nicht erforderlich
-        // delay( 10 );
-        
         // reset trigger
         eventtrigger = false;
 
-        STARTINTERRUPT;
+        //STARTINTERRUPT;
     }
 
     // Empfange Befehle aus der App
@@ -111,5 +108,5 @@ void loop()
     //    // ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
     //    Serial.write(SerialBT.read());
     //}
-    serialTestRead();
+    //serialTestRead();
 }

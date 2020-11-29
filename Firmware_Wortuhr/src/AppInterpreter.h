@@ -55,4 +55,6 @@ class AppInterpreter
         byte _convertVarToByte(uint32_t ArrayData);
         bool _convertVarToBool(uint32_t ArrayData);
         uint16_t _convertVarToUint16(uint32_t ArrayData);
+
+
 };

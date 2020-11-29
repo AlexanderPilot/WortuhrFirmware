@@ -625,5 +625,3 @@ void AppInterpreter::serialTestRead( pixel_t *param )
     } 
     deleteSerialIn();
 }
-
-u
