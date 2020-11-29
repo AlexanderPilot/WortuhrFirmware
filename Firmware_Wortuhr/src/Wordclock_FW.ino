@@ -2,6 +2,11 @@
  * Wordclock Software
  * created: 01.02.2019
  * by Alex P. and Vitali H.
+ * 
+ * ToDos:
+ *      1. App sende Zeit die am Handy angezeigt wird (Vitali)
+ *      2. Lese per Bluetooth Zeit aus der App und stelle den DS3231 ein (Alex)
+ * 
  *****************************************************************************************************************************************************************************************/
 
 /***************************************************************************
@@ -78,7 +83,6 @@ void setup()
 
     // Ender der Setup
     Serial.println("--- Setup beendet ---");
-
 }
 
 /*************************************************************************************************************************
@@ -102,11 +106,11 @@ void loop()
         //STARTINTERRUPT;
     }
 
+    // Hier einlesen des Befehls
     // Empfange Befehle aus der App
-    //if ( SerialBT.available() )
-    //{
-    //    // ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
-    //    Serial.write(SerialBT.read());
-    //}
-    //serialTestRead();
+    if ( SerialBT.available() )
+    {
+       //ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
+       Serial.print(SerialBT.read());
+    }
 }
