@@ -26,7 +26,7 @@ class AppInterpreter
         void _CommSetColor(char AppBefehl[COMMAND_LENGTH]);
         void _CommSetBrightness(char AppBefehl[COMMAND_LENGTH]);
         void _CommSetTime(char AppBefehl[COMMAND_LENGTH]);
-        void _CommSetMisc(char AppBefehl[COMMAND_LENGTH])
+        void _CommSetMisc(char AppBefehl[COMMAND_LENGTH]);
         
         
         /****************************************
