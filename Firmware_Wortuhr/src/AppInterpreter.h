@@ -17,11 +17,18 @@ class AppInterpreter
          ***************************************/
         void readCommandCharFromApp(char CommandChar);
         void serialTestRead( pixel_t *myColor );
-    
-    public: //muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
-        void _getCommandFromApp(char AppBefehl[11 ]);
-
+        
+        
     private:
+        /****************************************
+         * Ansteuerbefehle aus der App
+         ***************************************/
+        void _CommSetColor(char AppBefehl[COMMAND_LENGTH]);
+        void _CommSetBrightness(char AppBefehl[COMMAND_LENGTH]);
+        void _CommSetTime(char AppBefehl[COMMAND_LENGTH]);
+        void _CommSetMisc(char AppBefehl[COMMAND_LENGTH])
+        
+        
         /****************************************
          * Einstellungen vom Mikrocontroller lesen
          ***************************************/
