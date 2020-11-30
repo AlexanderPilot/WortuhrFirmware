@@ -10,107 +10,6 @@ AppInterpreter::AppInterpreter()
 }
 
 
-
-
-/***************************************************************************
- * Funktion zum Einlesen der Befehle
- * in:  je ein Zeichen aus der Bluetooth-Kommunikation
- * out: boolean zur Anzeige wenn ein neues Kommando angekommen ist
- **************************************************************************/
-/*bool AppInterpreter::comevatiation(char getChar)
-{
-  
-    // Indikator ob ein Kommando vollstaendig angekommen ist
-    static bool newComAv = false;
-    static int zaehler = 0;
-    static bool comStart = false;
-
-    if( newComAv )
-    {
-        zaehler  = 0;
-        comStart = false;
-        newComAv = false;
-    }
-
-    // Neues Kommando einlesen
-    if(comStart)
-    {
-        zaehler++;
-        switch(zaehler)
-        {
-            case 4: 
-                if( (getChar == '#') || (getChar == '%') || (getChar == '!') )
-                {
-                    bufferReader[0] = getChar;
-                }
-                else
-                {
-                    comStart = false;
-                    zaehler=0;
-                }
-                break;
-            case 5:
-                bufferReader[1] = getChar;
-                break;
-            case 6:
-                bufferReader[2] = getChar;
-                break;
-            case 7:
-                bufferReader[3] = getChar;
-                break;
-            case 8:   
-                bufferReader[4] = getChar;
-                break;
-            case 9:  
-                bufferReader[5] = getChar;
-                break;
-            case 10:  
-                bufferReader[6] = getChar;
-                break;
-            case 11:
-                if( getChar == END_SIGN )
-                {
-                    bufferReader[7] = getChar;
-                    newComAv = true;
-                    zaehler=0;
-                }
-                else
-                {
-                    comStart = false;
-                    zaehler=0; 
-                }
-                break;
-            default:
-                comStart=false;
-                break;
-        }
-    }
-
-    // Start eines Kommandos feststellen
-    if( !(comStart) )
-    {
-        if( getChar == START_SIGN )
-        {
-            zaehler++;
-            if( zaehler == 3 )
-            {
-                comStart = true;
-            }
-        }
-        else
-        {
-            zaehler = 0;
-        }
-    }
-    // ist "true" wenn neues Kommando erkannt wurde
-    if(newComAv)
-    {
-        setUpCommand( );
-    }
-    return newComAv;
-    
-}*/
-
 /****************************************
  * App Befehle einlesen
  ***************************************/
@@ -171,154 +70,26 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
  *  
 */
 
-//Funktion für Einstellungen (ohne WIFI_SSID und WIFI_PW)
-void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
+void AppInterpreter::_CommSetColor(char AppBefehl[COMMAND_LENGTH])
 {
-    // !!! byte counter;
-    pixel_t AppColor;
-    uint32_t var;
     
-    if(DEBUG_APPINTERPRETER == 1)
-    {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Auswertung des App Befehls");
-    }
-    
-    var   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)<<20) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')<<20)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10)<<16) : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')<<16)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)<<12) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')<<12)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+4] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+4] - 'A' + 10)<<8)  : ((AppBefehl[NUM_SIGN_CATEGORY+4] - '0')<<8)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+5] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+5] - 'A' + 10)<<4)  : ((AppBefehl[NUM_SIGN_CATEGORY+5] - '0')<<4)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+6] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+6] - 'A' + 10))     : ((AppBefehl[NUM_SIGN_CATEGORY+6] - '0')));
-    
-    //Auswertung der Befehle
-    switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
-    {
-        //Spracheinstellung
-        case SIGN_LANGUAGE:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Spracheinstellung: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setLanguage(_convertVarToByte(var));
-            break;
-        
-        //Helligkeitseinstellung
-        case SIGN_BRIGHTNESS:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Helligkeitswert: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setBrightnessPercent(map(_convertVarToByte(var), 0, 255, 0, 100));
-            break;
-            
-        //Farbeinstellung
-        case SIGN_COLOR:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Farbeinstellung: ");
-            }
-            
-            //Zuordnung der Zeichenkette zur Farbe
-            AppColor.red   = (var & 0xFF0000) >> 16;
-            AppColor.green = (var & 0x00FF00) >> 8;
-            AppColor.blue   = (var & 0x0000FF);
-            
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("rot: ");
-                Serial.print(AppColor.red);
-                Serial.print(" gruen: ");
-                Serial.print(AppColor.green);
-                Serial.print(" blau: ");
-                Serial.println(AppColor.blue);
-            }
-            
-            this->_setColor(AppColor);
-            break;
-            
-        //Fade Mode Einstellung
-        case SIGN_FADEMODE:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("FadeMode: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setFadeMode(_convertVarToByte(var));
-            break;
-            
-        //Start Ecke der Ecke-LED Einstellung
-        case SIGN_CORNERSTARTLED:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Ecke der Start LED: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setCornerStartLed(_convertVarToByte(var));
-            break;
-            
-        case SIGN_CORNERSCLOCKWISE:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToBool(var));
-            }
-
-            this->_setCornerStartLed(_convertVarToBool(var));
-            break;
-
-        case SIGN_STARTPATTERN:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Startmuster: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-
-            this->_setStartPattern(_convertVarToByte(var));
-            break;
-            
-        case SIGN_GMTOFFSET:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("GMT Offset in Sekunden: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToUint16(var));
-            }
-
-            this->_setGmtTimeOffsetSec(_convertVarToUint16(var));
-            break;
-            
-        default:
-            break;
-    }
 }
+
+void AppInterpreter::_CommSetBrightness(char AppBefehl[COMMAND_LENGTH]);
+{
+    
+}
+
+void AppInterpreter::_CommSetTime(char AppBefehl[COMMAND_LENGTH]);
+{
+    
+}
+
+void AppInterpreter::_CommSetMisc(char AppBefehl[COMMAND_LENGTH])
+{
+    
+}
+
 
 
 /****************************************
@@ -625,3 +396,254 @@ void AppInterpreter::serialTestRead( pixel_t *param )
     } 
     deleteSerialIn();
 }
+
+
+/***************************************************************************
+ * Funktion zum Einlesen der Befehle
+ * in:  je ein Zeichen aus der Bluetooth-Kommunikation
+ * out: boolean zur Anzeige wenn ein neues Kommando angekommen ist
+ **************************************************************************/
+/*bool AppInterpreter::comevatiation(char getChar)
+{
+  
+    // Indikator ob ein Kommando vollstaendig angekommen ist
+    static bool newComAv = false;
+    static int zaehler = 0;
+    static bool comStart = false;
+
+    if( newComAv )
+    {
+        zaehler  = 0;
+        comStart = false;
+        newComAv = false;
+    }
+
+    // Neues Kommando einlesen
+    if(comStart)
+    {
+        zaehler++;
+        switch(zaehler)
+        {
+            case 4: 
+                if( (getChar == '#') || (getChar == '%') || (getChar == '!') )
+                {
+                    bufferReader[0] = getChar;
+                }
+                else
+                {
+                    comStart = false;
+                    zaehler=0;
+                }
+                break;
+            case 5:
+                bufferReader[1] = getChar;
+                break;
+            case 6:
+                bufferReader[2] = getChar;
+                break;
+            case 7:
+                bufferReader[3] = getChar;
+                break;
+            case 8:   
+                bufferReader[4] = getChar;
+                break;
+            case 9:  
+                bufferReader[5] = getChar;
+                break;
+            case 10:  
+                bufferReader[6] = getChar;
+                break;
+            case 11:
+                if( getChar == END_SIGN )
+                {
+                    bufferReader[7] = getChar;
+                    newComAv = true;
+                    zaehler=0;
+                }
+                else
+                {
+                    comStart = false;
+                    zaehler=0; 
+                }
+                break;
+            default:
+                comStart=false;
+                break;
+        }
+    }
+
+    // Start eines Kommandos feststellen
+    if( !(comStart) )
+    {
+        if( getChar == START_SIGN )
+        {
+            zaehler++;
+            if( zaehler == 3 )
+            {
+                comStart = true;
+            }
+        }
+        else
+        {
+            zaehler = 0;
+        }
+    }
+    // ist "true" wenn neues Kommando erkannt wurde
+    if(newComAv)
+    {
+        setUpCommand( );
+    }
+    return newComAv;
+    
+}*/
+
+/*
+//Funktion für Einstellungen (ohne WIFI_SSID und WIFI_PW)
+void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
+{
+    // !!! byte counter;
+    pixel_t AppColor;
+    uint32_t var;
+    
+    if(DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.println("Auswertung des App Befehls");
+    }
+    
+    var   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)<<20) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')<<20)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10)<<16) : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')<<16)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)<<12) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')<<12)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+4] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+4] - 'A' + 10)<<8)  : ((AppBefehl[NUM_SIGN_CATEGORY+4] - '0')<<8)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+5] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+5] - 'A' + 10)<<4)  : ((AppBefehl[NUM_SIGN_CATEGORY+5] - '0')<<4)) +
+            ((AppBefehl[NUM_SIGN_CATEGORY+6] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+6] - 'A' + 10))     : ((AppBefehl[NUM_SIGN_CATEGORY+6] - '0')));
+    
+    //Auswertung der Befehle
+    switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
+    {
+        //Spracheinstellung
+        case SIGN_LANGUAGE:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Spracheinstellung: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
+            }
+            
+            this->_setLanguage(_convertVarToByte(var));
+            break;
+        
+        //Helligkeitseinstellung
+        case SIGN_BRIGHTNESS:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Helligkeitswert: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
+            }
+            
+            this->_setBrightnessPercent(map(_convertVarToByte(var), 0, 255, 0, 100));
+            break;
+            
+        //Farbeinstellung
+        case SIGN_COLOR:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Farbeinstellung: ");
+            }
+            
+            //Zuordnung der Zeichenkette zur Farbe
+            AppColor.red   = (var & 0xFF0000) >> 16;
+            AppColor.green = (var & 0x00FF00) >> 8;
+            AppColor.blue   = (var & 0x0000FF);
+            
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("rot: ");
+                Serial.print(AppColor.red);
+                Serial.print(" gruen: ");
+                Serial.print(AppColor.green);
+                Serial.print(" blau: ");
+                Serial.println(AppColor.blue);
+            }
+            
+            this->_setColor(AppColor);
+            break;
+            
+        //Fade Mode Einstellung
+        case SIGN_FADEMODE:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("FadeMode: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
+            }
+            
+            this->_setFadeMode(_convertVarToByte(var));
+            break;
+            
+        //Start Ecke der Ecke-LED Einstellung
+        case SIGN_CORNERSTARTLED:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Ecke der Start LED: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
+            }
+            
+            this->_setCornerStartLed(_convertVarToByte(var));
+            break;
+            
+        case SIGN_CORNERSCLOCKWISE:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToBool(var));
+            }
+
+            this->_setCornerStartLed(_convertVarToBool(var));
+            break;
+
+        case SIGN_STARTPATTERN:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("Startmuster: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToByte(var));
+            }
+
+            this->_setStartPattern(_convertVarToByte(var));
+            break;
+            
+        case SIGN_GMTOFFSET:
+            if(DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print("AppInterpreter.cpp - ");
+                Serial.print("GMT Offset in Sekunden: ");
+                Serial.print(var);
+                Serial.print(" Konvertierter Wert: ");
+                Serial.println(_convertVarToUint16(var));
+            }
+
+            this->_setGmtTimeOffsetSec(_convertVarToUint16(var));
+            break;
+            
+        default:
+            break;
+    }
+}
+*/
