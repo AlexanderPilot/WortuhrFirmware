@@ -52,8 +52,14 @@ void setup()
      * Aufbauen der seriellen Kommunikation
      **************************************************************************/
     Serial.begin(SERIAL_SPEED);
-    delay(100); Serial.println("--- Setup gestartet ---");
-    
+    delay(100);
+    Serial.println("--- Setup gestartet ---");
+
+    if(!SerialBT.begin("Wordclock_001")){
+        Serial.println("An error occurred initializing Bluetooth");
+    }
+
+        
     /***************************************************************************
      * Weitere Einstellungen und Initialisierungen
      **************************************************************************/
@@ -108,9 +114,9 @@ void loop()
 
     // Hier einlesen des Befehls
     // Empfange Befehle aus der App
-    if ( SerialBT.available() )
+    while ( SerialBT.available() )
     {
        //ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
-       Serial.print(SerialBT.read());
+       Serial.print((char)SerialBT.read());
     }
 }
