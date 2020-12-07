@@ -5,56 +5,59 @@
 #include "Settings.h"
 
 #define DEBUG_APPINTERPRETER 1
+#define COMMAND_LENGTH 11
 
 class AppInterpreter
 {
-    public:
-        //Konstruktor
-        AppInterpreter();
-       
-        /****************************************
-         * App Befehle einlesen
-         ***************************************/
-        void readCommandCharFromApp(char CommandChar);
-        void serialTestRead( pixel_t *myColor );
-    
-    public: //muss später in private geändert werden, sodass als Hauptfunktion nur readCommandCharFromApp verfügbar ist
-        void _getCommandFromApp(char AppBefehl[11 ]);
+public:
+    //Konstruktor
+    AppInterpreter();
 
-    private:
-        /****************************************
+    /****************************************
+     * App Befehle einlesen
+     ***************************************/
+    void readCommandCharFromApp(char CommandChar);
+
+private:
+    /****************************************
+     * Ansteuerbefehle aus der App
+     ***************************************/
+    void _CommSetColor(char AppBefehl[COMMAND_LENGTH]);
+    void _CommSetBrightness(char AppBefehl[COMMAND_LENGTH]);
+    void _CommSetTime(char AppBefehl[COMMAND_LENGTH]);
+    void _CommSetMisc(char AppBefehl[COMMAND_LENGTH]);
+
+    /****************************************
          * Einstellungen vom Mikrocontroller lesen
          ***************************************/
-        void _loadSettingsFromUC();
-        byte _getLanguage();
-        byte _getBrightnessPercent();
-        pixel_t _getColor();
-        byte _getFadeMode();
-        byte _getCornerStartLed();
-        bool _getCornersClockwise();
-        byte _getStartPattern();
-        uint16_t _getGmtTimeOffsetSec();
-        
-        /****************************************
+    void _loadSettingsFromUC();
+    byte _getLanguage();
+    byte _getBrightnessPercent();
+    pixel_t _getColor();
+    byte _getFadeMode();
+    byte _getCornerStartLed();
+    bool _getCornersClockwise();
+    byte _getStartPattern();
+    uint16_t _getGmtTimeOffsetSec();
+
+    /****************************************
          * Einstellungen auf Mikrocontroller setzen
          ***************************************/
-        void _setLanguage(byte Language);
-        void _setBrightnessPercent(byte Brightness);
-        void _setColor(pixel_t color);
-        void _setFadeMode(byte fadeMode);
-        void _setCornerStartLed(byte CornerStartLed);
-        void _setCornersClockwise(boolean Clockwise);
-        void _setWifiSSID(String Ssid);
-        void _setWifiPW(String Password);
-        void _setStartPattern(byte StartPattern);
-        void _setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
-    
-        /****************************************
+    void _setLanguage(byte Language);
+    void _setBrightnessPercent(byte Brightness);
+    void _setColor(pixel_t color);
+    void _setFadeMode(byte fadeMode);
+    void _setCornerStartLed(byte CornerStartLed);
+    void _setCornersClockwise(boolean Clockwise);
+    void _setWifiSSID(String Ssid);
+    void _setWifiPW(String Password);
+    void _setStartPattern(byte StartPattern);
+    void _setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+
+    /****************************************
          * Hilfsfunktionen für Datenkonvertierung
          ***************************************/
-        byte _convertVarToByte(uint32_t ArrayData);
-        bool _convertVarToBool(uint32_t ArrayData);
-        uint16_t _convertVarToUint16(uint32_t ArrayData);
-
-
+    byte _convertVarToByte(uint32_t ArrayData);
+    bool _convertVarToBool(uint32_t ArrayData);
+    uint16_t _convertVarToUint16(uint32_t ArrayData);
 };
