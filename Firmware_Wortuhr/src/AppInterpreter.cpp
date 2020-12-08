@@ -45,33 +45,48 @@ AppInterpreter::AppInterpreter()
 void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     static bool newCommand = false;
-    // !!! static bool newPWSSIDCommand = false;
-    static char _AppBefehlBuffer[11];
-    // !!! static byte counter;
+    static uint8_t counter = 0:
+    static char _AppBefehlBuffer[NUM_COMMAND_COUNT];
 
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array");
     }
-
+    
+    if((newCommand == false)&&(CommandChar == START_SIGN)
+    {
+        _AppBefehlBuffer[counter] = CommandChar;
+        counter++;
+    }
+    
     //Abfrage ob gültiger Befehl per APP versendet wurde
-    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[1] == START_SIGN) && (_AppBefehlBuffer[2] == START_SIGN) && (_AppBefehlBuffer[NUM_COMMAND_COUNT - 1] == END_SIGN))
+    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[NUM_COMMAND_COUNT - 1] == END_SIGN))
     {
         newCommand = true; //vollständiger Befehl wurde erkannt
+        counter = 0;
     }
 
     //Aufruf der Funktion zur auswertung des gesamten App Befehls
     if (newCommand == true)
     {
-        //this->_getCommandFromApp(_AppBefehlBuffer);
+        //Auswerten der Ansteuerbefehle
+        switch(_AppBefehlBuffer[NUM_SIGN_CATEGORY])
+        {
+            case SIGN_BRIGHTNESS:
+                this->_CommSetBrightness(_AppBefehlBuffer);
+            case SIGN_COLOR:
+                this->_CommSetColor(_AppBefehlBuffer);
+            case SIGN_CLOCK:
+                this->_CommSetTime(_AppBefehlBuffer)
+        }
     }
 }
 
 /****************************************
  * Ansteuerbefehle aus der App
  ***************************************/
-void _CommSetColor(char AppBefehl[COMMAND_LENGTH])
+void _CommSetColor(char AppBefehl[NUM_COMMAND_COUNT])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -90,7 +105,7 @@ void _CommSetColor(char AppBefehl[COMMAND_LENGTH])
     _interpretersettings.setColor(AppColor);
 }
 
-void _CommSetBrightness(char AppBefehl[COMMAND_LENGTH])
+void _CommSetBrightness(char AppBefehl[NUM_COMMAND_COUNT])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -113,7 +128,7 @@ void _CommSetBrightness(char AppBefehl[COMMAND_LENGTH])
     _interpretersettings.setBrightnessPercent(AppBrightness);
 }
 
-void _CommSetTime(char AppBefehl[COMMAND_LENGTH])
+void _CommSetTime(char AppBefehl[NUM_COMMAND_COUNT])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -154,7 +169,7 @@ void _CommSetTime(char AppBefehl[COMMAND_LENGTH])
     _interpreterzeitmaster->setTimeDate(AppHours, AppMinutes, AppSeconds, AppDate, AppMonth, AppYear);
 }
 
-void _CommSetMisc(char AppBefehl[COMMAND_LENGTH])
+void _CommSetMisc(char AppBefehl[NUM_COMMAND_COUNT])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
