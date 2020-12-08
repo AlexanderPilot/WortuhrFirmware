@@ -45,48 +45,101 @@ AppInterpreter::AppInterpreter()
 void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     static bool newCommand = false;
-    static uint8_t counter = 0:
-    static char _AppBefehlBuffer[NUM_COMMAND_COUNT];
+    static uint8_t counter = 0;
+    static char _AppBefehlBuffer[11];
+    char _AppBefehl[6];
+    uint8_t i;
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array");
-    }
-    
-    if((newCommand == false)&&(CommandChar == START_SIGN)
-    {
-        _AppBefehlBuffer[counter] = CommandChar;
-        counter++;
-    }
-    
-    //Abfrage ob gültiger Befehl per APP versendet wurde
-    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[NUM_COMMAND_COUNT - 1] == END_SIGN))
-    {
-        newCommand = true; //vollständiger Befehl wurde erkannt
-        counter = 0;
+        Serial.print(" AppInterpreter.cpp - ");
+        Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array ");
+        Serial.print(CommandChar);
+        Serial.println("");
     }
 
-    //Aufruf der Funktion zur auswertung des gesamten App Befehls
+    if ((newCommand == false) && (CommandChar == START_SIGN))
+    {
+        newCommand = true;
+    }
+
     if (newCommand == true)
     {
-        //Auswerten der Ansteuerbefehle
-        switch(_AppBefehlBuffer[NUM_SIGN_CATEGORY])
+        _AppBefehlBuffer[counter] = CommandChar;
+        //Serial.print(_AppBefehlBuffer[counter]);
+        counter++;
+    }
+
+    //Abfrage ob gültiger Befehl per APP versendet wurde
+    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[8] == END_SIGN_1))
+    {
+        //Kopieren des Ansteuerbefehls auf lokale Kopie
+        for (i = 0; i <= 5; i++)
         {
-            case SIGN_BRIGHTNESS:
-                this->_CommSetBrightness(_AppBefehlBuffer);
-            case SIGN_COLOR:
-                this->_CommSetColor(_AppBefehlBuffer);
-            case SIGN_CLOCK:
-                this->_CommSetTime(_AppBefehlBuffer)
+            _AppBefehl[i] = _AppBefehlBuffer[i + 2];
+            //Serial.print(_AppBefehl[i]);
         }
+
+        //Auswerten der Ansteuerbefehle
+        switch (_AppBefehlBuffer[NUM_SIGN_CATEGORY])
+        {
+        case SIGN_BRIGHTNESS:
+            if (DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print(" AppInterpreter.cpp - ");
+                Serial.print("Array: ");
+                for (uint8_t i = 0; i < 6; i++)
+                {
+                    Serial.print(_AppBefehl[i]);
+                }
+                Serial.println(" Befehl Helligkeit");
+            }
+            this->_CommSetBrightness(_AppBefehl);
+        case SIGN_COLOR:
+            if (DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print(" AppInterpreter.cpp - ");
+                Serial.print("Array: ");
+                for (uint8_t i = 0; i < 6; i++)
+                {
+                    Serial.print(_AppBefehl[i]);
+                }
+                Serial.println(" Befehl Farbe");
+            }
+            this->_CommSetColor(_AppBefehl);
+        case SIGN_CLOCK:
+            if (DEBUG_APPINTERPRETER == 1)
+            {
+                Serial.print(" AppInterpreter.cpp - ");
+                Serial.print("Array: ");
+                for (uint8_t i = 0; i < 6; i++)
+                {
+                    Serial.print(_AppBefehl[i]);
+                }
+                Serial.println(" Befehl Uhrzeit");
+            }
+            this->_CommSetTime(_AppBefehl);
+        }
+
+        //Zurücksetzen der Arrays und static Variablen für den nächsten Durchlauf
+        for (counter = 0; counter < 11; counter++)
+        {
+            _AppBefehlBuffer[counter] = {};
+        }
+        for (counter = 0; counter < 6; counter++)
+        {
+            _AppBefehl[counter] = {};
+        }
+        newCommand = false;
+        counter = 0;
     }
 }
 
 /****************************************
  * Ansteuerbefehle aus der App
  ***************************************/
-void _CommSetColor(char AppBefehl[NUM_COMMAND_COUNT])
+
+void AppInterpreter::_CommSetColor(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -105,7 +158,7 @@ void _CommSetColor(char AppBefehl[NUM_COMMAND_COUNT])
     _interpretersettings.setColor(AppColor);
 }
 
-void _CommSetBrightness(char AppBefehl[NUM_COMMAND_COUNT])
+void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -128,12 +181,17 @@ void _CommSetBrightness(char AppBefehl[NUM_COMMAND_COUNT])
     _interpretersettings.setBrightnessPercent(AppBrightness);
 }
 
-void _CommSetTime(char AppBefehl[NUM_COMMAND_COUNT])
+void AppInterpreter::_CommSetTime(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Setzen der Zeit in RTC");
+        for (uint8_t i = 0; i < 6; i++)
+        {
+            Serial.print(AppBefehl[i]);
+        }
+        Serial.println("");
     }
 
     uint8_t AppHours;
@@ -144,13 +202,13 @@ void _CommSetTime(char AppBefehl[NUM_COMMAND_COUNT])
     uint8_t AppYear;
 
     //Auslesen Stunden
-    AppHours = (uint8_t)AppBefehl[0] * 10 + (uint8_t)AppBefehl[1];
+    AppHours = ((uint8_t)AppBefehl[0] - '0') * 10 + ((uint8_t)AppBefehl[1] - '0');
 
     //Auslesen Minuten
-    AppMinutes = (uint8_t)AppBefehl[2] * 10 + (uint8_t)AppBefehl[3];
+    AppMinutes = ((uint8_t)AppBefehl[2] - '0') * 10 + ((uint8_t)AppBefehl[3] - '0');
 
     //Auslesen Sekunden
-    AppSeconds = (uint8_t)AppBefehl[4] * 10 + (uint8_t)AppBefehl[5];
+    AppSeconds = ((uint8_t)AppBefehl[4] - '0') * 10 + ((uint8_t)AppBefehl[5] - '0');
 
     //Verwerfen der versendeten Appwerte bei Werten außerhalb des Wertebereichs
     if ((AppHours > 23) || (AppMinutes > 59) || (AppSeconds > 59))
@@ -169,7 +227,7 @@ void _CommSetTime(char AppBefehl[NUM_COMMAND_COUNT])
     _interpreterzeitmaster->setTimeDate(AppHours, AppMinutes, AppSeconds, AppDate, AppMonth, AppYear);
 }
 
-void _CommSetMisc(char AppBefehl[NUM_COMMAND_COUNT])
+/*void _CommSetMisc(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -177,7 +235,7 @@ void _CommSetMisc(char AppBefehl[NUM_COMMAND_COUNT])
         Serial.print("Diverse Befehle");
     }
     //TODO: programm function
-}
+}*/
 
 /****************************************
  * Einstellungen vom Mikrocontroller lesen
