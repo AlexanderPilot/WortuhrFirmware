@@ -81,7 +81,7 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-#define BT_DEVICE_NAME    "Wordclock_AS"
+#define BT_DEVICE_NAME    "Wordclock"
 #define MAX_BT_CLIENTS    1
 #define BT_PASSWORD       "1234"
 
@@ -94,12 +94,14 @@
  * App Interpreter Einstellungen
  **************************************************************************/
 #define NUM_COMMAND_COUNT       11
-#define NUM_SIGN_CATEGORY       3
-#define START_SIGN              '+'
-#define END_SIGN                '$'
+#define NUM_SIGN_CATEGORY       1
+#define START_SIGN              'X'
+#define END_SIGN                '$\n'
+#define SIGN_BRIGHTNESS         'H'
+#define SIGN_COLOR              'F'
+#define SIGN_CLOCK              'T'
+
 #define SIGN_LANGUAGE           'A'
-#define SIGN_BRIGHTNESS         'B'
-#define SIGN_COLOR              'C'
 #define SIGN_FADEMODE           'D'
 #define SIGN_CORNERSTARTLED     'E'
 #define SIGN_CORNERSCLOCKWISE   'F'
