@@ -5,7 +5,6 @@
 #include "Settings.h"
 
 #define DEBUG_APPINTERPRETER 1
-#define COMMAND_LENGTH 11
 
 class AppInterpreter
 {
