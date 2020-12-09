@@ -108,7 +108,7 @@ void loop()
 
         //Serielle Ausgabe
         //FIXME
-        pZeit->printZeitmasterTime();
+        //pZeit->printZeitmasterTime();
 
         // reset trigger
         eventtrigger = false;

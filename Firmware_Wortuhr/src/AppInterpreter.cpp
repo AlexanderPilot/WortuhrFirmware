@@ -95,6 +95,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
                 Serial.println(" Befehl Helligkeit");
             }
             this->_CommSetBrightness(_AppBefehl);
+            break;
         case SIGN_COLOR:
             if (DEBUG_APPINTERPRETER == 1)
             {
@@ -107,6 +108,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
                 Serial.println(" Befehl Farbe");
             }
             this->_CommSetColor(_AppBefehl);
+            break;
         case SIGN_CLOCK:
             if (DEBUG_APPINTERPRETER == 1)
             {
@@ -119,6 +121,9 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
                 Serial.println(" Befehl Uhrzeit");
             }
             this->_CommSetTime(_AppBefehl);
+            break;
+        default:
+            break;
         }
 
         //Zurücksetzen der Arrays und static Variablen für den nächsten Durchlauf
@@ -150,10 +155,20 @@ void AppInterpreter::_CommSetColor(char AppBefehl[6])
     pixel_t AppColor;
 
     //Auslesen der Farbe
-    AppColor.red = ((uint8_t)AppBefehl[0] - '0') * 16 + ((uint8_t)AppBefehl[1] - '0');
-    AppColor.green = ((uint8_t)AppBefehl[2] - '0') * 16 + ((uint8_t)AppBefehl[3] - '0');
-    AppColor.blue = ((uint8_t)AppBefehl[4] - '0') * 16 + ((uint8_t)AppBefehl[5] - '0');
+    AppColor.red = hexcharToUint8_t(AppBefehl[0]) * 16 + hexcharToUint8_t(AppBefehl[1]);
+    AppColor.green = hexcharToUint8_t(AppBefehl[2]) * 16 + hexcharToUint8_t(AppBefehl[3]);
+    AppColor.blue = hexcharToUint8_t(AppBefehl[4]) * 16 + hexcharToUint8_t(AppBefehl[5]);
 
+    if (DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("Farbe");
+        Serial.print(" rot: ");
+        Serial.print(AppColor.red);
+        Serial.print(" grün: ");
+        Serial.print(AppColor.green);
+        Serial.print(" blau: ");
+        Serial.println(AppColor.blue);
+    }
     //Schrieben der Farbe in die Einstellungen
     _interpretersettings.setColor(AppColor);
 }
@@ -169,8 +184,12 @@ void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
     uint8_t AppBrightness;
 
     //Auslesen der Helligkeit
-    AppBrightness = ((uint8_t)AppBefehl[0] - '0') * 100 + ((uint8_t)AppBefehl[1] - '0') * 10 + ((uint8_t)AppBefehl[2] - '0');
-
+    AppBrightness = hexcharToUint8_t(AppBefehl[0]) * 100 + hexcharToUint8_t(AppBefehl[1]) * 10 + hexcharToUint8_t(AppBefehl[2]);
+    if (DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Setzen der LED Helligkeit");
+    }
     //Verwerfen des versendeten Appwerts bei Wert außerhalb des Wertebereichs
     if (AppBrightness > 100)
     {
@@ -202,13 +221,13 @@ void AppInterpreter::_CommSetTime(char AppBefehl[6])
     uint8_t AppYear;
 
     //Auslesen Stunden
-    AppHours = ((uint8_t)AppBefehl[0] - '0') * 10 + ((uint8_t)AppBefehl[1] - '0');
+    AppHours = hexcharToUint8_t(AppBefehl[0]) * 10 + hexcharToUint8_t(AppBefehl[1]);
 
     //Auslesen Minuten
-    AppMinutes = ((uint8_t)AppBefehl[2] - '0') * 10 + ((uint8_t)AppBefehl[3] - '0');
+    AppMinutes = hexcharToUint8_t(AppBefehl[2]) * 10 + hexcharToUint8_t(AppBefehl[3]);
 
     //Auslesen Sekunden
-    AppSeconds = ((uint8_t)AppBefehl[4] - '0') * 10 + ((uint8_t)AppBefehl[5] - '0');
+    AppSeconds = hexcharToUint8_t(AppBefehl[4]) * 10 + hexcharToUint8_t(AppBefehl[5]);
 
     //Verwerfen der versendeten Appwerte bei Werten außerhalb des Wertebereichs
     if ((AppHours > 23) || (AppMinutes > 59) || (AppSeconds > 59))
@@ -509,11 +528,17 @@ uint16_t AppInterpreter::_convertVarToUint16(uint32_t ArrayData)
     return var;
 }
 
-void deleteSerialIn()
+uint8_t AppInterpreter::hexcharToUint8_t(char hexchar)
 {
-    while (Serial.available())
-        Serial.read();
+    if (hexchar >= '0' && hexchar <= '9')
+        return hexchar - '0';
+    if (hexchar >= 'A' && hexchar <= 'F')
+        return hexchar - 'A' + 10;
+    if (hexchar >= 'a' && hexchar <= 'f')
+        return hexchar - 'a' + 10;
+    return -1;
 }
+
 /*
 void AppInterpreter::serialTestRead( pixel_t *param )
 {
