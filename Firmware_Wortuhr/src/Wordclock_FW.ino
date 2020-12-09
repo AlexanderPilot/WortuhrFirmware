@@ -42,7 +42,7 @@ void IRAM_ATTR onTimer()
 }
 
 // Start to delete after tests
-pixel_t _color = {30, 10, 0};
+pixel_t _color = {10, 10, 10};
 // End to "delete"
 
 /* START SETUP ************************************************************/
@@ -65,10 +65,12 @@ void setup()
      **************************************************************************/
     // Einstellung der Sprache fuer das Anzeigen der Zeit
     settings.setLanguage(GERMAN);
+    settings.setColor(30,30,30);
 
     // Start der Funktionen für die LED-Ausgabe
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
 
+    //Anzeige Startmuster
     pMuster = new Muster();
 
     // Zeitfunktionen
@@ -103,13 +105,12 @@ void loop()
 
         // Update the clock
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
-        pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), _color);
+        pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
         pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
 
         //Serielle Ausgabe
         //FIXME
-        //pZeit->printZeitmasterTime();
-
+        pZeit->printZeitmasterTime();
         // reset trigger
         eventtrigger = false;
 
