@@ -150,9 +150,9 @@ void AppInterpreter::_CommSetColor(char AppBefehl[6])
     pixel_t AppColor;
 
     //Auslesen der Farbe
-    AppColor.red = AppBefehl[0] * 16 + AppBefehl[1];
-    AppColor.green = AppBefehl[2] * 16 + AppBefehl[3];
-    AppColor.blue = AppBefehl[4] * 16 + AppBefehl[5];
+    AppColor.red = ((uint8_t)AppBefehl[0] - '0') * 16 + ((uint8_t)AppBefehl[1] - '0');
+    AppColor.green = ((uint8_t)AppBefehl[2] - '0') * 16 + ((uint8_t)AppBefehl[3] - '0');
+    AppColor.blue = ((uint8_t)AppBefehl[4] - '0') * 16 + ((uint8_t)AppBefehl[5] - '0');
 
     //Schrieben der Farbe in die Einstellungen
     _interpretersettings.setColor(AppColor);
@@ -169,7 +169,7 @@ void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
     uint8_t AppBrightness;
 
     //Auslesen der Helligkeit
-    AppBrightness = (uint8_t)AppBefehl[0] * 100 + (uint8_t)AppBefehl[1] * 10 + (uint8_t)AppBefehl[3];
+    AppBrightness = ((uint8_t)AppBefehl[0] - '0') * 100 + ((uint8_t)AppBefehl[1] - '0') * 10 + ((uint8_t)AppBefehl[2] - '0');
 
     //Verwerfen des versendeten Appwerts bei Wert außerhalb des Wertebereichs
     if (AppBrightness > 100)
