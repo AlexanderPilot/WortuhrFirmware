@@ -187,8 +187,8 @@ void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
     AppBrightness = hexcharToUint8_t(AppBefehl[0]) * 100 + hexcharToUint8_t(AppBefehl[1]) * 10 + hexcharToUint8_t(AppBefehl[2]);
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Setzen der LED Helligkeit");
+        Serial.print("Helligkeit: ");
+        Serial.print(AppBrightness);
     }
     //Verwerfen des versendeten Appwerts bei Wert außerhalb des Wertebereichs
     if (AppBrightness > 100)
