@@ -161,7 +161,7 @@ void _CommSetMisc(char AppBefehl[COMMAND_LENGTH])
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Diverse Befehle");
     }
-    //TODO: programm function
+    //TODO: programm function for misc
 }
 
 /****************************************
