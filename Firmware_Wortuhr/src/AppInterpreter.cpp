@@ -234,13 +234,8 @@ void AppInterpreter::_CommSetTime(char AppBefehl[6])
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Diverse Befehle");
     }
-<<<<<<< HEAD
-    //TODO: programm function for misc
-}
-=======
     //TODO: programm function
 }*/
->>>>>>> AppInterpreter
 
 /****************************************
  * Einstellungen vom Mikrocontroller lesen
