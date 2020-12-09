@@ -108,7 +108,7 @@ void loop()
 
         //Serielle Ausgabe
         //FIXME
-        //pZeit->printZeitmasterTime();
+        pZeit->printZeitmasterTime();
 
         // reset trigger
         eventtrigger = false;
@@ -121,7 +121,6 @@ void loop()
     while (SerialBT.available())
     {
         //ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
-        Serial.print((char)SerialBT.read());
         appinterpreter.readCommandCharFromApp((char)SerialBT.read());
     }
 }
