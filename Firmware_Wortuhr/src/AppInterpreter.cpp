@@ -39,105 +39,90 @@ AppInterpreter::AppInterpreter()
  *  
 */
 
+// ToDo: nur für den Test, kann später gelöscht werden
+void justSendTheFoundStringToSerial(char *p )
+{
+    for(int i = 7; i > 1; i--)
+        Serial.print( *(p+i) );
+    Serial.print( '\n' );
+}
+
 /****************************************
  * App Befehle einlesen
  ***************************************/
-void AppInterpreter::readCommandCharFromApp(char CommandChar)
+uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
-    static bool newCommand = false;
-    static uint8_t counter = 0;
-    static char _AppBefehlBuffer[11];
-    char _AppBefehl[6];
-    uint8_t i;
+    // static Variablen müssen initialisiert werden
+    static char _AppBefehlBuffer[] = {'0','0','0','0','0','0','0','0','0','0'};
+    uint8_t iRet = 0;
 
-    if (DEBUG_APPINTERPRETER == 1)
+
+
+    // buffer um eins weiter schieben
+    for(int i = 9; i > 0; i--)
     {
-        Serial.print(" AppInterpreter.cpp - ");
-        Serial.print("Zusammenfassen und Plausibilisieren der einzeln übertragenen Char zu einem Array ");
-        Serial.print(CommandChar);
-        Serial.println("");
+        _AppBefehlBuffer[i] = _AppBefehlBuffer[i-1];
     }
 
-    if ((newCommand == false) && (CommandChar == START_SIGN))
-    {
-        newCommand = true;
-    }
 
-    if (newCommand == true)
-    {
-        _AppBefehlBuffer[counter] = CommandChar;
-        //Serial.print(_AppBefehlBuffer[counter]);
-        counter++;
-    }
+    // Neues Zeichen in den buffer[0] schieben
+    _AppBefehlBuffer[0] = CommandChar;
 
-    //Abfrage ob gültiger Befehl per APP versendet wurde
-    if ((_AppBefehlBuffer[0] == START_SIGN) && (_AppBefehlBuffer[8] == END_SIGN_1))
+
+    // Prüfe, ob ein befehl anliegt
+    if( (_AppBefehlBuffer[9] == 'X') && (_AppBefehlBuffer[1] = '$') && ( (_AppBefehlBuffer[0] == '\n') || (_AppBefehlBuffer[0] == '\t') ) )
     {
-        //Kopieren des Ansteuerbefehls auf lokale Kopie
-        for (i = 0; i <= 5; i++)
+        // Vorläufig wurde was erkannt
+        iRet = 1;
+
+        switch (_AppBefehlBuffer[8])
         {
-            _AppBefehl[i] = _AppBefehlBuffer[i + 2];
-            //Serial.print(_AppBefehl[i]);
-        }
-
-        //Auswerten der Ansteuerbefehle
-        switch (_AppBefehlBuffer[NUM_SIGN_CATEGORY])
-        {
-        case SIGN_BRIGHTNESS:
-            if (DEBUG_APPINTERPRETER == 1)
+        // Auswerten Password
+        case 'P':
+            if( _AppBefehlBuffer[0] == '\t' )
             {
-                Serial.print(" AppInterpreter.cpp - ");
-                Serial.print("Array: ");
-                for (uint8_t i = 0; i < 6; i++)
-                {
-                    Serial.print(_AppBefehl[i]);
-                }
-                Serial.println(" Befehl Helligkeit");
+                // Add new character to the string array and wait for more
+                Serial.print("PW + "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
             }
-            this->_CommSetBrightness(_AppBefehl);
-            break;
-        case SIGN_COLOR:
-            if (DEBUG_APPINTERPRETER == 1)
+            else
             {
-                Serial.print(" AppInterpreter.cpp - ");
-                Serial.print("Array: ");
-                for (uint8_t i = 0; i < 6; i++)
-                {
-                    Serial.print(_AppBefehl[i]);
-                }
-                Serial.println(" Befehl Farbe");
+                // Add new character to the string array and use the password
+                Serial.print("PW (END)"); justSendTheFoundStringToSerial( _AppBefehlBuffer );
             }
-            this->_CommSetColor(_AppBefehl);
             break;
-        case SIGN_CLOCK:
-            if (DEBUG_APPINTERPRETER == 1)
+        // Auswerten SSID
+        case 'S':
+            if( _AppBefehlBuffer[0] == '\t' )
             {
-                Serial.print(" AppInterpreter.cpp - ");
-                Serial.print("Array: ");
-                for (uint8_t i = 0; i < 6; i++)
-                {
-                    Serial.print(_AppBefehl[i]);
-                }
-                Serial.println(" Befehl Uhrzeit");
+                // Add new character to the string array and wait for more
+                Serial.print("SSID + "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
             }
-            this->_CommSetTime(_AppBefehl);
+            else
+            {
+                // Add new character to the string array and use the password
+                Serial.print("SSID (END)"); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            }
             break;
+        // Auswerten der Farbe
+        case 'F':
+            Serial.print("Farbe erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            break;
+        // Auswerten der Helligkeit
+        case 'H':
+            Serial.print("Helligkeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            break;
+         // Auswerten der Zeit
+        case 'T':
+            Serial.print("Zeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            break;
+        // Keine Ahnung, muss aber sein!
         default:
+            iRet = 0;
             break;
         }
-
-        //Zurücksetzen der Arrays und static Variablen für den nächsten Durchlauf
-        for (counter = 0; counter < 11; counter++)
-        {
-            _AppBefehlBuffer[counter] = {};
-        }
-        for (counter = 0; counter < 6; counter++)
-        {
-            _AppBefehl[counter] = {};
-        }
-        newCommand = false;
-        counter = 0;
     }
+
+    return iRet;
 }
 
 /****************************************

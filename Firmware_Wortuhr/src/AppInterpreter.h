@@ -15,7 +15,7 @@ public:
     /****************************************
      * App Befehle einlesen
      ***************************************/
-    void readCommandCharFromApp(char CommandChar);
+    uint8_t readCommandCharFromApp(char CommandChar);
     void setCommand(char AppBefehl[6]);
     uint8_t *getCommand();
 
@@ -56,6 +56,9 @@ private:
     void _setWifiPW(String Password);
     void _setStartPattern(byte StartPattern);
     void _setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+
+
+
 
     /****************************************
          * Hilfsfunktionen für Datenkonvertierung

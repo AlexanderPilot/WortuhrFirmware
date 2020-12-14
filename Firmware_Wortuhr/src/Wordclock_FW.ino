@@ -99,27 +99,27 @@ void setup()
 void loop()
 {
     // Wird jede 1s getriggert in der ISR (siehe globale Einstellungen)
-    if (eventtrigger)
-    {
-        //STOPINTERRUPT;
+    // if (eventtrigger)
+    // {
+    //     //STOPINTERRUPT;
 
-        // Update the clock
-        pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
-        pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
-        pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
+    //     // Update the clock
+    //     pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
+    //     pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
+    //     pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
 
-        //Serielle Ausgabe
-        //FIXME
-        //pZeit->printZeitmasterTime();
-        // reset trigger
-        eventtrigger = false;
+    //     //Serielle Ausgabe
+    //     //FIXME
+    //     //pZeit->printZeitmasterTime();
+    //     // reset trigger
+    //     eventtrigger = false;
 
-        //STARTINTERRUPT;
-    }
+    //     //STARTINTERRUPT;
+    // }
 
     // Hier einlesen des Befehls
     // Empfange Befehle aus der App
-    while (SerialBT.available())
+    if (SerialBT.available())
     {
         //ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
         appinterpreter.readCommandCharFromApp((char)SerialBT.read());
