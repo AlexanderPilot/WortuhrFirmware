@@ -246,7 +246,7 @@ void AppInterpreter::_CommSetTime(char AppBefehl[6])
     _interpreterzeitmaster->setTimeDate(AppHours, AppMinutes, AppSeconds, AppDate, AppMonth, AppYear);
 }
 
-/*void _CommSetMisc(char AppBefehl[6])
+void AppInterpreter::_CommSetMisc(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -254,7 +254,27 @@ void AppInterpreter::_CommSetTime(char AppBefehl[6])
         Serial.print("Diverse Befehle");
     }
     //TODO: programm function
-}*/
+}
+
+void AppInterpreter::_CommSetSSID(char AppBefehl[6], bool continueCommand)
+{
+    if (DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("WIFI SSID schreiben");
+    }
+    //TODO: programm function
+}
+
+void AppInterpreter::_CommSetPW(char AppBefehl[6], bool continueCommand)
+{
+    if (DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("WIFI PW schreiben");
+    }
+    //TODO: programm function
+}
 
 /****************************************
  * Einstellungen vom Mikrocontroller lesen

@@ -65,7 +65,7 @@ void setup()
      **************************************************************************/
     // Einstellung der Sprache fuer das Anzeigen der Zeit
     settings.setLanguage(GERMAN);
-    settings.setColor(30,30,30);
+    settings.setColor(30, 30, 30);
 
     // Start der Funktionen für die LED-Ausgabe
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
@@ -110,7 +110,7 @@ void loop()
 
         //Serielle Ausgabe
         //FIXME
-        pZeit->printZeitmasterTime();
+        //pZeit->printZeitmasterTime();
         // reset trigger
         eventtrigger = false;
 
