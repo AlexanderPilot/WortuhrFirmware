@@ -105,15 +105,30 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
             break;
         // Auswerten der Farbe
         case 'F':
-            Serial.print("Farbe erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            if(_AppBefehlBuffer[0] == '\n')
+            {
+                Serial.print("Farbe erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            }
+            else
+                iRet = 0;
             break;
         // Auswerten der Helligkeit
         case 'H':
-            Serial.print("Helligkeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            if(_AppBefehlBuffer[0] == '\n')
+            {
+                Serial.print("Helligkeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            }
+            else
+                iRet = 0;
             break;
          // Auswerten der Zeit
         case 'T':
-            Serial.print("Zeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            if(_AppBefehlBuffer[0] == '\n')
+            {
+                Serial.print("Zeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+            }
+            else
+                iRet = 0;
             break;
         // Keine Ahnung, muss aber sein!
         default:
@@ -122,6 +137,7 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         }
     }
 
+    // Trigger um ein Ereignis auszulösen
     return iRet;
 }
 
