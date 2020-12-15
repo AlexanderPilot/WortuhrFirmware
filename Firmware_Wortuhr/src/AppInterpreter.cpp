@@ -40,11 +40,11 @@ AppInterpreter::AppInterpreter()
 */
 
 // ToDo: nur für den Test, kann später gelöscht werden
-void justSendTheFoundStringToSerial(char *p )
+void justSendTheFoundStringToSerial(char *p)
 {
-    for(int i = 7; i > 1; i--)
-        Serial.print( *(p+i) );
-    Serial.print( '\n' );
+    for (int i = 7; i > 1; i--)
+        Serial.print(*(p + i));
+    Serial.print('\n');
 }
 
 /****************************************
@@ -53,24 +53,20 @@ void justSendTheFoundStringToSerial(char *p )
 uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     // static Variablen müssen initialisiert werden
-    static char _AppBefehlBuffer[] = {'0','0','0','0','0','0','0','0','0','0'};
+    static char _AppBefehlBuffer[] = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'};
     uint8_t iRet = 0;
 
-
-
     // buffer um eins weiter schieben
-    for(int i = 9; i > 0; i--)
+    for (int i = 9; i > 0; i--)
     {
-        _AppBefehlBuffer[i] = _AppBefehlBuffer[i-1];
+        _AppBefehlBuffer[i] = _AppBefehlBuffer[i - 1];
     }
-
 
     // Neues Zeichen in den buffer[0] schieben
     _AppBefehlBuffer[0] = CommandChar;
 
-
     // Prüfe, ob ein befehl anliegt
-    if( (_AppBefehlBuffer[9] == 'X') && (_AppBefehlBuffer[1] = '$') && ( (_AppBefehlBuffer[0] == '\n') || (_AppBefehlBuffer[0] == '\t') ) )
+    if ((_AppBefehlBuffer[9] == 'X') && (_AppBefehlBuffer[1] == '$') && ((_AppBefehlBuffer[0] == '\n') || (_AppBefehlBuffer[0] == '\t')))
     {
         // Vorläufig wurde was erkannt
         iRet = 1;
@@ -79,53 +75,60 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         {
         // Auswerten Password
         case 'P':
-            if( _AppBefehlBuffer[0] == '\t' )
+            if (_AppBefehlBuffer[0] == '\t')
             {
                 // Add new character to the string array and wait for more
-                Serial.print("PW + "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("PW + ");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
             {
                 // Add new character to the string array and use the password
-                Serial.print("PW (END)"); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("PW (END)");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             break;
         // Auswerten SSID
         case 'S':
-            if( _AppBefehlBuffer[0] == '\t' )
+            if (_AppBefehlBuffer[0] == '\t')
             {
                 // Add new character to the string array and wait for more
-                Serial.print("SSID + "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("SSID + ");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
             {
                 // Add new character to the string array and use the password
-                Serial.print("SSID (END)"); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("SSID (END)");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             break;
         // Auswerten der Farbe
         case 'F':
-            if(_AppBefehlBuffer[0] == '\n')
+            if (_AppBefehlBuffer[0] == '\n')
             {
-                Serial.print("Farbe erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("Farbe erkannt ");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
                 iRet = 0;
             break;
         // Auswerten der Helligkeit
         case 'H':
-            if(_AppBefehlBuffer[0] == '\n')
+            if (_AppBefehlBuffer[0] == '\n')
             {
-                Serial.print("Helligkeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("Helligkeit erkannt ");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
                 iRet = 0;
             break;
-         // Auswerten der Zeit
+            // Auswerten der Zeit
         case 'T':
-            if(_AppBefehlBuffer[0] == '\n')
+            if (_AppBefehlBuffer[0] == '\n')
             {
-                Serial.print("Zeit erkannt "); justSendTheFoundStringToSerial( _AppBefehlBuffer );
+                Serial.print("Zeit erkannt ");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
                 iRet = 0;
