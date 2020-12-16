@@ -126,9 +126,12 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         case SIGN_COLOR:
             if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
-                Serial.print("Farbe erkannt ");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
-                //_CommSetColor(_AppBefehl);
+                if (DEBUG_APPINTERPRETER == 1)
+                {
+                    Serial.print("Farbe erkannt ");
+                    justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                }
+                _CommSetColor(_AppBefehl);
             }
             else
                 iRet = 0;
@@ -137,8 +140,11 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         case SIGN_BRIGHTNESS:
             if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
-                Serial.print("Helligkeit erkannt ");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                if (DEBUG_APPINTERPRETER == 1)
+                {
+                    Serial.print("Helligkeit erkannt ");
+                    justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                }
             }
             else
                 iRet = 0;
@@ -147,8 +153,11 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         case SIGN_CLOCK:
             if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
-                Serial.print("Zeit erkannt ");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                if (DEBUG_APPINTERPRETER == 1)
+                {
+                    Serial.print("Zeit erkannt ");
+                    justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                }
                 _CommSetTime(_AppBefehl);
             }
             else
