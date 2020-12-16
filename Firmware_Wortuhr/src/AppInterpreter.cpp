@@ -9,49 +9,22 @@ AppInterpreter::AppInterpreter()
 {
 }
 
-/** =======================================================
- *  | Befehlsstruktur:                                     |
- *  |-----------------+----------------------------+-------|
- *  | Start/Erkennung | Eigentlicher Befehl        | Ende  |
- *  |-----------------+----------------------------+-------+
- *  | "X"             | # X X X X X X              | '$\n' |
- *  |-----------------+----------------------------+-------|
+/** ===========================================================
+ *  | Befehlsstruktur:                                        |
+ *  |-----------------+---------------------+-----------------|
+ *  | Start/Erkennung | Eigentlicher Befehl | Ende            |
+ *  |-----------------+---------------------+-----------------+
+ *  | "X"             | # X X X X X X       | '$\n' oder '$\t |
+ *  |-----------------+---------------------+-----------------|
  *  
- *  # entspricht:
- *  'F' Einstellen der Farbe --> char farbe[6] --> RGB-Wert
- *      In Hexadezimalzahlen:
- *      +-------+-------+-------+
- *      | Rot   | Gruen | Blau  |
- *      +-------+-------+-------+
- *      | msb   |       | lsb   |
- *      +-------+-------+-------+
- *      | X X   | X X   | X X   |
- *      |[0][1] |[2][3] |[4][5] |
- *      +-------+-------+-------+
- *      Nur Grossbuchstaben und Zahlen benutzen!
- *  'H' Einstellen der Helligkeit
- *  	Eingang: Zahl [000xxx - 100xxx]
- * 'T' Einstellen der Uhrzeit
- *      char[6] = HHMMSS
- * '%' Weitere Befehle --> char befehl[6] --> tbd.
- *
- *  X steht fuer beliebige Zeichen, ausser Sonderzeichen
- *  
+ *  Details in der Befehlsliste
 */
 
-// TODO: nur für den Test, kann später gelöscht werden
-void justSendTheFoundStringToSerial(char *p)
-{
-    for (int i = (LENGTH_COMMAND_APP + 1); i > 1; i--)
-    {
-        Serial.print(*(p + i));
-    }
-    Serial.print('\n');
-}
-
-/****************************************
- * App Befehle einlesen
- ***************************************/
+/***************************************************************************
+ * Zusammenfügen der einzelnen übertragenen char aus der App in Befehlsbuffer
+ * Übergabeparameter: char aus der seriellen BT Übertragung
+ * Rückgabe: uint8_t zur Anzeige ob Befehl aktiv war oder nicht
+***************************************************************************/
 uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     // static Variablen müssen initialisiert werden
@@ -90,13 +63,13 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 // Add new character to the string array and wait for more
                 Serial.print("PW + ");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                _justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 // Add new character to the string array and use the password
                 Serial.print("PW (END)");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                _justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
             {
@@ -109,13 +82,13 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 // Add new character to the string array and wait for more
                 Serial.print("SSID + ");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                _justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 // Add new character to the string array and use the password
                 Serial.print("SSID (END)");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                _justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
             else
             {
@@ -129,7 +102,7 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
                 if (DEBUG_APPINTERPRETER == 1)
                 {
                     Serial.print("Farbe erkannt ");
-                    justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                    _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetColor(_AppBefehl);
             }
@@ -143,8 +116,9 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
                 if (DEBUG_APPINTERPRETER == 1)
                 {
                     Serial.print("Helligkeit erkannt ");
-                    justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                    _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
+                //TODO: Funktion schreiben
             }
             else
                 iRet = 0;
@@ -156,14 +130,13 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
                 if (DEBUG_APPINTERPRETER == 1)
                 {
                     Serial.print("Zeit erkannt ");
-                    justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                    _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetTime(_AppBefehl);
             }
             else
                 iRet = 0;
             break;
-        // Keine Ahnung, muss aber sein!
         default:
             iRet = 0;
             break;
@@ -174,10 +147,11 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
     return iRet;
 }
 
-/****************************************
- * Ansteuerbefehle aus der App
- ***************************************/
-
+/***************************************************************************
+ * Funktion aus dem App-Befehl die Farbe zu setzen
+ * Übergabeparameter: Array mit dem entsprechenden Befehl
+ * Rückgabe: kein
+***************************************************************************/
 void AppInterpreter::_CommSetColor(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -189,9 +163,9 @@ void AppInterpreter::_CommSetColor(char AppBefehl[6])
     pixel_t AppColor;
 
     //Auslesen der Farbe
-    AppColor.red = hexcharToUint8_t(AppBefehl[0]) * 16 + hexcharToUint8_t(AppBefehl[1]);
-    AppColor.green = hexcharToUint8_t(AppBefehl[2]) * 16 + hexcharToUint8_t(AppBefehl[3]);
-    AppColor.blue = hexcharToUint8_t(AppBefehl[4]) * 16 + hexcharToUint8_t(AppBefehl[5]);
+    AppColor.red = _hexcharToUint8_t(AppBefehl[0]) * 16 + _hexcharToUint8_t(AppBefehl[1]);
+    AppColor.green = _hexcharToUint8_t(AppBefehl[2]) * 16 + _hexcharToUint8_t(AppBefehl[3]);
+    AppColor.blue = _hexcharToUint8_t(AppBefehl[4]) * 16 + _hexcharToUint8_t(AppBefehl[5]);
 
     if (DEBUG_APPINTERPRETER == 1)
     {
@@ -207,6 +181,11 @@ void AppInterpreter::_CommSetColor(char AppBefehl[6])
     _interpretersettings.setColor(AppColor);
 }
 
+/***************************************************************************
+ * Funktion aus dem App-Befehl die Helligkeit zu setzen
+ * Übergabeparameter: Array mit dem entsprechenden Befehl
+ * Rückgabe: kein
+***************************************************************************/
 void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -218,7 +197,7 @@ void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
     uint8_t AppBrightness;
 
     //Auslesen der Helligkeit
-    AppBrightness = hexcharToUint8_t(AppBefehl[0]) * 100 + hexcharToUint8_t(AppBefehl[1]) * 10 + hexcharToUint8_t(AppBefehl[2]);
+    AppBrightness = _hexcharToUint8_t(AppBefehl[0]) * 100 + _hexcharToUint8_t(AppBefehl[1]) * 10 + _hexcharToUint8_t(AppBefehl[2]);
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("Helligkeit: ");
@@ -234,6 +213,11 @@ void AppInterpreter::_CommSetBrightness(char AppBefehl[6])
     _interpretersettings.setBrightnessPercent(AppBrightness);
 }
 
+/***************************************************************************
+ * Funktion aus dem App-Befehl die Uhrzeit zu setzen
+ * Übergabeparameter: Array mit dem entsprechenden Befehl
+ * Rückgabe: kein
+***************************************************************************/
 void AppInterpreter::_CommSetTime(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -255,13 +239,13 @@ void AppInterpreter::_CommSetTime(char AppBefehl[6])
     uint8_t AppYear;
 
     //Auslesen Stunden
-    AppHours = hexcharToUint8_t(AppBefehl[0]) * 10 + hexcharToUint8_t(AppBefehl[1]);
+    AppHours = _hexcharToUint8_t(AppBefehl[0]) * 10 + _hexcharToUint8_t(AppBefehl[1]);
 
     //Auslesen Minuten
-    AppMinutes = hexcharToUint8_t(AppBefehl[2]) * 10 + hexcharToUint8_t(AppBefehl[3]);
+    AppMinutes = _hexcharToUint8_t(AppBefehl[2]) * 10 + _hexcharToUint8_t(AppBefehl[3]);
 
     //Auslesen Sekunden
-    AppSeconds = hexcharToUint8_t(AppBefehl[4]) * 10 + hexcharToUint8_t(AppBefehl[5]);
+    AppSeconds = _hexcharToUint8_t(AppBefehl[4]) * 10 + _hexcharToUint8_t(AppBefehl[5]);
 
     //Verwerfen der versendeten Appwerte bei Werten außerhalb des Wertebereichs
     if ((AppHours > 23) || (AppMinutes > 59) || (AppSeconds > 59))
@@ -280,6 +264,11 @@ void AppInterpreter::_CommSetTime(char AppBefehl[6])
     _interpreterzeitmaster->setTimeDate(AppHours, AppMinutes, AppSeconds, AppDate, AppMonth, AppYear);
 }
 
+/***************************************************************************
+ * Funktion aus dem App-Befehl verschiedene Funktionen zu auszulösen //TODO
+ * Übergabeparameter: Array mit dem entsprechenden Befehl
+ * Rückgabe: kein
+***************************************************************************/
 void AppInterpreter::_CommSetMisc(char AppBefehl[6])
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -287,9 +276,13 @@ void AppInterpreter::_CommSetMisc(char AppBefehl[6])
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Diverse Befehle");
     }
-    //TODO: programm function
 }
 
+/***************************************************************************
+ * Funktion aus dem App-Befehl die WiFi SSID zu setzen
+ * Übergabeparameter: Array mit dem entsprechenden Befehl; Information ob weiterer Befehl folgt
+ * Rückgabe: kein
+***************************************************************************/
 void AppInterpreter::_CommSetSSID(char AppBefehl[6], bool continueCommand)
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -300,6 +293,11 @@ void AppInterpreter::_CommSetSSID(char AppBefehl[6], bool continueCommand)
     //TODO: programm function
 }
 
+/***************************************************************************
+ * Funktion aus dem App-Befehl das WiFi Passwort zu setzen
+ * Übergabeparameter: Array mit dem entsprechenden Befehl; Information ob weiterer Befehl folgt
+ * Rückgabe: kein
+***************************************************************************/
 void AppInterpreter::_CommSetPW(char AppBefehl[6], bool continueCommand)
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -308,6 +306,21 @@ void AppInterpreter::_CommSetPW(char AppBefehl[6], bool continueCommand)
         Serial.print("WIFI PW schreiben");
     }
     //TODO: programm function
+}
+
+/***************************************************************************
+     * Serielle Ausgabe des Befehls
+     * Übergabeparameter: pointer auf Beginn des Buffer-Arrays
+     * Rückgabe: kein
+***************************************************************************/
+void AppInterpreter::_justSendTheFoundStringToSerial(char *p)
+{
+    uint8_t i;
+    for (i = (LENGTH_COMMAND_APP + 1); i > 1; i--)
+    {
+        Serial.print(*(p + i));
+    }
+    Serial.print('\n');
 }
 
 /****************************************
@@ -582,7 +595,12 @@ uint16_t AppInterpreter::_convertVarToUint16(uint32_t ArrayData)
     return var;
 }
 
-uint8_t AppInterpreter::hexcharToUint8_t(char hexchar)
+/***************************************************************************
+ * Funktion zum Konvertieren von (hex)char in (dec)uint8_t
+ * in:  hexadezimaler char Zeichen
+ * out: zugehöriger dezimaler int Wert
+ **************************************************************************/
+uint8_t AppInterpreter::_hexcharToUint8_t(char hexchar)
 {
     if (hexchar >= '0' && hexchar <= '9')
         return hexchar - '0';
@@ -592,280 +610,3 @@ uint8_t AppInterpreter::hexcharToUint8_t(char hexchar)
         return hexchar - 'a' + 10;
     return -1;
 }
-
-/*
-void AppInterpreter::serialTestRead( pixel_t *param )
-{
-    int8_t i = 0;
-    char val;
-    uint8_t myColor[3]; 
-    while( Serial.available() && ( i < 3 ))
-    {
-        val = Serial.read();
-        if( val != ' ' )
-        {
-            myColor[i] = (uint8_t)val;
-            i ++;
-        }
-        
-        if( i == 2)
-        {
-            param->red = myColor[0];
-            param->green = myColor[1];
-            param->blue = myColor[2];
-        }
-    } 
-    deleteSerialIn();
-}
-
-*/
-
-/***************************************************************************
- * Funktion zum Einlesen der Befehle
- * in:  je ein Zeichen aus der Bluetooth-Kommunikation
- * out: boolean zur Anzeige wenn ein neues Kommando angekommen ist
- **************************************************************************/
-/*bool AppInterpreter::comevatiation(char getChar)
-{
-  
-    // Indikator ob ein Kommando vollstaendig angekommen ist
-    static bool newComAv = false;
-    static int zaehler = 0;
-    static bool comStart = false;
-
-    if( newComAv )
-    {
-        zaehler  = 0;
-        comStart = false;
-        newComAv = false;
-    }
-
-    // Neues Kommando einlesen
-    if(comStart)
-    {
-        zaehler++;
-        switch(zaehler)
-        {
-            case 4: 
-                if( (getChar == '#') || (getChar == '%') || (getChar == '!') )
-                {
-                    bufferReader[0] = getChar;
-                }
-                else
-                {
-                    comStart = false;
-                    zaehler=0;
-                }
-                break;
-            case 5:
-                bufferReader[1] = getChar;
-                break;
-            case 6:
-                bufferReader[2] = getChar;
-                break;
-            case 7:
-                bufferReader[3] = getChar;
-                break;
-            case 8:   
-                bufferReader[4] = getChar;
-                break;
-            case 9:  
-                bufferReader[5] = getChar;
-                break;
-            case 10:  
-                bufferReader[6] = getChar;
-                break;
-            case 11:
-                if( getChar == END_SIGN )
-                {
-                    bufferReader[7] = getChar;
-                    newComAv = true;
-                    zaehler=0;
-                }
-                else
-                {
-                    comStart = false;
-                    zaehler=0; 
-                }
-                break;
-            default:
-                comStart=false;
-                break;
-        }
-    }
-
-    // Start eines Kommandos feststellen
-    if( !(comStart) )
-    {
-        if( getChar == START_SIGN )
-        {
-            zaehler++;
-            if( zaehler == 3 )
-            {
-                comStart = true;
-            }
-        }
-        else
-        {
-            zaehler = 0;
-        }
-    }
-    // ist "true" wenn neues Kommando erkannt wurde
-    if(newComAv)
-    {
-        setUpCommand( );
-    }
-    return newComAv;
-    
-}*/
-
-/*
-//Funktion für Einstellungen (ohne WIFI_SSID und WIFI_PW)
-void AppInterpreter::_getCommandFromApp(char AppBefehl[11])
-{
-    // !!! byte counter;
-    pixel_t AppColor;
-    uint32_t var;
-    
-    if(DEBUG_APPINTERPRETER == 1)
-    {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Auswertung des App Befehls");
-    }
-    
-    var   = ((AppBefehl[NUM_SIGN_CATEGORY+1] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+1] - 'A' + 10)<<20) : ((AppBefehl[NUM_SIGN_CATEGORY+1] - '0')<<20)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+2] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+2] - 'A' + 10)<<16) : ((AppBefehl[NUM_SIGN_CATEGORY+2] - '0')<<16)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+3] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+3] - 'A' + 10)<<12) : ((AppBefehl[NUM_SIGN_CATEGORY+3] - '0')<<12)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+4] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+4] - 'A' + 10)<<8)  : ((AppBefehl[NUM_SIGN_CATEGORY+4] - '0')<<8)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+5] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+5] - 'A' + 10)<<4)  : ((AppBefehl[NUM_SIGN_CATEGORY+5] - '0')<<4)) +
-            ((AppBefehl[NUM_SIGN_CATEGORY+6] >= 'A') ? ((AppBefehl[NUM_SIGN_CATEGORY+6] - 'A' + 10))     : ((AppBefehl[NUM_SIGN_CATEGORY+6] - '0')));
-    
-    //Auswertung der Befehle
-    switch(AppBefehl[NUM_SIGN_CATEGORY]) //Zeichen der Kategorie
-    {
-        //Spracheinstellung
-        case SIGN_LANGUAGE:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Spracheinstellung: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setLanguage(_convertVarToByte(var));
-            break;
-        
-        //Helligkeitseinstellung
-        case SIGN_BRIGHTNESS:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Helligkeitswert: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setBrightnessPercent(map(_convertVarToByte(var), 0, 255, 0, 100));
-            break;
-            
-        //Farbeinstellung
-        case SIGN_COLOR:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Farbeinstellung: ");
-            }
-            
-            //Zuordnung der Zeichenkette zur Farbe
-            AppColor.red   = (var & 0xFF0000) >> 16;
-            AppColor.green = (var & 0x00FF00) >> 8;
-            AppColor.blue   = (var & 0x0000FF);
-            
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("rot: ");
-                Serial.print(AppColor.red);
-                Serial.print(" gruen: ");
-                Serial.print(AppColor.green);
-                Serial.print(" blau: ");
-                Serial.println(AppColor.blue);
-            }
-            
-            this->_setColor(AppColor);
-            break;
-            
-        //Fade Mode Einstellung
-        case SIGN_FADEMODE:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("FadeMode: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setFadeMode(_convertVarToByte(var));
-            break;
-            
-        //Start Ecke der Ecke-LED Einstellung
-        case SIGN_CORNERSTARTLED:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Ecke der Start LED: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-            
-            this->_setCornerStartLed(_convertVarToByte(var));
-            break;
-            
-        case SIGN_CORNERSCLOCKWISE:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Laufrichtung der Eck-LEDs im Uhrzeigersinn: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToBool(var));
-            }
-
-            this->_setCornerStartLed(_convertVarToBool(var));
-            break;
-
-        case SIGN_STARTPATTERN:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("Startmuster: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToByte(var));
-            }
-
-            this->_setStartPattern(_convertVarToByte(var));
-            break;
-            
-        case SIGN_GMTOFFSET:
-            if(DEBUG_APPINTERPRETER == 1)
-            {
-                Serial.print("AppInterpreter.cpp - ");
-                Serial.print("GMT Offset in Sekunden: ");
-                Serial.print(var);
-                Serial.print(" Konvertierter Wert: ");
-                Serial.println(_convertVarToUint16(var));
-            }
-
-            this->_setGmtTimeOffsetSec(_convertVarToUint16(var));
-            break;
-            
-        default:
-            break;
-    }
-}
-*/
