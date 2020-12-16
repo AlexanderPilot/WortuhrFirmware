@@ -78,7 +78,7 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         //Erstellung lokale Kopie für Befehle inkl Drehung der Orientierung
         for (i = (LENGTH_COMMAND_BUFFER - 3); i > 1; i--)
         {
-            _AppBefehl[8 - i] = _AppBefehlBuffer[i];
+            _AppBefehl[7 - i] = _AppBefehlBuffer[i];
             //Serial.print(_AppBefehl[8 - i]);
         }
 
@@ -147,8 +147,8 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
         case SIGN_CLOCK:
             if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
-                //Serial.print("Zeit erkannt ");
-                //justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                Serial.print("Zeit erkannt ");
+                justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 _CommSetTime(_AppBefehl);
             }
             else
