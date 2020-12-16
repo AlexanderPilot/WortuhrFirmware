@@ -39,11 +39,13 @@ AppInterpreter::AppInterpreter()
  *  
 */
 
-// ToDo: nur für den Test, kann später gelöscht werden
+// TODO: nur für den Test, kann später gelöscht werden
 void justSendTheFoundStringToSerial(char *p)
 {
-    for (int i = 7; i > 1; i--)
+    for (int i = (LENGTH_COMMAND_APP + 1); i > 1; i--)
+    {
         Serial.print(*(p + i));
+    }
     Serial.print('\n');
 }
 
@@ -53,69 +55,87 @@ void justSendTheFoundStringToSerial(char *p)
 uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     // static Variablen müssen initialisiert werden
-    static char _AppBefehlBuffer[] = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'};
+    static char _AppBefehlBuffer[] = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'}; //9 Elemente
+    char _AppBefehl[] = {'0', '0', '0', '0', '0', '0', '0'};                             //6 Elemente
     uint8_t iRet = 0;
+    uint8_t i;
 
-    // buffer um eins weiter schieben
-    for (int i = 9; i > 0; i--)
+    //Befüllung des Ringbuffers (kopieren von vorne nach hinten, beginnend am Ende)
+    for (i = (LENGTH_COMMAND_BUFFER - 1); i > 0; i--)
     {
         _AppBefehlBuffer[i] = _AppBefehlBuffer[i - 1];
     }
 
-    // Neues Zeichen in den buffer[0] schieben
+    // Neues Zeichen in den Buffer[0] schieben
     _AppBefehlBuffer[0] = CommandChar;
 
     // Prüfe, ob ein befehl anliegt
-    if ((_AppBefehlBuffer[9] == 'X') && (_AppBefehlBuffer[1] == '$') && ((_AppBefehlBuffer[0] == '\n') || (_AppBefehlBuffer[0] == '\t')))
+    if ((_AppBefehlBuffer[POS_SIGN_STARTCOMMAND] == SIGN_STARTCOMMAND) && (_AppBefehlBuffer[POS_SIGN_ENDCOMMAND] == SIGN_ENDCOMMAND) && ((_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL) || (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_CONTINUE)))
     {
         // Vorläufig wurde was erkannt
         iRet = 1;
 
-        switch (_AppBefehlBuffer[8])
+        //Erstellung lokale Kopie für Befehle inkl Drehung der Orientierung
+        for (i = (LENGTH_COMMAND_BUFFER - 3); i > 1; i--)
+        {
+            _AppBefehl[8 - i] = _AppBefehlBuffer[i];
+            //Serial.print(_AppBefehl[8 - i]);
+        }
+
+        switch (_AppBefehlBuffer[POS_COMMAND_SIGN])
         {
         // Auswerten Password
-        case 'P':
-            if (_AppBefehlBuffer[0] == '\t')
+        case SIGN_PASSWORD:
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_CONTINUE)
             {
                 // Add new character to the string array and wait for more
                 Serial.print("PW + ");
                 justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
-            else
+            else if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 // Add new character to the string array and use the password
                 Serial.print("PW (END)");
                 justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
+            else
+            {
+                iRet = 0;
+            }
             break;
         // Auswerten SSID
-        case 'S':
-            if (_AppBefehlBuffer[0] == '\t')
+        case SIGN_SSID:
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_CONTINUE)
             {
                 // Add new character to the string array and wait for more
                 Serial.print("SSID + ");
                 justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
-            else
+            else if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 // Add new character to the string array and use the password
                 Serial.print("SSID (END)");
                 justSendTheFoundStringToSerial(_AppBefehlBuffer);
             }
+            else
+            {
+                iRet = 0;
+            }
             break;
         // Auswerten der Farbe
-        case 'F':
-            if (_AppBefehlBuffer[0] == '\n')
+        case SIGN_COLOR:
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 Serial.print("Farbe erkannt ");
                 justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                //_CommSetColor(_AppBefehl);
             }
             else
                 iRet = 0;
             break;
         // Auswerten der Helligkeit
-        case 'H':
-            if (_AppBefehlBuffer[0] == '\n')
+        case SIGN_BRIGHTNESS:
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 Serial.print("Helligkeit erkannt ");
                 justSendTheFoundStringToSerial(_AppBefehlBuffer);
@@ -124,11 +144,12 @@ uint8_t AppInterpreter::readCommandCharFromApp(char CommandChar)
                 iRet = 0;
             break;
             // Auswerten der Zeit
-        case 'T':
-            if (_AppBefehlBuffer[0] == '\n')
+        case SIGN_CLOCK:
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
-                Serial.print("Zeit erkannt ");
-                justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                //Serial.print("Zeit erkannt ");
+                //justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                _CommSetTime(_AppBefehl);
             }
             else
                 iRet = 0;

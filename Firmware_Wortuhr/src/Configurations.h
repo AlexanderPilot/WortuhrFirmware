@@ -92,14 +92,22 @@
 /***************************************************************************
  * App Interpreter Einstellungen
  **************************************************************************/
-#define NUMCOMMANDCOUNT 11
-#define NUM_SIGN_CATEGORY 1
-#define START_SIGN 'X'
-#define END_SIGN_1 '$'
-#define END_SIGN_2 '\n'
+#define LENGTH_COMMAND_BUFFER 10
+#define LENGTH_COMMAND_APP 6
+#define POS_SIGN_STARTCOMMAND 9
+#define POS_SIGN_ENDCOMMAND 1
+#define POS_SIGN_END 0
+#define POS_COMMAND_SIGN 8
+#define SIGN_STARTCOMMAND 'X'
+#define SIGN_ENDCOMMAND '$'
+#define SIGN_END_CONTINUE '\t'
+#define SIGN_END_ALL '\n'
+
 #define SIGN_BRIGHTNESS 'H'
 #define SIGN_COLOR 'F'
 #define SIGN_CLOCK 'T'
+#define SIGN_SSID 'S'
+#define SIGN_PASSWORD 'P'
 
 #define SIGN_LANGUAGE 'A'
 #define SIGN_FADEMODE 'D'
