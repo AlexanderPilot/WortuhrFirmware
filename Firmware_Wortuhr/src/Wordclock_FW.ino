@@ -87,9 +87,36 @@ void setup()
     // Set alarm to 1000 ms and repeat it (true)
     timerAlarmWrite(timer, 1000000, true);
     // Start an alarm
-    STARTINTERRUPT;
+    /*
+    char SSID[] = {'0'};
+    SSID[0] = 'O';
+    SSID[1] = 'n';
+    SSID[2] = 'L';
+    SSID[3] = 'i';
+    SSID[4] = 'n';
+    SSID[5] = 'e';
 
-    // Ender der Setup
+    const char *ssid = (char *)SSID;
+    const char *password = "Br8#Pojg56";
+    WiFi.begin(ssid, password);
+    unsigned long t_0;
+    unsigned long t_last;
+    Serial.println("Verbindungsversuch gestartet");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        t_last = millis() - t_0;
+        if (t_last > 5000)
+        {
+            Serial.println("Verbindungsversuch fehlgeschlagen");
+            ESP.restart();
+        }
+    }
+
+    Serial.println("Connected to network");
+*/
+
+    STARTINTERRUPT;
+    // Ende der Setup
     Serial.println("--- Setup beendet ---");
 }
 
@@ -98,6 +125,12 @@ void setup()
 **************************************************************************************************************************/
 void loop()
 {
+    //const char *ssid = "OnLine";
+    //    const char *ssid = "UPC68EE18B";
+    //const char *password = settings.getWifiPW();
+    unsigned long t_0;
+    unsigned long t_last;
+
     // Wird jede 1s getriggert in der ISR (siehe globale Einstellungen)
     if (eventtrigger)
     {
@@ -109,11 +142,33 @@ void loop()
 
         //Serielle Ausgabe
         //FIXME
-        pZeit->printZeitmasterTime();
+        //pZeit->printZeitmasterTime();
         // reset trigger
         eventtrigger = false;
 
         //STARTINTERRUPT;
+
+        Serial.print(settings.getWifiSSID());
+        Serial.print(" ");
+        Serial.print(settings.getWifiPW());
+        Serial.println(" ");
+
+        //Valide WiFi Daten verfügbar
+        //if (settings.getWifiSettingsAvailable() == true)
+        //{
+        //    Serial.println("WiFi Daten verfügbar");
+        /*WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
+        while (WiFi.status() != WL_CONNECTED)
+        {
+            t_last = millis() - t_0;
+            if (t_last > 5000)
+            {
+                Serial.println("Verbindungsversuch fehlgeschlagen");
+                ESP.restart();
+            }
+        }
+        Serial.println("Connected to network");*/
+        //}
     }
 
     // Hier einlesen des Befehls

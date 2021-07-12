@@ -15,8 +15,8 @@ pixel_t Settings::_Color;
 byte Settings::_FadeMode;
 byte Settings::_CornerStartLed;
 boolean Settings::_CornersClockwise;
-String Settings::_WifiSSID;
-String Settings::_WifiPW;
+char *Settings::_WifiSSID;
+char *Settings::_WifiPW;
 byte Settings::_StartPattern;
 uint16_t Settings::_GmtTimeOffsetSec;
 
@@ -33,8 +33,10 @@ Settings::Settings()
     _FadeMode = 0;
     _CornerStartLed = 0;
     _CornersClockwise = 1;
-    _WifiSSID = "OnLine";
-    _WifiPW = "Br8#Pojg56";
+    _WifiSSID = {'0'};
+    _WifiPW = {'0'};
+    //_WifiSSID = "OnLine";
+    //_WifiPW = "Br8#Pojg56";
     //_WifiSSID ="UPC68EE18B";
     //_WifiPW = "Tw11tYbolz@#";
     //_WifiSSID = "Internet_MH";
@@ -174,7 +176,7 @@ bool Settings::getWifiSettingsAvailable()
 {
     bool WifiSettingsAvailable = false;
 
-    if (_WifiSSID.length() > 0 && _WifiPW.length() > 0)
+    if (sizeof(_WifiSSID) > 0 && sizeof(_WifiPW) > 0)
     {
         WifiSettingsAvailable = true;
     }
@@ -182,14 +184,14 @@ bool Settings::getWifiSettingsAvailable()
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
-        Serial.print("WLAN Einstellungen");
+        Serial.print("WLAN Einstellungen ");
         Serial.println(WifiSettingsAvailable ? "gueltig" : "ungueltig");
     }
 
     return WifiSettingsAvailable;
 }
 
-void Settings::setWifiSSID(String Ssid)
+void Settings::setWifiSSID(char *Ssid)
 {
     _WifiSSID = Ssid;
 
@@ -200,27 +202,28 @@ void Settings::setWifiSSID(String Ssid)
     }
 }
 
-const char *Settings::getWifiSSID()
+char *Settings::getWifiSSID()
 {
-    const char *WifiSSID = _WifiSSID.c_str();
-    return WifiSSID;
+    return _WifiSSID;
 }
 
-void Settings::setWifiPW(String Password)
+void Settings::setWifiPW(char *Password)
 {
     _WifiPW = Password;
 
-    if (DEBUG_SETTINGS == 1)
+    if (DEBUG_SETTINGS == 0)
     {
         Serial.print("Settings.cpp - ");
-        Serial.print("Übergabe des WiFi Passworts");
+        Serial.print("Übergabe des WiFi Passworts ");
+        Serial.print(Password);
+        Serial.print(" und Speicherung in interve Variable ");
+        Serial.println(_WifiPW);
     }
 }
 
-const char *Settings::getWifiPW()
+char *Settings::getWifiPW()
 {
-    const char *WifiPW = _WifiPW.c_str();
-    return WifiPW;
+    return _WifiPW;
 }
 
 /****************************************
@@ -292,8 +295,8 @@ void Settings::loadAllFromEEPROM()
     _FadeMode = this->loadFadeModeFromEEPROM();
     _CornerStartLed = this->loadCornerStartLedFromEEPROM();
     _CornersClockwise = this->loadCornerClockwiseFromEEPROM();
-    _WifiSSID = this->loadWifiSSIDFromEEPROM();
-    _WifiPW = this->loadWifiPWFromEEPROM();
+    //_WifiSSID = this->loadWifiSSIDFromEEPROM();
+    //_WifiPW = this->loadWifiPWFromEEPROM();
     _StartPattern = this->loadStartpatternFromEEPROM();
     _GmtTimeOffsetSec = this->loadGmtOffsetFromEEPROM();
 }
@@ -411,10 +414,10 @@ bool Settings::loadCornerClockwiseFromEEPROM()
     }
     return EEPROMcornerClockwise;
 }
-
-String Settings::loadWifiSSIDFromEEPROM()
+/*
+char* Settings::loadWifiSSIDFromEEPROM()
 {
-    String EEPROMwifiSSID;
+    char* EEPROMwifiSSID;
     EEPROMwifiSSID = EEPROM.readString(EEPROM_ADDR_WIFISSID);
 
     if (DEBUG_SETTINGS == 1)
@@ -445,7 +448,7 @@ String Settings::loadWifiPWFromEEPROM()
     }
     return EEPROMwifiPW;
 }
-
+*/
 byte Settings::loadStartpatternFromEEPROM()
 {
     byte EEPROMstartpattern;
@@ -596,7 +599,7 @@ void Settings::writeCornerClockwiseToEEPROM(bool cornersclockwise)
         Serial.println(" geschrieben");
     }
 }
-
+/*
 void Settings::writeWifiSSIDToEEPROM(String wifiSSID)
 {
     size_t EEPROMstorage;
@@ -630,7 +633,7 @@ void Settings::writeWifiPWToEEPROM(String wifiPW)
         Serial.println(" geschrieben");
     }
 }
-
+*/
 void Settings::writeStartpatternToEEPROM(byte startpattern)
 {
     size_t EEPROMstorage;
