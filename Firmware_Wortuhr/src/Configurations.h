@@ -49,30 +49,29 @@
 #define DEBUG_PRINT
 
 #ifdef DEBUG_PRINT
-  #define _DEBUG_BEGIN(x)       Serial.begin(x);
-  #define _DEBUG_PRINT(x)       Serial.print(x);
-  #define _DEBUG_PRINTLN(x)     Serial.println(x);
-  #define _DEBUG_WRITE(x)       Serial.write(x);
+#define _DEBUG_BEGIN(x) Serial.begin(x);
+#define _DEBUG_PRINT(x) Serial.print(x);
+#define _DEBUG_PRINTLN(x) Serial.println(x);
+#define _DEBUG_WRITE(x) Serial.write(x);
 #else
-  #define _DEBUG_BEGIN(x)
-  #define _DEBUG_PRINT(x)
-  #define _DEBUG_PRINTLN(x)
-  #define _DEBUG_WRITE(x)
+#define _DEBUG_BEGIN(x)
+#define _DEBUG_PRINT(x)
+#define _DEBUG_PRINTLN(x)
+#define _DEBUG_WRITE(x)
 #endif
 
-#define PRINT_SEPARATOR         "-------------------------"
-#define PRINT_SEPARATOR_LONG    "--------------------------------------------------"
-
+#define PRINT_SEPARATOR "-------------------------"
+#define PRINT_SEPARATOR_LONG "--------------------------------------------------"
 
 /***************************************************************************
  * WiFi Einstellungen
  **************************************************************************/
-#define WIFI_MAX_TIME_CONNECTING    20  //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
+#define WIFI_MAX_TIME_CONNECTING 20 //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * NTP Server Einstellungen
  **************************************************************************/
-#define NTP_SERVER_NAME     "pool.ntp.org"
+#define NTP_SERVER_NAME "pool.ntp.org"
 
 /***************************************************************************
  * Bluetooth Einstellungen
@@ -81,9 +80,9 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-#define BT_DEVICE_NAME    "Wordclock_AS"
-#define MAX_BT_CLIENTS    1
-#define BT_PASSWORD       "1234"
+#define BT_DEVICE_NAME "Wordclock"
+#define MAX_BT_CLIENTS 1
+#define BT_PASSWORD "1234"
 
 /***************************************************************************
  * Spracheinstellungen
@@ -93,41 +92,51 @@
 /***************************************************************************
  * App Interpreter Einstellungen
  **************************************************************************/
-#define NUM_COMMAND_COUNT       11
-#define NUM_SIGN_CATEGORY       3
-#define START_SIGN              '+'
-#define END_SIGN                '$'
-#define SIGN_LANGUAGE           'A'
-#define SIGN_BRIGHTNESS         'B'
-#define SIGN_COLOR              'C'
-#define SIGN_FADEMODE           'D'
-#define SIGN_CORNERSTARTLED     'E'
-#define SIGN_CORNERSCLOCKWISE   'F'
-#define SIGN_STARTPATTERN       'G'
-#define SIGN_GMTOFFSET          'H'
-#define CONV_VERSION            2
+#define LENGTH_COMMAND_BUFFER 10
+#define LENGTH_COMMAND_APP 6
+#define POS_SIGN_STARTCOMMAND 9
+#define POS_SIGN_ENDCOMMAND 1
+#define POS_SIGN_END 0
+#define POS_COMMAND_SIGN 8
+#define SIGN_STARTCOMMAND 'X'
+#define SIGN_ENDCOMMAND '$'
+#define SIGN_END_CONTINUE '\t'
+#define SIGN_END_ALL '\n'
+
+#define SIGN_BRIGHTNESS 'H'
+#define SIGN_COLOR 'F'
+#define SIGN_CLOCK 'T'
+#define SIGN_SSID 'S'
+#define SIGN_PASSWORD 'P'
+
+#define SIGN_LANGUAGE 'A'
+#define SIGN_FADEMODE 'D'
+#define SIGN_CORNERSTARTLED 'E'
+#define SIGN_CORNERSCLOCKWISE 'F'
+#define SIGN_STARTPATTERN 'G'
+#define SIGN_GMTOFFSET 'H'
+#define CONV_VERSION 2
 
 /***************************************************************************
  * I2C Einstellungen
  **************************************************************************/
 /* Adresse fuer DS3231 */
-#define DS3231_ADDRESS  0x68
-#define SDA_PIN         21
-#define SCL_PIN         22
+#define DS3231_ADDRESS 0x68
+#define SDA_PIN 21
+#define SCL_PIN 22
 
 /***************************************************************************
  * LED Einstellungen
  **************************************************************************/
-#define LEDSTRIP_PIN        32
-#define LED_NUM             144
-#define STARTPATTERN_DELAY  50
-#define NUM_COLUMN          12 //0-11 für die Zählweise
-#define NUM_ROW             12 //0-11 für die Zählweise
-#define LED_EINE_MIN        146
-#define LED_ZWEI_MIN        147
-#define LED_DREI_MIN        144
-#define LED_VIER_MIN        145
-
+#define LEDSTRIP_PIN 32
+#define LED_NUM 144
+#define STARTPATTERN_DELAY 50
+#define NUM_COLUMN 12 //0-11 für die Zählweise
+#define NUM_ROW 12    //0-11 für die Zählweise
+#define LED_EINE_MIN 146
+#define LED_ZWEI_MIN 147
+#define LED_DREI_MIN 144
+#define LED_VIER_MIN 145
 
 /***************************************************************************
  * Timer Interrupt Einstellungen
