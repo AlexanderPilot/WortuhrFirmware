@@ -1,5 +1,3 @@
-
-
 #include "AppInterpreter.h"
 
 Settings _interpretersettings;
@@ -142,7 +140,7 @@ void AppInterpreter::_CommSetColor(char *Farbe)
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Setzen der LED Farben");
+        Serial.print("Setzen der LED Farben ");
         for (uint8_t i = 0; i < LENGTH_COMMAND_APP; i++)
         {
             Serial.print(*(Farbe + i));
@@ -280,13 +278,13 @@ void AppInterpreter::_CommSetMisc(char *Misc)
 ***************************************************************************/
 void AppInterpreter::_CommSetSSID(char *partialSSID, bool continueCommand)
 {
-    static char SSID[] = {"OnLine"};
+    //static char SSID[] = {"OnLine"};
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("WIFI SSID schreiben");
     }
-    _interpretersettings.setWifiSSID(SSID);
+    //_interpretersettings.setWifiSSID(SSID);
     //TODO: programm function
 }
 
@@ -327,8 +325,8 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
             }
             Serial.println(" ");
         }
-        _interpretersettings.setWifiPW(PW);
-        char PW[] = {'0'};
+        //_interpretersettings.setWifiPW(PW);
+        //char PW[] = {'0'};
     }
 }
 
@@ -367,6 +365,7 @@ void AppInterpreter::_loadSettingsFromUC()
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("Abrufen der Einstellungen vom Mikrocontroller - TBD");
     }
+    //TODO: Funktionsaufruf
 }
 
 byte AppInterpreter::_getLanguage()
@@ -541,7 +540,7 @@ void AppInterpreter::_setWifiSSID(char *Ssid)
         Serial.println("Uebergabe der WIFI SSID an die Einstellungen-Klasse");
     }
 
-    _interpretersettings.setWifiSSID(Ssid);
+    //_interpretersettings.setWifiSSID(Ssid);
 }
 
 void AppInterpreter::_setWifiPW(char *Password)
@@ -552,7 +551,7 @@ void AppInterpreter::_setWifiPW(char *Password)
         Serial.println("Uebergabe des WIFI Passwords an die Einstellungen-Klasse");
     }
 
-    _interpretersettings.setWifiPW(Password);
+    //_interpretersettings.setWifiPW(Password);
 }
 
 void AppInterpreter::_setStartPattern(byte StartPattern)

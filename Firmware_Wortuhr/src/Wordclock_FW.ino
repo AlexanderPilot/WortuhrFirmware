@@ -3,9 +3,9 @@
  * created: 01.02.2019
  * by Alex P. and Vitali H.
  * 
- * ToDos:
- *      1. App sende Zeit die am Handy angezeigt wird (Vitali)
- *      2. Lese per Bluetooth Zeit aus der App und stelle den DS3231 ein (Alex)
+ * TODO:
+ * EEPROM Nutzung
+ * Initialisierung WIFI mit SSID und PW aus WiFiControl 
  * 
  *****************************************************************************************************************************************************************************************/
 
@@ -15,10 +15,10 @@
 #include "Configurations.h"
 #include "LED_Ausgabe.h"
 #include "Muster.h"
-#include "RTClib.h"
+#include "WiFiControl.h"
 
-#define STARTINTERRUPT (timerAlarmEnable(timer))
-#define STOPINTERRUPT (timerAlarmDisable(timer))
+#define STARTINTERRUPT (timerAlarmEnable(timer1))
+#define STOPINTERRUPT (timerAlarmDisable(timer1))
 
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
@@ -29,11 +29,12 @@ AppInterpreter appinterpreter;
 LED_Ausgabe *pLedausgabe;
 Zeitmaster *pZeit;
 Muster *pMuster;
+WiFiControl wificontrol;
 
 /***************************************************************************
  * Timer; Eventrtigger
  * ************************************************************************/
-hw_timer_t *timer = NULL;
+hw_timer_t *timer1 = NULL;
 bool eventtrigger;
 // ISR to set trigger
 void IRAM_ATTR onTimer()
@@ -53,8 +54,21 @@ void setup()
      **************************************************************************/
     Serial.begin(SERIAL_SPEED);
     delay(100);
+    Serial.println();
     Serial.println("--- Setup gestartet ---");
-
+    
+    /***************************************************************************
+     * Initialisierung EEPROM und Einstellungen
+     **************************************************************************/
+    if (!EEPROM.begin(EEPROM_SIZE))
+    {
+        Serial.println("Failed to initialise EEPROM");
+        delay(1000000);
+    }
+    
+    /***************************************************************************
+     * Initialisierung Bluetooth Kommunikation
+     **************************************************************************/
     if (!SerialBT.begin("Wordclock_001"))
     {
         Serial.println("An error occurred initializing Bluetooth");
@@ -63,10 +77,6 @@ void setup()
     /***************************************************************************
      * Weitere Einstellungen und Initialisierungen
      **************************************************************************/
-    // Einstellung der Sprache fuer das Anzeigen der Zeit
-    settings.setLanguage(GERMAN);
-    settings.setColor(30, 30, 30);
-
     // Start der Funktionen für die LED-Ausgabe
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
 
@@ -77,35 +87,50 @@ void setup()
     pZeit = new Zeitmaster();
     pZeit->setTimeDate(6, 0, 49, 15, 4, 45); // ToDo: Sollte gelöscht werden, wenn die NTP Zeit bzw. App Zeiteinstellung funktioniert
 
+    /***************************************************************************
+     * Laden der gespeicherten Einstellungen
+     **************************************************************************/
+    
+    //TODO: Laden der Farbe aus den Einstellungen aus dem EEPROM
+    /*Serial.print("Farbe: ");
+    Serial.print(settings.loadColorFromEEPROM().red);
+    Serial.print(", ");
+    Serial.print(settings.loadColorFromEEPROM().green);
+    Serial.print(", ");
+    Serial.print(settings.loadColorFromEEPROM().blue);
+    Serial.println();
+    */
+    
     /***********************************************************************
      * Initialisierung des Timers
      **********************************************************************/
     // Time 1: 1/(80MHZ/80) = 1us and count up
-    timer = timerBegin(0, 80, true);
+    timer1 = timerBegin(0, 80, true);
     // Attach onTimer function
-    timerAttachInterrupt(timer, &onTimer, true);
+    timerAttachInterrupt(timer1, &onTimer, true);
     // Set alarm to 1000 ms and repeat it (true)
-    timerAlarmWrite(timer, 1000000, true);
-    // Start an alarm
+    timerAlarmWrite(timer1, 1*FACTOR_US_TO_S, true);
+    STOPINTERRUPT;
+    
+    /***********************************************************************
+     * Initialisierung des WiFi Verbindung
+     **********************************************************************/
+    Serial.print("SSID: ");
+    Serial.println(wificontrol.getSSID());
+    
+    Serial.print("PW: ");
+    Serial.println(wificontrol.getPW());
+    
+    //FIXME: mit ausgelesener SSID und PW führt es zu Speicher Übernutzung
     /*
-    char SSID[] = {'0'};
-    SSID[0] = 'O';
-    SSID[1] = 'n';
-    SSID[2] = 'L';
-    SSID[3] = 'i';
-    SSID[4] = 'n';
-    SSID[5] = 'e';
-
-    const char *ssid = (char *)SSID;
-    const char *password = "Br8#Pojg56";
-    WiFi.begin(ssid, password);
-    unsigned long t_0;
-    unsigned long t_last;
+    WiFi.begin(wificontrol.getSSID(), wificontrol.getPW());
+    unsigned long t_0 = 0;
+    unsigned long t_last = 0;
     Serial.println("Verbindungsversuch gestartet");
     while (WiFi.status() != WL_CONNECTED)
     {
         t_last = millis() - t_0;
-        if (t_last > 5000)
+        if (t_last > 500)
         {
             Serial.println("Verbindungsversuch fehlgeschlagen");
             ESP.restart();
@@ -113,7 +138,7 @@ void setup()
     }
 
     Serial.println("Connected to network");
-*/
+    */
 
     STARTINTERRUPT;
     // Ende der Setup
@@ -125,52 +150,19 @@ void setup()
 **************************************************************************************************************************/
 void loop()
 {
-    //const char *ssid = "OnLine";
-    //    const char *ssid = "UPC68EE18B";
-    //const char *password = settings.getWifiPW();
-    unsigned long t_0;
-    unsigned long t_last;
-
-    // Wird jede 1s getriggert in der ISR (siehe globale Einstellungen)
+    //Eventgetriggerte Ausgabe der Uhrzeit auf die LEDs (jede Sekunde)
     if (eventtrigger)
     {
         //pZeit->printZeitmasterTime();
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
         pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
-
-        //Serielle Ausgabe
-        //FIXME
-        //pZeit->printZeitmasterTime();
-        // reset trigger
         eventtrigger = false;
-
-        //STARTINTERRUPT;
-
-        //Serial.print(settings.getWifiSSID());
-        //Serial.print(" ");
-        //Serial.print(settings.getWifiPW());
-        //Serial.println(" ");
-
-        //Valide WiFi Daten verfügbar
-        //if (settings.getWifiSettingsAvailable() == true)
-        //{
-        //    Serial.println("WiFi Daten verfügbar");
-        /*WiFi.begin(settings.getWifiSSID(), settings.getWifiPW());
-        while (WiFi.status() != WL_CONNECTED)
-        {
-            t_last = millis() - t_0;
-            if (t_last > 5000)
-            {
-                Serial.println("Verbindungsversuch fehlgeschlagen");
-                ESP.restart();
-            }
-        }
-        Serial.println("Connected to network");*/
-        //}
     }
 
-    // Hier einlesen des Befehls
+    //Auto-Reconnect to WiFi
+    wificontrol.autoReconnectWifi();
+
     // Empfange Befehle aus der App
     if (SerialBT.available())
     {

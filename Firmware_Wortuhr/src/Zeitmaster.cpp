@@ -35,7 +35,7 @@ Zeitmaster::Zeitmaster()
  **************************************************************************/
 timedate_t Zeitmaster::getTimeDate()
 {
-    // ToDo wochentag fehlt
+    // TODO: Wochentag fehlt
     _TimeDate.year      =   myRTCDS3231.now().year();
     _TimeDate.month     =   myRTCDS3231.now().month();
     _TimeDate.date      =   myRTCDS3231.now().day();
@@ -183,7 +183,7 @@ uint8_t Zeitmaster::getDate()
  **************************************************************************/
 uint8_t Zeitmaster::getDayOfWeek()
 {
-    // ??? TODO
+    //TODO: Auslesen des Wochentags
     return _TimeDate.dayOfWeek;
 }
 

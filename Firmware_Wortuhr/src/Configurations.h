@@ -144,20 +144,21 @@
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
 #define TIMER_VALUE_MS 1000
+#define FACTOR_US_TO_S 1000000
 
 /***************************************************************************
  * EEEPROM Einstellungen
  **************************************************************************/
 #define EEPROM_SIZE 16
-#define EEPROM_ADDR_LANGUAGE 1
-#define EEPROM_ADDR_BRIGHTNESS 2
-#define EEPROM_ADDR_COLORRED 3
-#define EEPROM_ADDR_COLORGREEN 4
-#define EEPROM_ADDR_COLORBLUE 5
-#define EEPROM_ADDR_FADEMODE 6
-#define EEPROM_ADDR_CORNERSTARTLED 7
-#define EEPROM_ADDR_CORNERCLOCKWISE 8
-#define EEPROM_ADDR_WIFISSID 9
-#define EEPROM_ADDR_WIFIPW 11
-#define EEPROM_ADDR_STARTPATTERN 13
-#define EEPROM_ADDR_GMTOFFSET 14
+#define EEPROM_ADDR_LANGUAGE 0
+#define EEPROM_ADDR_BRIGHTNESS 1
+#define EEPROM_ADDR_COLORRED 2
+#define EEPROM_ADDR_COLORGREEN 3
+#define EEPROM_ADDR_COLORBLUE 4
+#define EEPROM_ADDR_FADEMODE 5
+#define EEPROM_ADDR_CORNERSTARTLED 6
+#define EEPROM_ADDR_CORNERCLOCKWISE 7
+#define EEPROM_ADDR_STARTPATTERN 8
+#define EEPROM_ADDR_GMTOFFSET 9
+#define EEPROM_ADDR_WIFISSID 10
+#define EEPROM_ADDR_WIFIPW 13

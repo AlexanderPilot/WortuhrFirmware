@@ -4,7 +4,9 @@
  **************************************************************************/
 
 /** Vermeidung Doppeldefinitionen **/
-#pragma once
+//#pragma once
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 /** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
@@ -12,7 +14,7 @@
 #include "WS2812B.h"
 #include "Configurations.h"
 
-#define DEBUG_SETTINGS 0
+#define DEBUG_SETTINGS 1
 
 class Settings
 {
@@ -56,14 +58,14 @@ public:
     /****************************************
          * WLAN SSID und Passwort
          ***************************************/
-    bool getWifiSettingsAvailable();
+/*    bool getWifiSettingsAvailable();
 
     void setWifiSSID(char *Ssid);
     char *getWifiSSID();
 
     void setWifiPW(char *Password);
     char *getWifiPW();
-
+*/
     /****************************************
          * Starmuster
          ***************************************/
@@ -88,34 +90,29 @@ public:
     byte loadFadeModeFromEEPROM();
     byte loadCornerStartLedFromEEPROM();
     bool loadCornerClockwiseFromEEPROM();
-    //String loadWifiSSIDFromEEPROM();
-    //String loadWifiPWFromEEPROM();
     byte loadStartpatternFromEEPROM();
     uint16_t loadGmtOffsetFromEEPROM();
 
     void writeLanguageToEEPROM(byte language);
     void writeBrightnessToEEPROM(byte brightness);
     void writeColorToEEPROM(pixel_t color);
-    void writeFadeModeFromEEPROM(byte fademode);
+    void writeFadeModeToEEPROM(byte fademode);
     void writeCornerStartLedToEEPROM(byte cornerstartled);
     void writeCornerClockwiseToEEPROM(bool cornersclockwise);
-    //void writeWifiSSIDToEEPROM(String wifiSSID);
-    //void writeWifiPWToEEPROM(String wifiPW);
     void writeStartpatternToEEPROM(byte startpattern);
     void writeGmtOffsetToEEPROM(uint16_t gmtoffset);
 
 private:
     /****************************************
-         * interne Variablen
-         ***************************************/
+     * interne Variablen
+    ***************************************/
     static byte _Language;
     static byte _Brightness;
     static pixel_t _Color;
     static byte _FadeMode;
     static byte _CornerStartLed;
     static boolean _CornersClockwise;
-    static char *_WifiSSID;
-    static char *_WifiPW;
     static byte _StartPattern;
     static uint16_t _GmtTimeOffsetSec;
 };
+#endif /* SETTINGS_H */
