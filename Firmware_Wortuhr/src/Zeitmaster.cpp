@@ -240,8 +240,13 @@ void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
 
 bool Zeitmaster::timeTrigger()
 {
+    bool trigger = false;
     static uint8_t oldMinuteVal = 61;
 
     if( oldMinuteVal != myRTCDS3231.now().minute() )
+    {
         oldMinuteVal = myRTCDS3231.now().minute();
+        trigger = true;
+    }
+    return trigger;
 }

@@ -134,8 +134,7 @@ void loop()
     // Wird jede 1s getriggert in der ISR (siehe globale Einstellungen)
     if (eventtrigger)
     {
-        //STOPINTERRUPT;
-        // Update the clock
+        //pZeit->printZeitmasterTime();
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
         pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
@@ -148,10 +147,10 @@ void loop()
 
         //STARTINTERRUPT;
 
-        Serial.print(settings.getWifiSSID());
-        Serial.print(" ");
-        Serial.print(settings.getWifiPW());
-        Serial.println(" ");
+        //Serial.print(settings.getWifiSSID());
+        //Serial.print(" ");
+        //Serial.print(settings.getWifiPW());
+        //Serial.println(" ");
 
         //Valide WiFi Daten verfügbar
         //if (settings.getWifiSettingsAvailable() == true)
@@ -175,7 +174,6 @@ void loop()
     // Empfange Befehle aus der App
     if (SerialBT.available())
     {
-        //ToDo: Erster Test wird werden, die Zeit ueber die App vorzugeben
         appinterpreter.readCommandCharFromApp((char)SerialBT.read());
     }
 }

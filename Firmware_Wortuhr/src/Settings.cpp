@@ -33,8 +33,8 @@ Settings::Settings()
     _FadeMode = 0;
     _CornerStartLed = 0;
     _CornersClockwise = 1;
-    _WifiSSID = {'0'};
-    _WifiPW = {'0'};
+    //_WifiSSID = {'0'};
+    //_WifiPW = {'0'};
     //_WifiSSID = "OnLine";
     //_WifiPW = "Br8#Pojg56";
     //_WifiSSID ="UPC68EE18B";
@@ -50,13 +50,12 @@ Settings::Settings()
  ***************************************/
 void Settings::setLanguage(byte Language)
 {
-    _Language = Language;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Sprache");
     }
+    _Language = Language;
 }
 
 byte Settings::getLanguage()
@@ -69,13 +68,12 @@ byte Settings::getLanguage()
  ***************************************/
 void Settings::setBrightnessPercent(byte Brightness)
 {
-    _Brightness = map(Brightness, 0, 100, 0, 255);
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Helligkeit");
     }
+    _Brightness = map(Brightness, 0, 100, 0, 255);
 }
 
 byte Settings::getBrightnessPercent()
@@ -88,26 +86,24 @@ byte Settings::getBrightnessPercent()
  ***************************************/
 void Settings::setColor(pixel_t color)
 {
-    _Color = color;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Farbe - color");
     }
+    _Color = color;
 }
 
 void Settings::setColor(byte red, byte green, byte blue)
 {
-    _Color.red = red;
-    _Color.green = green;
-    _Color.blue = blue;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Farbe - R,G,B");
     }
+    _Color.red = red;
+    _Color.green = green;
+    _Color.blue = blue;
 }
 
 pixel_t Settings::getColor()
@@ -120,13 +116,12 @@ pixel_t Settings::getColor()
  ***************************************/
 void Settings::setFadeMode(byte fadeMode)
 {
-    _FadeMode = fadeMode;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe des FadeMode");
     }
+    _FadeMode = fadeMode;
 }
 
 byte Settings::getFadeMode()
@@ -139,13 +134,12 @@ byte Settings::getFadeMode()
  ***************************************/
 void Settings::setCornerStartLed(byte CornerStartLed)
 {
-    _CornerStartLed = CornerStartLed;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Start-Eck-LED");
     }
+    _CornerStartLed = CornerStartLed;
 }
 
 byte Settings::getCornerStartLed()
@@ -155,13 +149,12 @@ byte Settings::getCornerStartLed()
 
 void Settings::setCornersClockwise(boolean CornersClockwise)
 {
-    _CornersClockwise = CornersClockwise;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der Drehrichtung der Eck-LEDs");
     }
+    _CornersClockwise = CornersClockwise;
 }
 
 boolean Settings::getCornersClockwise()
@@ -193,13 +186,12 @@ bool Settings::getWifiSettingsAvailable()
 
 void Settings::setWifiSSID(char *Ssid)
 {
-    _WifiSSID = Ssid;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe der WiFi SSID");
     }
+    _WifiSSID = Ssid;
 }
 
 char *Settings::getWifiSSID()
@@ -209,8 +201,6 @@ char *Settings::getWifiSSID()
 
 void Settings::setWifiPW(char *Password)
 {
-    _WifiPW = Password;
-
     if (DEBUG_SETTINGS == 0)
     {
         Serial.print("Settings.cpp - ");
@@ -219,6 +209,7 @@ void Settings::setWifiPW(char *Password)
         Serial.print(" und Speicherung in interve Variable ");
         Serial.println(_WifiPW);
     }
+    _WifiPW = Password;
 }
 
 char *Settings::getWifiPW()
@@ -231,13 +222,12 @@ char *Settings::getWifiPW()
  ***************************************/
 void Settings::setStartPattern(byte StartPattern)
 {
-    _StartPattern = StartPattern;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe des Startmusters");
     }
+    _StartPattern = StartPattern;
 }
 
 byte Settings::getStartPattern()
@@ -251,13 +241,12 @@ byte Settings::getStartPattern()
 
 void Settings::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 {
-    _GmtTimeOffsetSec = GmtTimeOffsetSec;
-
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Übergabe des GMT Offsets");
     }
+    _GmtTimeOffsetSec = GmtTimeOffsetSec;
 }
 
 uint16_t Settings::getGmtTimeOffsetSec()
@@ -273,22 +262,26 @@ uint16_t Settings::getGmtTimeOffsetSec()
 bool Settings::checkEEPROMData()
 {
     bool EEPROMdataOK = true;
-
-    Serial.println("Settings.cpp - checkEEPROMData Funktion muss noch implementiert werden, aktuell keine Pruefung der Daten");
-
+    
     if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.print("Daten aus dem EEPROM sind: ");
         Serial.println(EEPROMdataOK ? "gueltig" : "ungueltig");
     }
+    Serial.println("Settings.cpp - checkEEPROMData Funktion muss noch implementiert werden, aktuell keine Pruefung der Daten");
+
     return EEPROMdataOK;
 }
 
 void Settings::loadAllFromEEPROM()
 {
-    Serial.println("Einstellungen vom EEPROM laden aktiviert");
-    ;
+    if (DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Settings.cpp - ");
+        Serial.println("Alle Einstellungen vom EEPROM laden");
+    }
+    
     _Language = this->loadLanguageFromEEPROM();
     _Brightness = this->loadBrightnessFromEEPROM();
     _Color = this->loadColorFromEEPROM();
@@ -304,7 +297,6 @@ void Settings::loadAllFromEEPROM()
 byte Settings::loadLanguageFromEEPROM()
 {
     byte EEPROMlanguage;
-    EEPROMlanguage = EEPROM.readByte(EEPROM_ADDR_LANGUAGE);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -315,13 +307,13 @@ byte Settings::loadLanguageFromEEPROM()
         Serial.print(EEPROM_ADDR_LANGUAGE);
         Serial.println(" gelesen");
     }
+    EEPROMlanguage = EEPROM.readByte(EEPROM_ADDR_LANGUAGE);
     return EEPROMlanguage;
 }
 
 byte Settings::loadBrightnessFromEEPROM()
 {
     byte EEPROMbrightness;
-    EEPROMbrightness = EEPROM.readByte(EEPROM_ADDR_BRIGHTNESS);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -332,15 +324,13 @@ byte Settings::loadBrightnessFromEEPROM()
         Serial.print(EEPROM_ADDR_BRIGHTNESS);
         Serial.println(" gelesen");
     }
+    EEPROMbrightness = EEPROM.readByte(EEPROM_ADDR_BRIGHTNESS);
     return EEPROMbrightness;
 }
 
 pixel_t Settings::loadColorFromEEPROM()
 {
     pixel_t EEPROMcolor;
-    EEPROMcolor.red = EEPROM.readByte(EEPROM_ADDR_COLORRED);
-    EEPROMcolor.green = EEPROM.readByte(EEPROM_ADDR_COLORGREEN);
-    EEPROMcolor.blue = EEPROM.readByte(EEPROM_ADDR_COLORBLUE);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -361,13 +351,15 @@ pixel_t Settings::loadColorFromEEPROM()
         Serial.print(EEPROM_ADDR_COLORBLUE);
         Serial.println(" gelesen");
     }
+    EEPROMcolor.red = EEPROM.readByte(EEPROM_ADDR_COLORRED);
+    EEPROMcolor.green = EEPROM.readByte(EEPROM_ADDR_COLORGREEN);
+    EEPROMcolor.blue = EEPROM.readByte(EEPROM_ADDR_COLORBLUE);
     return EEPROMcolor;
 }
 
 byte Settings::loadFadeModeFromEEPROM()
 {
     byte EEPROMfadeMode;
-    EEPROMfadeMode = EEPROM.readByte(EEPROM_ADDR_FADEMODE);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -378,13 +370,13 @@ byte Settings::loadFadeModeFromEEPROM()
         Serial.print(EEPROM_ADDR_FADEMODE);
         Serial.println(" gelesen");
     }
+    EEPROMfadeMode = EEPROM.readByte(EEPROM_ADDR_FADEMODE);
     return EEPROMfadeMode;
 }
 
 byte Settings::loadCornerStartLedFromEEPROM()
 {
     byte EEPROMcornerStartLed;
-    EEPROMcornerStartLed = EEPROM.readByte(EEPROM_ADDR_CORNERSTARTLED);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -395,13 +387,13 @@ byte Settings::loadCornerStartLedFromEEPROM()
         Serial.print(EEPROM_ADDR_CORNERSTARTLED);
         Serial.println(" gelesen");
     }
+    EEPROMcornerStartLed = EEPROM.readByte(EEPROM_ADDR_CORNERSTARTLED);
     return EEPROMcornerStartLed;
 }
 
 bool Settings::loadCornerClockwiseFromEEPROM()
 {
     bool EEPROMcornerClockwise;
-    EEPROMcornerClockwise = EEPROM.readBool(EEPROM_ADDR_CORNERCLOCKWISE);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -412,6 +404,7 @@ bool Settings::loadCornerClockwiseFromEEPROM()
         Serial.print(EEPROM_ADDR_CORNERCLOCKWISE);
         Serial.println(" gelesen");
     }
+    EEPROMcornerClockwise = EEPROM.readBool(EEPROM_ADDR_CORNERCLOCKWISE);
     return EEPROMcornerClockwise;
 }
 /*
@@ -452,7 +445,6 @@ String Settings::loadWifiPWFromEEPROM()
 byte Settings::loadStartpatternFromEEPROM()
 {
     byte EEPROMstartpattern;
-    EEPROMstartpattern = EEPROM.readByte(EEPROM_ADDR_STARTPATTERN);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -463,13 +455,13 @@ byte Settings::loadStartpatternFromEEPROM()
         Serial.print(EEPROM_ADDR_STARTPATTERN);
         Serial.println(" gelesen");
     }
+    EEPROMstartpattern = EEPROM.readByte(EEPROM_ADDR_STARTPATTERN);
     return EEPROMstartpattern;
 }
 
 uint16_t Settings::loadGmtOffsetFromEEPROM()
 {
     uint16_t EEPROMgmtOffset;
-    EEPROMgmtOffset = EEPROM.readByte(EEPROM_ADDR_GMTOFFSET);
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -480,6 +472,7 @@ uint16_t Settings::loadGmtOffsetFromEEPROM()
         Serial.print(EEPROM_ADDR_GMTOFFSET);
         Serial.println(" gelesen");
     }
+    EEPROMgmtOffset = EEPROM.readByte(EEPROM_ADDR_GMTOFFSET);
     return EEPROMgmtOffset;
 }
 
@@ -487,8 +480,6 @@ uint16_t Settings::loadGmtOffsetFromEEPROM()
 void Settings::writeLanguageToEEPROM(byte language)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_LANGUAGE, language);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -499,13 +490,13 @@ void Settings::writeLanguageToEEPROM(byte language)
         Serial.print(EEPROM_ADDR_LANGUAGE);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_LANGUAGE, language);
+    EEPROM.commit();
 }
 
 void Settings::writeBrightnessToEEPROM(byte brightness)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_BRIGHTNESS, brightness);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -516,6 +507,8 @@ void Settings::writeBrightnessToEEPROM(byte brightness)
         Serial.print(EEPROM_ADDR_BRIGHTNESS);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_BRIGHTNESS, brightness);
+    EEPROM.commit();
 }
 
 void Settings::writeColorToEEPROM(pixel_t color)
@@ -523,10 +516,6 @@ void Settings::writeColorToEEPROM(pixel_t color)
     size_t EEPROMstorage_red;
     size_t EEPROMstorage_green;
     size_t EEPROMstorage_blue;
-    EEPROMstorage_red = EEPROM.writeByte(EEPROM_ADDR_COLORRED, color.red);
-    EEPROMstorage_green = EEPROM.writeByte(EEPROM_ADDR_COLORGREEN, color.green);
-    EEPROMstorage_blue = EEPROM.writeByte(EEPROM_ADDR_COLORBLUE, color.blue);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -547,13 +536,15 @@ void Settings::writeColorToEEPROM(pixel_t color)
         Serial.print(EEPROM_ADDR_COLORBLUE);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage_red = EEPROM.writeByte(EEPROM_ADDR_COLORRED, color.red);
+    EEPROMstorage_green = EEPROM.writeByte(EEPROM_ADDR_COLORGREEN, color.green);
+    EEPROMstorage_blue = EEPROM.writeByte(EEPROM_ADDR_COLORBLUE, color.blue);
+    EEPROM.commit();
 }
 
 void Settings::writeFadeModeFromEEPROM(byte fademode)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_FADEMODE, fademode);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -564,13 +555,13 @@ void Settings::writeFadeModeFromEEPROM(byte fademode)
         Serial.print(EEPROM_ADDR_FADEMODE);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_FADEMODE, fademode);
+    EEPROM.commit();
 }
 
 void Settings::writeCornerStartLedToEEPROM(byte cornerstartled)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_CORNERSTARTLED, cornerstartled);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -581,13 +572,13 @@ void Settings::writeCornerStartLedToEEPROM(byte cornerstartled)
         Serial.print(EEPROM_ADDR_CORNERSTARTLED);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_CORNERSTARTLED, cornerstartled);
+    EEPROM.commit();
 }
 
 void Settings::writeCornerClockwiseToEEPROM(bool cornersclockwise)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeBool(EEPROM_ADDR_CORNERCLOCKWISE, cornersclockwise);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -598,6 +589,8 @@ void Settings::writeCornerClockwiseToEEPROM(bool cornersclockwise)
         Serial.print(EEPROM_ADDR_CORNERCLOCKWISE);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeBool(EEPROM_ADDR_CORNERCLOCKWISE, cornersclockwise);
+    EEPROM.commit();
 }
 /*
 void Settings::writeWifiSSIDToEEPROM(String wifiSSID)
@@ -637,8 +630,6 @@ void Settings::writeWifiPWToEEPROM(String wifiPW)
 void Settings::writeStartpatternToEEPROM(byte startpattern)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_STARTPATTERN, startpattern);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -649,13 +640,13 @@ void Settings::writeStartpatternToEEPROM(byte startpattern)
         Serial.print(EEPROM_ADDR_STARTPATTERN);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeByte(EEPROM_ADDR_STARTPATTERN, startpattern);
+    EEPROM.commit();
 }
 
 void Settings::writeGmtOffsetToEEPROM(uint16_t gmtoffset)
 {
     size_t EEPROMstorage;
-    EEPROMstorage = EEPROM.writeUShort(EEPROM_ADDR_GMTOFFSET, gmtoffset);
-    EEPROM.commit();
 
     if (DEBUG_SETTINGS == 1)
     {
@@ -666,4 +657,6 @@ void Settings::writeGmtOffsetToEEPROM(uint16_t gmtoffset)
         Serial.print(EEPROM_ADDR_GMTOFFSET);
         Serial.println(" geschrieben");
     }
+    EEPROMstorage = EEPROM.writeUShort(EEPROM_ADDR_GMTOFFSET, gmtoffset);
+    EEPROM.commit();
 }

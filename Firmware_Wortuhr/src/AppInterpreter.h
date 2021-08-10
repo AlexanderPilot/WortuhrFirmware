@@ -4,7 +4,7 @@
 #include "Configurations.h"
 #include "Settings.h"
 
-#define DEBUG_APPINTERPRETER 0
+#define DEBUG_APPINTERPRETER 1
 
 class AppInterpreter
 {

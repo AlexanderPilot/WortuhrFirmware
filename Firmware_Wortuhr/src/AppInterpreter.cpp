@@ -78,7 +78,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("SSID + ");
+                    Serial.print("AppInterpreter.cpp - SSID + ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetSSID(_AppBefehl, true);
@@ -87,7 +87,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("SSID (END)");
+                    Serial.print("AppInterpreter.cpp - SSID (END)");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetSSID(_AppBefehl, false);
@@ -98,7 +98,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("Farbe erkannt ");
+                    Serial.print("AppInterpreter.cpp - Farbe erkannt ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetColor(_AppBefehl);
@@ -109,7 +109,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("Helligkeit erkannt ");
+                    Serial.print("AppInterpreter.cpp - Helligkeit erkannt ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetBrightness(_AppBefehl);
@@ -120,7 +120,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("Zeit erkannt ");
+                    Serial.print("AppInterpreter.cpp - Zeit erkannt ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetTime(_AppBefehl);
@@ -218,7 +218,7 @@ void AppInterpreter::_CommSetTime(char *Uhrzeit)
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Setzen der Zeit in RTC");
+        Serial.print("Setzen der Zeit in RTC: ");
         for (uint8_t i = 0; i < LENGTH_COMMAND_APP; i++)
         {
             Serial.print(*(Uhrzeit + i));
