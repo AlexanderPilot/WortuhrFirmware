@@ -10,7 +10,7 @@
 
 /** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
-#include "EEPROM.h"
+#include "Preferences.h"
 #include "WS2812B.h"
 #include "Configurations.h"
 
@@ -67,52 +67,56 @@ public:
     char *getWifiPW();
 */
     /****************************************
-         * Starmuster
-         ***************************************/
+     * Starmuster
+     ***************************************/
     void setStartPattern(byte StartPattern);
     byte getStartPattern();
 
     /****************************************
-         * Offset zur GMT Zeit
-         ***************************************/
+     * Offset zur GMT Zeit
+     ***************************************/
     void setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
     uint16_t getGmtTimeOffsetSec();
-
-    /****************************************
-         * EEPROM Ansteuerung
-         ***************************************/
-    bool checkEEPROMData();
-
-    void loadAllFromEEPROM();
-    byte loadLanguageFromEEPROM();
-    byte loadBrightnessFromEEPROM();
-    pixel_t loadColorFromEEPROM();
-    byte loadFadeModeFromEEPROM();
-    byte loadCornerStartLedFromEEPROM();
-    bool loadCornerClockwiseFromEEPROM();
-    byte loadStartpatternFromEEPROM();
-    uint16_t loadGmtOffsetFromEEPROM();
-
-    void writeLanguageToEEPROM(byte language);
-    void writeBrightnessToEEPROM(byte brightness);
-    void writeColorToEEPROM(pixel_t color);
-    void writeFadeModeToEEPROM(byte fademode);
-    void writeCornerStartLedToEEPROM(byte cornerstartled);
-    void writeCornerClockwiseToEEPROM(bool cornersclockwise);
-    void writeStartpatternToEEPROM(byte startpattern);
-    void writeGmtOffsetToEEPROM(uint16_t gmtoffset);
-
+     
+     void loadLanguageFromPreferences();
+     void loadBrightnessFromPreferences();
+     void loadColorFromPreferences();
+     void loadFadeModeFromPreferences();
+     void loadCornerStartLedFromPreferences();
+     void loadCornerClockwiseFromPreferences();
+     void loadStartpatternFromPreferences();
+     void loadGmtOffsetFromPreferences();
+     void loadSsidFromPreferences();
+     void loadPasswordFromPreferences();
+     
+     void writeLanguageToPreferences(byte language);
+     void writeBrightnessToPreferences(byte brightness);
+     void writeColorToPreferences(pixel_t color);
+     void writeColorToPreferences(byte red, byte green, byte blue);
+     void writeFadeModeToPreferences(byte fademode);
+     void writeCornerStartLedToPreferences(byte cornerstartled);
+     void writeCornerClockwiseToPreferences(bool cornersclockwise);
+     void writeStartpatternToPreferences(byte startpattern);
+     void writeGmtOffsetToPreferences(uint16_t gmtoffset);
+     void writeSsidToPreferences(String ssid);
+     void writePasswordToPreferences(String password);
+     
+     void loadDataFromPreferences();
+     void writeDataToPreferences();
+     
 private:
-    /****************************************
+     /****************************************
      * interne Variablen
-    ***************************************/
-    static byte _Language;
-    static byte _Brightness;
-    static pixel_t _Color;
-    static byte _FadeMode;
-    static byte _CornerStartLed;
-    static boolean _CornersClockwise;
-    static byte _StartPattern;
-    static uint16_t _GmtTimeOffsetSec;
+     ***************************************/
+     static byte _Language;
+     static byte _Brightness;
+     static pixel_t _Color;
+     static byte _FadeMode;
+     static byte _CornerStartLed;
+     static boolean _CornersClockwise;
+     static byte _StartPattern;
+     static uint16_t _GmtTimeOffsetSec;
+     static String _SSID;
+     static String _Password;
 };
 #endif /* SETTINGS_H */

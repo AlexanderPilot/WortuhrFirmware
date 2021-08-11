@@ -56,7 +56,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    //Serial.print("PW + ");
+                    Serial.print("PW + ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetPW(_AppBefehl, true);
@@ -65,7 +65,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    //Serial.print("PW (END)");
+                    Serial.print("PW (END)");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetPW(_AppBefehl, false);
@@ -295,17 +295,19 @@ void AppInterpreter::_CommSetSSID(char *partialSSID, bool continueCommand)
 ***************************************************************************/
 void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
 {
-    char PWchar;
+    static char PWchar;
     static char PW[] = {'0'};
     static uint8_t counter = 0;
     PWchar = this->_getDecryptedChar(partialPW, 5);
-    if (DEBUG_APPINTERPRETER == 0)
+    if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
         Serial.print("WIFI PW schreiben");
         Serial.print(" ");
         Serial.print(PWchar);
-        Serial.print(" ");
+        Serial.print(" Counter: ");
+        Serial.print(counter);
+        Serial.print(" continue: ");
         Serial.println(continueCommand);
     }
 
@@ -316,8 +318,9 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
     //sobald Array befüllt  ist, wird die Einstellung geschrieben
     if (continueCommand == false)
     {
-        if (DEBUG_APPINTERPRETER == 0)
+        if (DEBUG_APPINTERPRETER == 1)
         {
+            Serial.print("PW vollständig übermittelt: ");
             //Array PW ausgeben
             for (uint8_t i = 0; i < counter; i++)
             {

@@ -4,7 +4,7 @@
  * by Alex P. and Vitali H.
  * 
  * TODO:
- * EEPROM Nutzung
+ * Preferences Nutzung
  * Initialisierung WIFI mit SSID und PW aus WiFiControl 
  * 
  *****************************************************************************************************************************************************************************************/
@@ -42,10 +42,6 @@ void IRAM_ATTR onTimer()
     eventtrigger = true;
 }
 
-// Start to delete after tests
-pixel_t _color = {10, 10, 10};
-// End to "delete"
-
 /* START SETUP ************************************************************/
 void setup()
 {
@@ -58,13 +54,11 @@ void setup()
     Serial.println("--- Setup gestartet ---");
     
     /***************************************************************************
-     * Initialisierung EEPROM und Einstellungen
+     * Initialisierung Preferences und Einstellungen
      **************************************************************************/
-    if (!EEPROM.begin(EEPROM_SIZE))
-    {
-        Serial.println("Failed to initialise EEPROM");
-        delay(1000000);
-    }
+    //Nur einmaligbenötigt, sodass Standardset in den Preferences hinterlegt ist
+    //settings.writeDataToPreferences();
+    settings.loadDataFromPreferences();
     
     /***************************************************************************
      * Initialisierung Bluetooth Kommunikation
@@ -91,15 +85,7 @@ void setup()
      * Laden der gespeicherten Einstellungen
      **************************************************************************/
     
-    //TODO: Laden der Farbe aus den Einstellungen aus dem EEPROM
-    /*Serial.print("Farbe: ");
-    Serial.print(settings.loadColorFromEEPROM().red);
-    Serial.print(", ");
-    Serial.print(settings.loadColorFromEEPROM().green);
-    Serial.print(", ");
-    Serial.print(settings.loadColorFromEEPROM().blue);
-    Serial.println();
-    */
+
     
     /***********************************************************************
      * Initialisierung des Timers
@@ -115,15 +101,11 @@ void setup()
     /***********************************************************************
      * Initialisierung des WiFi Verbindung
      **********************************************************************/
-    Serial.print("SSID: ");
-    Serial.println(wificontrol.getSSID());
     
-    Serial.print("PW: ");
-    Serial.println(wificontrol.getPW());
+    //WiFi.begin(ssid_pointer, pw_pointer);
     
     //FIXME: mit ausgelesener SSID und PW führt es zu Speicher Übernutzung
     /*
-    WiFi.begin(wificontrol.getSSID(), wificontrol.getPW());
     unsigned long t_0 = 0;
     unsigned long t_last = 0;
     Serial.println("Verbindungsversuch gestartet");
@@ -161,7 +143,7 @@ void loop()
     }
 
     //Auto-Reconnect to WiFi
-    wificontrol.autoReconnectWifi();
+//    wificontrol.autoReconnectWifi();
 
     // Empfange Befehle aus der App
     if (SerialBT.available())

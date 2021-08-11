@@ -7,6 +7,11 @@
 #include "Settings.h"
 
 /****************************************
+ * Definition Objekte
+ ***************************************/
+Preferences preferences;
+
+/****************************************
  * Definition der static Variablen
  ***************************************/
 byte Settings::_Language;
@@ -17,6 +22,8 @@ byte Settings::_CornerStartLed;
 boolean Settings::_CornersClockwise;
 byte Settings::_StartPattern;
 uint16_t Settings::_GmtTimeOffsetSec;
+String Settings::_SSID;
+String Settings::_Password;
 
 /****************************************
  * Konstruktor mit Standardeinstellungen
@@ -25,16 +32,16 @@ Settings::Settings()
 {
     _Language = LANGUAGE_DE_DE;
     _Brightness = 100;
-    _Color.red = 0;
-    _Color.green = 0;
+    _Color.red = 30;
+    _Color.green = 30;
     _Color.blue = 30;
     _FadeMode = 0;
     _CornerStartLed = 0;
     _CornersClockwise = 1;
     _StartPattern = 1;
     _GmtTimeOffsetSec = 3600;
-    //FIXME: mit der Zeile unterhalb führt es zu CPU Resets
-    //EEPROM.begin(EEPROM_SIZE);
+    _SSID = "";
+    _Password = "";
 }
 
 /****************************************
@@ -44,8 +51,8 @@ void Settings::setLanguage(byte Language)
 {
     if(_Language != Language)
     {
-        _Language = Language;
-        writeLanguageToEEPROM(_Language);
+        writeLanguageToPreferences(Language);
+        loadLanguageFromPreferences();
     }
 }
 
@@ -61,8 +68,8 @@ void Settings::setBrightnessPercent(byte Brightness)
 {
     if(_Brightness != map(Brightness, 0, 100, 0, 255))
     {
-        _Brightness = map(Brightness, 0, 100, 0, 255);
-        writeBrightnessToEEPROM(_Brightness);
+        writeBrightnessToPreferences(map(Brightness, 0, 100, 0, 255));
+        loadBrightnessFromPreferences();
     }
 }
 
@@ -83,11 +90,8 @@ void Settings::setColor(pixel_t color)
     }
     if((_Color.red != color.red) || (_Color.green != color.green) || (_Color.blue != color.blue))
     {
-        //_Color = color;
-        writeColorToEEPROM(_Color);
-        _Color = color;
-        //TODO: Umstellun auf direktes Lesen vom EEPROM
-        //_Color = loadColorFromEEPROM();
+        writeColorToPreferences(color);
+        loadColorFromPreferences();
     }
 }
 
@@ -95,10 +99,8 @@ void Settings::setColor(byte red, byte green, byte blue)
 {
     if((_Color.red != red) || (_Color.green != green) || (_Color.blue != blue))
     {
-        _Color.red = red;
-        _Color.green = green;
-        _Color.blue = blue;
-        writeColorToEEPROM(_Color);
+        writeColorToPreferences(red, green, blue);
+        loadColorFromPreferences();
     }
 }
 
@@ -114,8 +116,8 @@ void Settings::setFadeMode(byte FadeMode)
 {
     if(_FadeMode != FadeMode)
     {
-        _FadeMode = FadeMode;
-        writeFadeModeToEEPROM(_FadeMode);
+        writeFadeModeToPreferences(FadeMode);
+        loadFadeModeFromPreferences();
     }
 }
 
@@ -131,8 +133,8 @@ void Settings::setCornerStartLed(byte CornerStartLed)
 {
     if(_CornerStartLed != CornerStartLed)
     {
-        _CornerStartLed = CornerStartLed;
-        writeCornerStartLedToEEPROM(_CornerStartLed);
+        writeCornerStartLedToPreferences(CornerStartLed);
+        loadCornerStartLedFromPreferences();
     }
     
 }
@@ -146,8 +148,8 @@ void Settings::setCornersClockwise(boolean CornersClockwise)
 {
     if(_CornersClockwise != CornersClockwise)
     {
-        _CornersClockwise = CornersClockwise;
-        writeCornerClockwiseToEEPROM(_CornersClockwise);
+        writeCornerClockwiseToPreferences(CornersClockwise);
+        loadCornerClockwiseFromPreferences();
     }
 }
 
@@ -163,8 +165,8 @@ void Settings::setStartPattern(byte StartPattern)
 {
     if(_StartPattern != StartPattern)
     {
-        _StartPattern = StartPattern;
-        writeStartpatternToEEPROM(_StartPattern);
+        writeStartpatternToPreferences(StartPattern);
+        loadStartpatternFromPreferences();
     }
 }
 
@@ -181,8 +183,8 @@ void Settings::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 {
     if(_GmtTimeOffsetSec != GmtTimeOffsetSec)
     {
-        _GmtTimeOffsetSec = GmtTimeOffsetSec;
-        writeGmtOffsetToEEPROM(_GmtTimeOffsetSec);
+        writeGmtOffsetToPreferences(GmtTimeOffsetSec);
+        loadGmtOffsetFromPreferences();
     }
 }
 
@@ -191,197 +193,341 @@ uint16_t Settings::getGmtTimeOffsetSec()
     return _GmtTimeOffsetSec;
 }
 
-/****************************************
- * EEPROM Ansteuerung
- ***************************************/
-
-/** EEPROM schreiben **/
-bool Settings::checkEEPROMData()
+/***************************************************************************
+ * Auslesen der Sprache aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _Language gespeichert werden
+ **************************************************************************/
+void Settings::loadLanguageFromPreferences()
 {
-    bool EEPROMdataOK = true;
-    //TODO: Implementieren der Funktion
-    return EEPROMdataOK;
-}
-
-void Settings::loadAllFromEEPROM()
-{
-    _Language = this->loadLanguageFromEEPROM();
-    _Brightness = this->loadBrightnessFromEEPROM();
-    _Color = this->loadColorFromEEPROM();
-    _FadeMode = this->loadFadeModeFromEEPROM();
-    _CornerStartLed = this->loadCornerStartLedFromEEPROM();
-    _CornersClockwise = this->loadCornerClockwiseFromEEPROM();
-    _StartPattern = this->loadStartpatternFromEEPROM();
-    _GmtTimeOffsetSec = this->loadGmtOffsetFromEEPROM();
+    preferences.begin("settings", true);
+    _Language = preferences.getUChar("language");
+    preferences.end();
 }
 
 /***************************************************************************
- * Auslesen der Sprache aus EEPROM
- * Übergabeparameter: kein, da die Sprache direkt vom EEPROM gelesen wird
- * Rückgabeparameter: Sprache die verwendet werden soll
+ * Auslesen der Helligkeit aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _Brightness gespeichert werden
  **************************************************************************/
-byte Settings::loadLanguageFromEEPROM()
+void Settings::loadBrightnessFromPreferences()
 {
-    byte EEPROMlanguage;
-    
-    EEPROMlanguage = EEPROM.readByte(EEPROM_ADDR_LANGUAGE);
-    
-    return EEPROMlanguage;
-}
-
-byte Settings::loadBrightnessFromEEPROM()
-{
-    byte EEPROMbrightness;
-    
-    EEPROMbrightness = EEPROM.readByte(EEPROM_ADDR_BRIGHTNESS);
-    
-    return EEPROMbrightness;
-}
-
-pixel_t Settings::loadColorFromEEPROM()
-{
-    pixel_t EEPROMcolor;
-
-    EEPROMcolor.red = EEPROM.readByte(EEPROM_ADDR_COLORRED);
-    EEPROMcolor.green = EEPROM.readByte(EEPROM_ADDR_COLORGREEN);
-    EEPROMcolor.blue = EEPROM.readByte(EEPROM_ADDR_COLORBLUE);
-    if (DEBUG_SETTINGS == 1)
-    {
-        Serial.print("Settings.cpp - ");
-        Serial.print("Farbe: ");
-        Serial.print("rot: ");
-        Serial.print(EEPROMcolor.red);
-        Serial.print(" gruen: ");
-        Serial.print(EEPROMcolor.green);
-        Serial.print(" blau: ");
-        Serial.print(EEPROMcolor.blue);
-        Serial.print(" wird von den Adressen ");
-        Serial.print("rot: ");
-        Serial.print(EEPROM_ADDR_COLORRED);
-        Serial.print(" gruen: ");
-        Serial.print(EEPROM_ADDR_COLORGREEN);
-        Serial.print(" blau: ");
-        Serial.print(EEPROM_ADDR_COLORBLUE);
-        Serial.println(" gelesen");
-    }
-    return EEPROMcolor;
-}
-
-byte Settings::loadFadeModeFromEEPROM()
-{
-    byte EEPROMfadeMode;
-
-    EEPROMfadeMode = EEPROM.readByte(EEPROM_ADDR_FADEMODE);
-
-    return EEPROMfadeMode;
-}
-
-byte Settings::loadCornerStartLedFromEEPROM()
-{
-    byte EEPROMcornerStartLed;
-
-    EEPROMcornerStartLed = EEPROM.readByte(EEPROM_ADDR_CORNERSTARTLED);
-
-    return EEPROMcornerStartLed;
-}
-
-bool Settings::loadCornerClockwiseFromEEPROM()
-{
-    bool EEPROMcornerClockwise;
-
-    EEPROMcornerClockwise = EEPROM.readBool(EEPROM_ADDR_CORNERCLOCKWISE);
-
-    return EEPROMcornerClockwise;
-}
-
-byte Settings::loadStartpatternFromEEPROM()
-{
-    byte EEPROMstartpattern;
-
-    EEPROMstartpattern = EEPROM.readByte(EEPROM_ADDR_STARTPATTERN);
-
-    return EEPROMstartpattern;
-}
-
-uint16_t Settings::loadGmtOffsetFromEEPROM()
-{
-    uint16_t EEPROMgmtOffset;
-
-    EEPROMgmtOffset = EEPROM.readUShort(EEPROM_ADDR_GMTOFFSET);
-
-    return EEPROMgmtOffset;
+    preferences.begin("settings", true);
+    _Brightness = preferences.getUChar("brightness");
+    preferences.end();
 }
 
 /***************************************************************************
- * Schreiben der Sprache auf den EEPROM
- * Übergabeparameter: Sprache, die verwendet werden soll
- * Rückgabeparameter: kein
+ * Auslesen der Farbe aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _Color gespeichert werden
  **************************************************************************/
-void Settings::writeLanguageToEEPROM(byte language)
+void Settings::loadColorFromPreferences()
 {
-    EEPROM.writeByte(EEPROM_ADDR_LANGUAGE, language);
-    EEPROM.commit();
+    preferences.begin("settings", true);
+    _Color.red = preferences.getUChar("colorred");
+    _Color.green = preferences.getUChar("colorgreen");
+    _Color.blue = preferences.getUChar("colorblue");
+    preferences.end();
 }
 
-void Settings::writeBrightnessToEEPROM(byte brightness)
+/***************************************************************************
+ * Auslesen des FadeMode aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _FadeMode gespeichert werden
+ **************************************************************************/
+void Settings::loadFadeModeFromPreferences()
 {
-    EEPROM.writeByte(EEPROM_ADDR_BRIGHTNESS, brightness);
-    EEPROM.commit();
+    preferences.begin("settings", true);
+    _FadeMode = preferences.getUChar("fademode");
+    preferences.end();
 }
 
-void Settings::writeColorToEEPROM(pixel_t color)
+/***************************************************************************
+ * Auslesen des Start Eck-LED aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _CornerStartLed gespeichert werden
+ **************************************************************************/
+void Settings::loadCornerStartLedFromPreferences()
 {
-    if (DEBUG_SETTINGS == 1)
+    preferences.begin("settings", true);
+    _CornerStartLed = preferences.getUChar("cornerstartled");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Auslesen der Drehrichtung der Eck-LED aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _CornersClockwise gespeichert werden
+ **************************************************************************/
+void Settings::loadCornerClockwiseFromPreferences()
+{
+    preferences.begin("settings", true);
+    _CornersClockwise = preferences.getBool("cornerclockwise");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Auslesen des Startmusters aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _StartPattern gespeichert werden
+ **************************************************************************/
+void Settings::loadStartpatternFromPreferences()
+{
+    preferences.begin("settings", true);
+    _StartPattern = preferences.getUChar("startpattern");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Auslesen des GMT Offsets aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _GmtTimeOffsetSec gespeichert werden
+ **************************************************************************/
+void Settings::loadGmtOffsetFromPreferences()
+{
+    preferences.begin("settings", true);
+    _GmtTimeOffsetSec = preferences.getUShort("gmtoffset");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Auslesen der WiFi SSID aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _GmtTimeOffsetSec gespeichert werden
+ **************************************************************************/
+void Settings::loadSsidFromPreferences()
+{
+    preferences.begin("settings", true);
+    _SSID = preferences.getString("wifissid");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Auslesen des WiFi Passworts aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _GmtTimeOffsetSec gespeichert werden
+ **************************************************************************/
+void Settings::loadPasswordFromPreferences()
+{
+    preferences.begin("settings", true);
+    _Password = preferences.getString("wifipassword");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Sprache in Preferences
+ * Übergabeparameter: Sprache
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeLanguageToPreferences(byte language)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("language", language);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Helligkeit in Preferences
+ * Übergabeparameter: Helligkeitswert
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeBrightnessToPreferences(byte brightness)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("brightness", brightness);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Farbe in Preferences
+ * Übergabeparameter: Farbe als pixel_t struct
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeColorToPreferences(pixel_t color)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("colorred", color.red);
+    preferences.putUChar("colorgreen", color.green);
+    preferences.putUChar("colorblue", color.blue);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Farbe in Preferences
+ * Übergabeparameter: Farbe als RGB
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeColorToPreferences(byte red, byte green, byte blue)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("colorred", red);
+    preferences.putUChar("colorgreen", green);
+    preferences.putUChar("colorblue", blue);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben des FadeMode in Preferences
+ * Übergabeparameter: FadeMode
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeFadeModeToPreferences(byte fademode)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("fademode", fademode);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Start Eck-LED in Preferences
+ * Übergabeparameter: Start Eck-LED
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeCornerStartLedToPreferences(byte cornerstartled)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("cornerstartled", cornerstartled);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Drehrichtung der Eck-LEDs in Preferences
+ * Übergabeparameter: Drechrichtung Eck-LED
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeCornerClockwiseToPreferences(bool cornersclockwise)
+{
+    preferences.begin("settings", false);
+    preferences.putBool("cornerclockwise", cornersclockwise);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben des Startmusters in Preferences
+ * Übergabeparameter: Startmuster
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeStartpatternToPreferences(byte startpattern)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("startpattern", startpattern);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben des Startmusters in Preferences
+ * Übergabeparameter: Startmuster
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeGmtOffsetToPreferences(uint16_t gmtoffset)
+{
+    preferences.begin("settings", false);
+    preferences.putUShort("gmtoffset", gmtoffset);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben der Wifi SSID in Preferences
+ * Übergabeparameter: SSID Name
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeSsidToPreferences(String ssid)
+{
+    preferences.begin("settings", false);
+    preferences.putString("wifissid", ssid);
+    preferences.end();
+}
+
+
+/***************************************************************************
+ * Schreiben des Wifi PW in Preferences
+ * Übergabeparameter: Passwort
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writePasswordToPreferences(String password)
+{
+    preferences.begin("settings", false);
+    preferences.putString("wifipassword", password);
+    preferences.end();
+}
+
+
+/***************************************************************************
+ * Auslesen aller Einstellungen aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: Farbe als pixel_t struct
+ **************************************************************************/
+void Settings::loadDataFromPreferences()
+{
+    loadLanguageFromPreferences();
+    loadBrightnessFromPreferences();
+    loadColorFromPreferences();
+    loadFadeModeFromPreferences();
+    loadCornerStartLedFromPreferences();
+    loadCornerClockwiseFromPreferences();
+    loadStartpatternFromPreferences();
+    loadGmtOffsetFromPreferences();
+    if(DEBUG_SETTINGS)
     {
-        Serial.print("Settings.cpp - ");
-        Serial.print("Farbe: ");
-        Serial.print("rot: ");
-        Serial.print(color.red);
-        Serial.print(" gruen: ");
-        Serial.print(color.green);
-        Serial.print(" blau: ");
-        Serial.print(color.blue);
-        Serial.print(" wird auf die Adressen ");
-        Serial.print("rot: ");
-        Serial.print(EEPROM_ADDR_COLORRED);
-        Serial.print(" gruen: ");
-        Serial.print(EEPROM_ADDR_COLORGREEN);
-        Serial.print(" blau: ");
-        Serial.print(EEPROM_ADDR_COLORBLUE);
-        Serial.println(" geschrieben");
+        Serial.println("Geladene Einstellungen:");
+        Serial.print("Sprache: ");
+        Serial.println(_Language);
+        Serial.print("Helligkeit: ");
+        Serial.println(_Brightness);
+        Serial.print("Farbe - rot: ");
+        Serial.println(_Color.red);
+        Serial.print("Farbe - green: ");
+        Serial.println(_Color.green);
+        Serial.print("Farbe - blue: ");
+        Serial.println(_Color.blue);
+        Serial.print("FadeMode: ");
+        Serial.println(_FadeMode);
+        Serial.print("Start Eck-LED: ");
+        Serial.println(_CornerStartLed);
+        Serial.print("Drehrichtung Eck-Leds: ");
+        Serial.println(_CornersClockwise);
+        Serial.print("Startmuster: ");
+        Serial.println(_StartPattern);
+        Serial.print("GMT Offset: ");
+        Serial.println(_GmtTimeOffsetSec);
+        Serial.print("WiFi SSID: ");
+        if(_SSID = "")
+        {
+            Serial.println("empty");
+        }
+        else
+        {
+            Serial.println(_SSID);
+        }
+        Serial.print("WiFi Passwort: ");
+        if(_Password = "")
+        {
+            Serial.println("empty");
+        }
+        else
+        {
+            Serial.println(_Password);
+        }
     }
-    EEPROM.writeByte(EEPROM_ADDR_COLORRED, color.red);
-    EEPROM.writeByte(EEPROM_ADDR_COLORGREEN, color.green);
-    EEPROM.writeByte(EEPROM_ADDR_COLORBLUE, color.blue);
-    EEPROM.commit();
 }
 
-void Settings::writeFadeModeToEEPROM(byte fademode)
+/***************************************************************************
+ * Schreiben aller Einstellungen in Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Klassenobjekten gelesen werden
+ * Rückgabeparameter: kein, da die Objekte direkt in die Preferences geschrieben werden
+ **************************************************************************/
+void Settings::writeDataToPreferences()
 {
-    EEPROM.writeByte(EEPROM_ADDR_FADEMODE, fademode);
-    EEPROM.commit();
-}
-
-void Settings::writeCornerStartLedToEEPROM(byte cornerstartled)
-{
-    EEPROM.writeByte(EEPROM_ADDR_CORNERSTARTLED, cornerstartled);
-    EEPROM.commit();
-}
-
-void Settings::writeCornerClockwiseToEEPROM(bool cornersclockwise)
-{
-    EEPROM.writeBool(EEPROM_ADDR_CORNERCLOCKWISE, cornersclockwise);
-    EEPROM.commit();
-}
-
-void Settings::writeStartpatternToEEPROM(byte startpattern)
-{
-    EEPROM.writeByte(EEPROM_ADDR_STARTPATTERN, startpattern);
-    EEPROM.commit();
-}
-
-void Settings::writeGmtOffsetToEEPROM(uint16_t gmtoffset)
-{
-    EEPROM.writeUShort(EEPROM_ADDR_GMTOFFSET, gmtoffset);
-    EEPROM.commit();
+    writeLanguageToPreferences(_Language);
+    writeBrightnessToPreferences(_Brightness);
+    writeColorToPreferences(_Color);
+    writeFadeModeToPreferences(_FadeMode);
+    writeCornerStartLedToPreferences(_CornerStartLed);
+    writeCornerClockwiseToPreferences(_CornersClockwise);
+    writeStartpatternToPreferences(_StartPattern);
+    writeGmtOffsetToPreferences(_GmtTimeOffsetSec);
+    writeSsidToPreferences(_SSID);
+    writePasswordToPreferences(_Password);
+    
 }
