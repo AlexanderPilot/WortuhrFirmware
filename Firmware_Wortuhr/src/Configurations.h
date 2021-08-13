@@ -77,12 +77,18 @@
  * Bluetooth Einstellungen
  **************************************************************************/
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#error Bluetooth is not enabled! Please run `make menuconfig` to enable it
 #endif
 
 #define BT_DEVICE_NAME "Wordclock"
 #define MAX_BT_CLIENTS 1
 #define BT_PASSWORD "1234"
+
+/***************************************************************************
+ * WiFi Einstellungen
+ **************************************************************************/
+#define WIFI_HOSTNAME "Wordclock"
+
 
 /***************************************************************************
  * Spracheinstellungen
@@ -145,20 +151,3 @@
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
 #define TIMER_VALUE_MS 1000
 #define FACTOR_US_TO_S 1000000
-
-/***************************************************************************
- * EEEPROM Einstellungen
- **************************************************************************/
-#define EEPROM_SIZE 16
-#define EEPROM_ADDR_LANGUAGE 0
-#define EEPROM_ADDR_BRIGHTNESS 1
-#define EEPROM_ADDR_COLORRED 2
-#define EEPROM_ADDR_COLORGREEN 3
-#define EEPROM_ADDR_COLORBLUE 4
-#define EEPROM_ADDR_FADEMODE 5
-#define EEPROM_ADDR_CORNERSTARTLED 6
-#define EEPROM_ADDR_CORNERCLOCKWISE 7
-#define EEPROM_ADDR_STARTPATTERN 8
-#define EEPROM_ADDR_GMTOFFSET 9
-#define EEPROM_ADDR_WIFISSID 10
-#define EEPROM_ADDR_WIFIPW 13
