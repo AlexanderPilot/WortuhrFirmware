@@ -34,6 +34,7 @@
 #include "Muster.h"
 #include <Arduino.h>
 #include "Zeitmaster.h"
+#include "Preferences.h"
 
 // Pin for LED control
 #define LED_PIN 26
@@ -121,6 +122,7 @@
 #define SIGN_CORNERSCLOCKWISE 'F'
 #define SIGN_STARTPATTERN 'G'
 #define SIGN_GMTOFFSET 'H'
+#define SIGN_RESET_TO_DEFAULT 'Q'
 #define CONV_VERSION 2
 
 /***************************************************************************
