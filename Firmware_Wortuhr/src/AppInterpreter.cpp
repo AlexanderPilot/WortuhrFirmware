@@ -124,6 +124,16 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
                 _CommSetTime(_AppBefehl);
             }
             break;
+        case SIGN_RESET_TO_DEFAULT: // Auswerten der Zeit
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
+            {
+                if (DEBUG_APPINTERPRETER == 1)
+                {
+                    Serial.print("AppInterpreter.cpp - Reset auf Werkseinstellungen ");
+                }
+                _CommSetDefaultSettings(_AppBefehl);
+            }
+            break;
         default:
             break;
         }
@@ -278,7 +288,7 @@ void AppInterpreter::_CommSetMisc(char *Misc)
 ***************************************************************************/
 void AppInterpreter::_CommSetSSID(char *partialSSID, bool continueCommand)
 {
-    //static char SSID[] = {"OnLine"};
+    //char SSID[32] = "OnLine";
     if (DEBUG_APPINTERPRETER == 1)
     {
         Serial.print("AppInterpreter.cpp - ");
@@ -296,7 +306,7 @@ void AppInterpreter::_CommSetSSID(char *partialSSID, bool continueCommand)
 void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
 {
     static char PWchar;
-    static char PW[] = {'0'};
+    static char PW[64];
     static uint8_t counter = 0;
     PWchar = this->_getDecryptedChar(partialPW, 5);
     if (DEBUG_APPINTERPRETER == 1)
@@ -318,19 +328,29 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
     //sobald Array befüllt  ist, wird die Einstellung geschrieben
     if (continueCommand == false)
     {
+        PW[counter] = '\n';
         if (DEBUG_APPINTERPRETER == 1)
         {
-            Serial.print("PW vollständig übermittelt: ");
-            //Array PW ausgeben
-            for (uint8_t i = 0; i < counter; i++)
-            {
-                Serial.print(PW[i]);
-            }
-            Serial.println(" ");
+            Serial.println("PW wird übergeben");
         }
-        //_interpretersettings.setWifiPW(PW);
-        //char PW[] = {'0'};
+        _interpretersettings.setWifiPW(PW);
     }
+}
+
+/***************************************************************************
+ * Zurücksetzen auf Werkseinstellungen
+ * Übergabeparameter: kein
+ * Rückgabeparameter: kein
+ **************************************************************************/
+void AppInterpreter::_CommSetDefaultSettings(char *Reset)
+{
+    if (DEBUG_APPINTERPRETER == 1)
+    {
+        Serial.print("AppInterpreter.cpp - ");
+        Serial.print("Reset auf Werkseinstellungen");
+    }
+    //_interpretersettings.clearPreferences();
+    //ESP.restart();
 }
 
 /***************************************************************************

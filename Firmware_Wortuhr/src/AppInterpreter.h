@@ -4,7 +4,7 @@
 #include "Configurations.h"
 #include "Settings.h"
 
-#define DEBUG_APPINTERPRETER 1
+#define DEBUG_APPINTERPRETER 0
 
 class AppInterpreter
 {
@@ -27,6 +27,7 @@ private:
      void _CommSetMisc(char *Misc);
      void _CommSetSSID(char *partialSSID, bool continueCommand);
      void _CommSetPW(char *partialPW, bool continueCommand);
+     void _CommSetDefaultSettings(char *Reset);
      char _getDecryptedChar(char *c, uint8_t i);
      void _justSendTheFoundStringToSerial(char *p);
 
