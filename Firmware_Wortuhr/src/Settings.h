@@ -9,12 +9,9 @@
 #define SETTINGS_H
 
 /** Einbinden von relevanten Bibliotheken **/
-#include "Arduino.h"
-#include "Preferences.h"
-#include "WS2812B.h"
 #include "Configurations.h"
 
-#define DEBUG_SETTINGS 1
+#define DEBUG_SETTINGS 0
 
 class Settings
 {
@@ -56,17 +53,6 @@ public:
     boolean getCornersClockwise();
 
     /****************************************
-         * WLAN SSID und Passwort
-         ***************************************/
-/*    bool getWifiSettingsAvailable();
-
-    void setWifiSSID(char *Ssid);
-    char *getWifiSSID();
-
-    void setWifiPW(char *Password);
-    char *getWifiPW();
-*/
-    /****************************************
      * Starmuster
      ***************************************/
     void setStartPattern(byte StartPattern);
@@ -77,34 +63,58 @@ public:
      ***************************************/
     void setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
     uint16_t getGmtTimeOffsetSec();
+    
+    /****************************************
+     * WLAN SSID und Passwort
+     ***************************************/
+     bool getWifiSettingsAvailable();
+
+     void setWifiSSID(char *Ssid);
+     char *getWifiSSID();
+
+     void setWifiPW(char *Password);
+     char *getWifiPW();
      
-     void loadLanguageFromPreferences();
-     void loadBrightnessFromPreferences();
-     void loadColorFromPreferences();
-     void loadFadeModeFromPreferences();
-     void loadCornerStartLedFromPreferences();
-     void loadCornerClockwiseFromPreferences();
-     void loadStartpatternFromPreferences();
-     void loadGmtOffsetFromPreferences();
-     void loadSsidFromPreferences();
-     void loadPasswordFromPreferences();
-     
-     void writeLanguageToPreferences(byte language);
-     void writeBrightnessToPreferences(byte brightness);
-     void writeColorToPreferences(pixel_t color);
-     void writeColorToPreferences(byte red, byte green, byte blue);
-     void writeFadeModeToPreferences(byte fademode);
-     void writeCornerStartLedToPreferences(byte cornerstartled);
-     void writeCornerClockwiseToPreferences(bool cornersclockwise);
-     void writeStartpatternToPreferences(byte startpattern);
-     void writeGmtOffsetToPreferences(uint16_t gmtoffset);
-     void writeSsidToPreferences(String ssid);
-     void writePasswordToPreferences(String password);
-     
+     bool allDataAvailable();
      void loadDataFromPreferences();
      void writeDataToPreferences();
+     void clearPreferences();
      
+     void startWifi();
+     void WifiAutoReconnect();
+
 private:
+     void loadLanguageFromPreferences();
+     void writeLanguageToPreferences(byte language);
+     
+     void loadBrightnessFromPreferences();
+     void writeBrightnessToPreferences(byte brightness);
+     
+     void loadColorFromPreferences();
+     void writeColorToPreferences(pixel_t color);
+     void writeColorToPreferences(byte red, byte green, byte blue);
+     
+     void loadFadeModeFromPreferences();
+     void writeFadeModeToPreferences(byte fademode);
+     
+     void loadCornerStartLedFromPreferences();
+     void writeCornerStartLedToPreferences(byte cornerstartled);
+     
+     void loadCornerClockwiseFromPreferences();
+     void writeCornerClockwiseToPreferences(bool cornersclockwise);
+     
+     void loadStartpatternFromPreferences();
+     void writeStartpatternToPreferences(byte startpattern);
+     
+     void loadGmtOffsetFromPreferences();
+     void writeGmtOffsetToPreferences(uint16_t gmtoffset);
+     
+     void loadSsidFromPreferences();
+     void writeSsidToPreferences(char* ssid);
+     
+     void loadPasswordFromPreferences();
+     void writePasswordToPreferences(char* password);
+     
      /****************************************
      * interne Variablen
      ***************************************/
@@ -116,7 +126,7 @@ private:
      static boolean _CornersClockwise;
      static byte _StartPattern;
      static uint16_t _GmtTimeOffsetSec;
-     static String _SSID;
-     static String _Password;
+     static char _SSID_Array[32];
+     static char _PW_Array[64];
 };
 #endif /* SETTINGS_H */
