@@ -23,12 +23,10 @@
 #include "WiFi.h"
 #include "WS2812B.h"
 #include "time.h"
-#include <WiFiClient.h>
+#include <WiFiUdp.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
-#include "NTPClient.h"
-#include <WiFiUdp.h>
 #include "BluetoothSerial.h"
 #include "Renderer.h"
 #include "Settings.h"
@@ -155,5 +153,4 @@
  **************************************************************************/
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
 #define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
-#define TIMER_VALUE_MS 1000
 #define FACTOR_US_TO_S 1000000

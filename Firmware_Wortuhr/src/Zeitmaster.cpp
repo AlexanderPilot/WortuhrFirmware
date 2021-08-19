@@ -67,76 +67,6 @@ void Zeitmaster::setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, ui
 }
 
 /***************************************************************************
- * Schreiben der Sekunden im Zeit und Datums Struct
- * Übergabeparameter: Sekunden-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setSeconds(uint8_t Seconds)
-{
-    _TimeDate.seconds = Seconds;
-}
-
-/***************************************************************************
- * Schreiben der Minuten im Zeit und Datums Struct
- * Übergabeparameter: Minuten-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setMinutes(uint8_t Minutes)
-{
-    _TimeDate.minutes = Minutes;
-}
-
-/***************************************************************************
- * Schreiben der Stunden im Zeit und Datums Struct
- * Übergabeparameter: Stunden-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setHours(uint8_t Hours)
-{
-    _TimeDate.hours = Hours;
-}
-
-/***************************************************************************
- * Schreiben des Tags im Zeit und Datums Struct
- * Übergabeparameter: Tag-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setDate(uint8_t Date)
-{
-    _TimeDate.date = Date;
-}
-
-/***************************************************************************
- * Schreiben des Wochentags im Zeit und Datums Struct
- * Übergabeparameter: Wochentags-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setDayOfWeek(uint8_t DayOfWeek)
-{
-    _TimeDate.dayOfWeek = DayOfWeek;
-}
-
-/***************************************************************************
- * Schreiben des Monats im Zeit und Datums Struct
- * Übergabeparameter: Monats-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setMonth(uint8_t Month)
-{
-    _TimeDate.month = Month;
-}
-
-/***************************************************************************
- * Schreiben des Jahrs im Zeit und Datums Struct
- * Übergabeparameter: Jahres-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setYear(uint8_t Year)
-{
-    _TimeDate.year = Year;
-}
-
-/***************************************************************************
  * Auslesen der Sekunden im Zeit und Datums Struct
  * Übergabeparameter: kein
  * Rückgabeparameter: Sekunden-Wert
@@ -249,4 +179,17 @@ bool Zeitmaster::timeTrigger()
         trigger = true;
     }
     return trigger;
+}
+
+void Zeitmaster::NtpTimeUpdate()
+{
+    struct tm timeinfo;
+    Serial.println("NTP Sync");
+    //Abholen der aktuellen Uhrzeit vom NTP Server
+    if(!getLocalTime(&timeinfo))
+    {
+        Serial.println("Failed to obtain time");
+        return;
+    }
+    setTimeDate(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year);
 }

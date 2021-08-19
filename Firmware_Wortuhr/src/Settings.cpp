@@ -11,6 +11,7 @@
  ***************************************/
 Preferences preferences; //Infos: https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/
 WebServer server(80); //Webserver für OTA Update
+Zeitmaster *pSettingsZeit;
 
 /****************************************
  * Definition der static Variablen
@@ -23,8 +24,8 @@ byte Settings::_CornerStartLed;
 boolean Settings::_CornersClockwise;
 byte Settings::_StartPattern;
 uint16_t Settings::_GmtTimeOffsetSec;
-char Settings::_SSID_Array[32] = "OnLine"; // FIXME: nach Test OTA und NTP wieder Löschen
-char Settings::_PW_Array[64] = "Br8#Pojg56"; // FIXME: nach Test OTA und NTP wieder Löschen
+char Settings::_SSID_Array[32] = "OnLine";
+char Settings::_PW_Array[64] = "Br8#Pojg56";
 
 /* Style */
 String style =
@@ -412,7 +413,7 @@ bool Settings::allDataAvailable()
     {
         dataAvailable = true;
     }
-    if(DEBUG_SETTINGS == 1)
+    if(DEBUG_SETTINGS == 0)
     {
         Serial.print("Settings.cpp - ");
         Serial.println("Auswertung Daten in Preferences");
@@ -490,6 +491,7 @@ void Settings::loadDataFromPreferences()
         Serial.println(_SSID_Array);
         Serial.print("WiFi PW: ");
         Serial.println(_PW_Array);
+        Serial.println("");
     }
 }
 
@@ -543,14 +545,55 @@ void Settings::startWifi()
     {
         Serial.print("Connecting to SSID: ");
         Serial.print(getWifiSSID());
-        while (WiFi.status() != WL_CONNECTED)
+    }
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        if(DEBUG_SETTINGS == 1)
         {
             Serial.print('.');
-            delay(500);
         }
+        delay(500);
+    }
+    if(DEBUG_SETTINGS == 1)
+    {
         Serial.print("successful with IP: ");
         Serial.println(WiFi.localIP());
     }
+}
+
+void getTime()
+{
+    struct tm timeinfo;
+    if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+    }
+    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+    Serial.print("Day of week: ");
+    Serial.println(&timeinfo, "%A");
+    Serial.print("Month: ");
+    Serial.println(&timeinfo, "%B");
+    Serial.print("Day of Month: ");
+    Serial.println(&timeinfo, "%d");
+    Serial.print("Year: ");
+    Serial.println(&timeinfo, "%Y");
+    Serial.print("Hour: ");
+    Serial.println(&timeinfo, "%H");
+    Serial.print("Hour (12 hour format): ");
+    Serial.println(&timeinfo, "%I");
+    Serial.print("Minute: ");
+    Serial.println(&timeinfo, "%M");
+    Serial.print("Second: ");
+    Serial.println(&timeinfo, "%S");
+
+    Serial.println("Time variables");
+    char timeHour[3];
+    strftime(timeHour,3, "%H", &timeinfo);
+    Serial.println(timeHour);
+    char timeWeekDay[10];
+    strftime(timeWeekDay,10, "%A", &timeinfo);
+    Serial.println(timeWeekDay);
+    Serial.println();
 }
 
 /***************************************************************************
@@ -560,10 +603,13 @@ void Settings::startWifi()
  **************************************************************************/
 void Settings::startNtp()
 {
-    WiFiUDP ntpUDP;
-    NTPClient timeClient(ntpUDP);
-    timeClient.begin();
-    timeClient.setTimeOffset(3600);
+    //Konfiguration des NTP Servers
+    configTime(_GmtTimeOffsetSec, 3600, NTP_SERVER_NAME);
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.println("Konfiguration NTP Server eingerichtet");
+    }
+    delay(500);
 }
 
 /***************************************************************************
@@ -584,7 +630,6 @@ void Settings::startOTA()
       delay(1000);
     }
   }
-  Serial.println("mDNS responder started");
   /*return index page which is stored in serverIndex */
   server.on("/", HTTP_GET, []()
   {
