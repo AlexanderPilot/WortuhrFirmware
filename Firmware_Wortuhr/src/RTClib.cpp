@@ -192,8 +192,8 @@ DateTime::DateTime(uint32_t t) {
   hh = t % 24;
   uint16_t days = t / 24;
   uint8_t leap;
-  for (yOff = 0;; ++yOff) {
-    leap = yOff % 4 == 0;
+  for (y = 0;; ++y) {
+    leap = y % 4 == 0;
     if (days < 365U + leap)
       break;
     days -= 365 + leap;
@@ -223,11 +223,9 @@ DateTime::DateTime(uint32_t t) {
     @param hour,min,sec Hour (0--23), minute (0--59) and second (0--59).
 */
 /**************************************************************************/
-DateTime::DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour,
-                   uint8_t min, uint8_t sec) {
-  if (year >= 2000)
-    year -= 2000;
-  yOff = year;
+DateTime::DateTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
+{
+  y = year;
   m = month;
   d = day;
   hh = hour;
@@ -242,7 +240,7 @@ DateTime::DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour,
 */
 /**************************************************************************/
 DateTime::DateTime(const DateTime &copy)
-    : yOff(copy.yOff), m(copy.m), d(copy.d), hh(copy.hh), mm(copy.mm),
+    : y(copy.y), m(copy.m), d(copy.d), hh(copy.hh), mm(copy.mm),
       ss(copy.ss) {}
 
 /**************************************************************************/
@@ -279,7 +277,7 @@ static uint8_t conv2d(const char *p) {
 */
 /**************************************************************************/
 DateTime::DateTime(const char *date, const char *time) {
-  yOff = conv2d(date + 9);
+  y = conv2d(date + 9);
   // Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
   switch (date[0]) {
   case 'J':
@@ -332,7 +330,7 @@ DateTime::DateTime(const __FlashStringHelper *date,
                    const __FlashStringHelper *time) {
   char buff[11];
   memcpy_P(buff, date, 11);
-  yOff = conv2d(buff + 9);
+  y = conv2d(buff + 9);
   // Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
   switch (buff[0]) {
   case 'J':
@@ -374,10 +372,10 @@ DateTime::DateTime(const __FlashStringHelper *date,
 */
 /**************************************************************************/
 bool DateTime::isValid() const {
-  if (yOff >= 100)
+  if (y >= 100)
     return false;
   DateTime other(unixtime());
-  return yOff == other.yOff && m == other.m && d == other.d && hh == other.hh &&
+  return y == other.y && m == other.m && d == other.d && hh == other.hh &&
          mm == other.mm && ss == other.ss;
 }
 
@@ -428,11 +426,12 @@ bool DateTime::isValid() const {
 */
 /**************************************************************************/
 
-char *DateTime::toString(char *buffer) {
-  uint8_t apTag =
-      (strstr(buffer, "ap") != nullptr) || (strstr(buffer, "AP") != nullptr);
-  uint8_t hourReformatted, isPM;
-  if (apTag) {     // 12 Hour Mode
+char *DateTime::toString(char *buffer)
+{
+  uint8_t apTag = (strstr(buffer, "ap") != nullptr) || (strstr(buffer, "AP") != nullptr);
+  uint8_t hourReformatted = 0;
+  uint8_t isPM = true;
+  if (apTag){     // 12 Hour Mode
     if (hh == 0) { // midnight
       isPM = false;
       hourReformatted = 12;
@@ -491,11 +490,11 @@ char *DateTime::toString(char *buffer) {
         buffer[i + 3] == 'Y') {
       buffer[i] = '2';
       buffer[i + 1] = '0';
-      buffer[i + 2] = '0' + (yOff / 10) % 10;
-      buffer[i + 3] = '0' + yOff % 10;
+      buffer[i + 2] = '0' + (y / 10) % 10;
+      buffer[i + 3] = '0' + y % 10;
     } else if (buffer[i] == 'Y' && buffer[i + 1] == 'Y') {
-      buffer[i] = '0' + (yOff / 10) % 10;
-      buffer[i + 1] = '0' + yOff % 10;
+      buffer[i] = '0' + (y / 10) % 10;
+      buffer[i + 1] = '0' + y % 10;
     }
     if (buffer[i] == 'A' && buffer[i + 1] == 'P') {
       if (isPM) {
@@ -541,7 +540,7 @@ uint8_t DateTime::twelveHour() const {
 */
 /**************************************************************************/
 uint8_t DateTime::dayOfTheWeek() const {
-  uint16_t day = date2days(yOff, m, d);
+  uint16_t day = date2days(y, m, d);
   return (day + 6) % 7; // Jan 1, 2000 is a Saturday, i.e. returns 6
 }
 
@@ -557,7 +556,7 @@ uint8_t DateTime::dayOfTheWeek() const {
 /**************************************************************************/
 uint32_t DateTime::unixtime(void) const {
   uint32_t t;
-  uint16_t days = date2days(yOff, m, d);
+  uint16_t days = date2days(y, m, d);
   t = time2ulong(days, hh, mm, ss);
   t += SECONDS_FROM_1970_TO_2000; // seconds from 1970 to 2000
 
@@ -579,7 +578,7 @@ uint32_t DateTime::unixtime(void) const {
 /**************************************************************************/
 uint32_t DateTime::secondstime(void) const {
   uint32_t t;
-  uint16_t days = date2days(yOff, m, d);
+  uint16_t days = date2days(y, m, d);
   t = time2ulong(days, hh, mm, ss);
   return t;
 }
@@ -671,11 +670,11 @@ String DateTime::timestamp(timestampOpt opt) {
     break;
   case TIMESTAMP_DATE:
     // Only date
-    sprintf(buffer, "%d-%02d-%02d", 2000 + yOff, m, d);
+    sprintf(buffer, "%d-%02d-%02d", y, m, d);
     break;
   default:
     // Full
-    sprintf(buffer, "%d-%02d-%02dT%02d:%02d:%02d", 2000 + yOff, m, d, hh, mm,
+    sprintf(buffer, "%d-%02d-%02dT%02d:%02d:%02d", y, m, d, hh, mm,
             ss);
   }
   return String(buffer);
@@ -1172,7 +1171,8 @@ bool RTC_DS3231::lostPower(void) {
     @param dt DateTime object containing the date/time to set
 */
 /**************************************************************************/
-void RTC_DS3231::adjust(const DateTime &dt) {
+void RTC_DS3231::adjust(const DateTime &dt)
+{
   Wire.beginTransmission(DS3231_ADDRESS);
   Wire._I2C_WRITE((byte)DS3231_TIME); // start at location 0
   Wire._I2C_WRITE(bin2bcd(dt.second()));

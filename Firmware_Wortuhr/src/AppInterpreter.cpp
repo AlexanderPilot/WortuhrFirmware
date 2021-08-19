@@ -46,7 +46,6 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
         for (i = (LENGTH_COMMAND_BUFFER - 3); i > 1; i--)
         {
             _AppBefehl[7 - i] = _AppBefehlBuffer[i];
-            //Serial.print(_AppBefehl[8 - i]);
         }
 
         switch (_AppBefehlBuffer[POS_COMMAND_SIGN])
@@ -56,7 +55,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("PW + ");
+                    _DEBUG_PRINT("PW + ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetPW(_AppBefehl, true);
@@ -65,7 +64,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("PW (END)");
+                    _DEBUG_PRINT("PW (END)");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetPW(_AppBefehl, false);
@@ -76,7 +75,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("AppInterpreter.cpp - SSID + ");
+                    _DEBUG_PRINT("AppInterpreter.cpp - SSID + ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetSSID(_AppBefehl, true);
@@ -85,7 +84,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("AppInterpreter.cpp - SSID (END)");
+                    _DEBUG_PRINT("AppInterpreter.cpp - SSID (END)");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetSSID(_AppBefehl, false);
@@ -96,7 +95,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("AppInterpreter.cpp - Farbe erkannt ");
+                    _DEBUG_PRINT("AppInterpreter.cpp - Farbe erkannt ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetColor(_AppBefehl);
@@ -107,7 +106,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("AppInterpreter.cpp - Helligkeit erkannt ");
+                    _DEBUG_PRINT("AppInterpreter.cpp - Helligkeit erkannt ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetBrightness(_AppBefehl);
@@ -118,7 +117,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("AppInterpreter.cpp - Zeit erkannt ");
+                    _DEBUG_PRINT("AppInterpreter.cpp - Zeit erkannt ");
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetTime(_AppBefehl);
@@ -129,7 +128,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
             {
                 if (DEBUG_APPINTERPRETER == 1)
                 {
-                    Serial.print("AppInterpreter.cpp - Reset auf Werkseinstellungen ");
+                    _DEBUG_PRINT("AppInterpreter.cpp - Reset auf Werkseinstellungen ");
                 }
                 _CommSetDefaultSettings(_AppBefehl);
             }
@@ -149,13 +148,13 @@ void AppInterpreter::_CommSetColor(char *Farbe)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Setzen der LED Farben ");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Setzen der LED Farben ");
         for (uint8_t i = 0; i < LENGTH_COMMAND_APP; i++)
         {
-            Serial.print(*(Farbe + i));
+            _DEBUG_PRINT(*(Farbe + i));
         }
-        Serial.println("");
+        _DEBUG_PRINTLN("");
     }
 
     pixel_t AppColor;
@@ -167,13 +166,13 @@ void AppInterpreter::_CommSetColor(char *Farbe)
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("Farbe");
-        Serial.print(" rot: ");
-        Serial.print(AppColor.red);
-        Serial.print(" grün: ");
-        Serial.print(AppColor.green);
-        Serial.print(" blau: ");
-        Serial.println(AppColor.blue);
+        _DEBUG_PRINT("Farbe");
+        _DEBUG_PRINT(" rot: ");
+        _DEBUG_PRINT(AppColor.red);
+        _DEBUG_PRINT(" grün: ");
+        _DEBUG_PRINT(AppColor.green);
+        _DEBUG_PRINT(" blau: ");
+        _DEBUG_PRINTLN(AppColor.blue);
     }
     //Schrieben der Farbe in die Einstellungen
     _interpretersettings.setColor(AppColor);
@@ -188,13 +187,13 @@ void AppInterpreter::_CommSetBrightness(char *Helligkeit)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Setzen der LED Helligkeit");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Setzen der LED Helligkeit");
         for (uint8_t i = 0; i < LENGTH_COMMAND_APP; i++)
         {
-            Serial.print(*(Helligkeit + i));
+            _DEBUG_PRINT(*(Helligkeit + i));
         }
-        Serial.println("");
+        _DEBUG_PRINTLN("");
     }
 
     uint8_t AppBrightness;
@@ -203,8 +202,8 @@ void AppInterpreter::_CommSetBrightness(char *Helligkeit)
     AppBrightness = _hexcharToUint8_t(*Helligkeit) * 100 + _hexcharToUint8_t(*(Helligkeit + 1)) * 10 + _hexcharToUint8_t(*(Helligkeit + 2));
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("Helligkeit: ");
-        Serial.print(AppBrightness);
+        _DEBUG_PRINT("Helligkeit: ");
+        _DEBUG_PRINT(AppBrightness);
     }
     //Verwerfen des versendeten Appwerts bei Wert außerhalb des Wertebereichs
     if (AppBrightness > 100)
@@ -225,13 +224,13 @@ void AppInterpreter::_CommSetTime(char *Uhrzeit)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Setzen der Zeit in RTC: ");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Setzen der Zeit in RTC: ");
         for (uint8_t i = 0; i < LENGTH_COMMAND_APP; i++)
         {
-            Serial.print(*(Uhrzeit + i));
+            _DEBUG_PRINT(*(Uhrzeit + i));
         }
-        Serial.println("");
+        _DEBUG_PRINTLN("");
     }
 
     uint8_t AppHours;
@@ -276,8 +275,8 @@ void AppInterpreter::_CommSetMisc(char *Misc)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Diverse Befehle");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Diverse Befehle");
     }
 }
 
@@ -291,8 +290,8 @@ void AppInterpreter::_CommSetSSID(char *partialSSID, bool continueCommand)
     //char SSID[32] = "OnLine";
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("WIFI SSID schreiben");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("WIFI SSID schreiben");
     }
     //_interpretersettings.setWifiSSID(SSID);
     //TODO: programm function
@@ -311,14 +310,14 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
     PWchar = this->_getDecryptedChar(partialPW, 5);
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("WIFI PW schreiben");
-        Serial.print(" ");
-        Serial.print(PWchar);
-        Serial.print(" Counter: ");
-        Serial.print(counter);
-        Serial.print(" continue: ");
-        Serial.println(continueCommand);
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("WIFI PW schreiben");
+        _DEBUG_PRINT(" ");
+        _DEBUG_PRINT(PWchar);
+        _DEBUG_PRINT(" Counter: ");
+        _DEBUG_PRINT(counter);
+        _DEBUG_PRINT(" continue: ");
+        _DEBUG_PRINTLN(continueCommand);
     }
 
     //Array wird befüllt
@@ -331,7 +330,7 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
         PW[counter] = '\n';
         if (DEBUG_APPINTERPRETER == 1)
         {
-            Serial.println("PW wird übergeben");
+            _DEBUG_PRINTLN("PW wird übergeben");
         }
         _interpretersettings.setWifiPW(PW);
     }
@@ -344,13 +343,16 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
  **************************************************************************/
 void AppInterpreter::_CommSetDefaultSettings(char *Reset)
 {
-    if (DEBUG_APPINTERPRETER == 1)
+    if (Reset[0] == 'R' && Reset [1] == 'E' && Reset[2] == 'S' && Reset[3] == 'E' && Reset[4] == 'T')
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Reset auf Werkseinstellungen");
+        if (DEBUG_APPINTERPRETER == 1)
+        {
+            _DEBUG_PRINT("AppInterpreter.cpp - ");
+            _DEBUG_PRINTLN("Reset auf Werkseinstellungen");
+        }
+        _interpretersettings.clearPreferences();
+        ESP.restart();
     }
-    //_interpretersettings.clearPreferences();
-    //ESP.restart();
 }
 
 /***************************************************************************
@@ -373,9 +375,9 @@ void AppInterpreter::_justSendTheFoundStringToSerial(char *p)
     uint8_t i;
     for (i = (LENGTH_COMMAND_APP + 1); i > 1; i--)
     {
-        Serial.print(*(p + i));
+        _DEBUG_PRINT(*(p + i));
     }
-    Serial.print('\n');
+    _DEBUG_PRINT('\n');
 }
 
 /****************************************
@@ -385,8 +387,8 @@ void AppInterpreter::_loadSettingsFromUC()
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Abrufen der Einstellungen vom Mikrocontroller - TBD");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Abrufen der Einstellungen vom Mikrocontroller - TBD");
     }
     //TODO: Funktionsaufruf
 }
@@ -396,8 +398,8 @@ byte AppInterpreter::_getLanguage()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Sprache aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen der Sprache aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getLanguage();
@@ -408,8 +410,8 @@ byte AppInterpreter::_getBrightnessPercent()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Helligkeit aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen der Helligkeit aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getBrightnessPercent();
@@ -420,8 +422,8 @@ pixel_t AppInterpreter::_getColor()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Farbe aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen der Farbe aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getColor();
@@ -432,8 +434,8 @@ byte AppInterpreter::_getFadeMode()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen des Fademodus aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen des Fademodus aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getFadeMode();
@@ -444,8 +446,8 @@ byte AppInterpreter::_getCornerStartLed()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Ecke der Start LED aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen der Ecke der Start LED aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getCornerStartLed();
@@ -456,8 +458,8 @@ boolean AppInterpreter::_getCornersClockwise()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen der Laufrichtung der Eck-LEDs aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen der Laufrichtung der Eck-LEDs aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getCornersClockwise();
@@ -468,8 +470,8 @@ byte AppInterpreter::_getStartPattern()
 
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen des Startmusters aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen des Startmusters aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getStartPattern();
@@ -479,8 +481,8 @@ uint16_t AppInterpreter::_getGmtTimeOffsetSec()
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Auslesen des GMT Offsets aus der Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINT("Auslesen des GMT Offsets aus der Einstellungen-Klasse");
     }
 
     return _interpretersettings.getGmtTimeOffsetSec();
@@ -493,8 +495,8 @@ void AppInterpreter::_setLanguage(byte Language)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe der Sprache an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe der Sprache an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setLanguage(Language);
@@ -504,8 +506,8 @@ void AppInterpreter::_setBrightnessPercent(byte Brightness)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe der Helligkeit an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe der Helligkeit an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setBrightnessPercent(Brightness);
@@ -515,8 +517,8 @@ void AppInterpreter::_setColor(pixel_t color)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe der Farbe an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe der Farbe an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setColor(color);
@@ -526,8 +528,8 @@ void AppInterpreter::_setFadeMode(byte fadeMode)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe des Fademodus an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe des Fademodus an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setFadeMode(fadeMode);
@@ -537,8 +539,8 @@ void AppInterpreter::_setCornerStartLed(byte CornerStartLed)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe der Ecke der Start LED an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe der Ecke der Start LED an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setCornerStartLed(CornerStartLed);
@@ -548,8 +550,8 @@ void AppInterpreter::_setCornersClockwise(boolean Clockwise)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe der Laufrichtung der Eck LEDs an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe der Laufrichtung der Eck LEDs an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setCornersClockwise(Clockwise);
@@ -559,8 +561,8 @@ void AppInterpreter::_setWifiSSID(char *Ssid)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe der WIFI SSID an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe der WIFI SSID an die Einstellungen-Klasse");
     }
 
     //_interpretersettings.setWifiSSID(Ssid);
@@ -570,8 +572,8 @@ void AppInterpreter::_setWifiPW(char *Password)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe des WIFI Passwords an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe des WIFI Passwords an die Einstellungen-Klasse");
     }
 
     //_interpretersettings.setWifiPW(Password);
@@ -581,8 +583,8 @@ void AppInterpreter::_setStartPattern(byte StartPattern)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe des Startmusters an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe des Startmusters an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setStartPattern(StartPattern);
@@ -592,8 +594,8 @@ void AppInterpreter::_setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 {
     if (DEBUG_APPINTERPRETER == 1)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.println("Uebergabe des GMT Offsets an die Einstellungen-Klasse");
+        _DEBUG_PRINT("AppInterpreter.cpp - ");
+        _DEBUG_PRINTLN("Uebergabe des GMT Offsets an die Einstellungen-Klasse");
     }
 
     _interpretersettings.setGmtTimeOffsetSec(GmtTimeOffsetSec);

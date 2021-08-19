@@ -22,13 +22,11 @@
  **************************************************************************/
 #include "WiFi.h"
 #include "WS2812B.h"
-#include "time.h"
 #include <WiFiClient.h>
+#include <WiFiUdp.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
-#include "NTPClient.h"
-#include <WiFiUdp.h>
 #include "BluetoothSerial.h"
 #include "Renderer.h"
 #include "Settings.h"
@@ -38,6 +36,7 @@
 #include <Arduino.h>
 #include "Zeitmaster.h"
 #include "Preferences.h"
+
 
 // Pin for LED control
 #define LED_PIN 26
@@ -50,9 +49,9 @@
 /***************************************************************************
  * Debug Botschaften aktivieren/deaktivieren
  **************************************************************************/
-#define DEBUG_PRINT
+#define DEBUG_PRINT 0
 
-#ifdef DEBUG_PRINT
+#if DEBUG_PRINT == 1
 #define _DEBUG_BEGIN(x) Serial.begin(x);
 #define _DEBUG_PRINT(x) Serial.print(x);
 #define _DEBUG_PRINTLN(x) Serial.println(x);
@@ -68,16 +67,6 @@
 #define PRINT_SEPARATOR_LONG "--------------------------------------------------"
 
 /***************************************************************************
- * WiFi Einstellungen
- **************************************************************************/
-#define WIFI_MAX_TIME_CONNECTING 20 //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
-
-/***************************************************************************
- * NTP Server Einstellungen
- **************************************************************************/
-#define NTP_SERVER_NAME "pool.ntp.org"
-
-/***************************************************************************
  * Bluetooth Einstellungen
  **************************************************************************/
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
@@ -91,9 +80,15 @@
 /***************************************************************************
  * WiFi Einstellungen
  **************************************************************************/
-#define WIFI_HOSTNAME "Wordclock"
+#define WIFI_HOSTNAME "wordclock"
 #define SERVER_HOSTNAME "wordclock"
+#define WIFI_MAX_TIME_CONNECTING 10 //max. Anzahl an 500ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
+/***************************************************************************
+ * NTP Server Einstellungen
+ **************************************************************************/
+#define NTP_SERVER_NAME "de.pool.ntp.org"
+#define NTP_MAX_TIME_CONNECTING 50 //max. Anzahl an 10ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * Spracheinstellungen
@@ -154,6 +149,5 @@
  * Timer Interrupt Einstellungen
  **************************************************************************/
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
-#define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
-#define TIMER_VALUE_MS 1000
+#define NTP_TIMER_VALUE_SEC 60 //TODO: für Testzweckegewählt, final größeren Wert
 #define FACTOR_US_TO_S 1000000

@@ -11,7 +11,7 @@
 /** Einbinden von relevanten Bibliotheken **/
 #include "Configurations.h"
 
-#define DEBUG_SETTINGS 0
+#define DEBUG_SETTINGS 1
 
 class Settings
 {
@@ -74,17 +74,25 @@ public:
 
      void setWifiPW(char *Password);
      char *getWifiPW();
-     
+
+    /****************************************
+     * Preferences
+     ***************************************/
      bool allDataAvailable();
      void loadDataFromPreferences();
      void writeDataToPreferences();
      void clearPreferences();
-     
-     void startWifi();
-     void startNtp();
+
+    /****************************************
+     * Initialisierungen
+     ***************************************/
+     bool startWifi();
      void startOTA();
+     
+     /****************************************
+     * WiFi Funktionen (Reconnect + NTP + OTP)
+     ***************************************/
      void WifiAutoReconnect();
-     void NtpTimeUpdate();
      void handleOTA();
 
 private:

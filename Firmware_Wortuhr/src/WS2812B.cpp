@@ -9,8 +9,6 @@
 #include "sdkconfig.h"
 #include "WS2812B.h"
 
-static char tag[] = "WS2812";
-
 /**
  * A NeoPixel is defined by 3 bytes ... red, green and blue.
  * Each byte is composed of 8 bits ... therefore a NeoPixel is 24 bits of data.

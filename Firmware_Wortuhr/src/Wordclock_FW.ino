@@ -4,6 +4,9 @@
  * by Alex P. and Vitali H.
  * 
  * 
+ * //TODO:
+ * Deaktivierung WLAN nach NTP Sync und Starten vor dem nächsten Sync
+ * 
  *****************************************************************************************************************************************************************************************/
 
 /***************************************************************************
@@ -13,8 +16,11 @@
 #include "LED_Ausgabe.h"
 #include "Muster.h"
 
-#define STARTINTERRUPT (timerAlarmEnable(timer1))
-#define STOPINTERRUPT (timerAlarmDisable(timer1))
+#define STARTINTERRUPT1 (timerAlarmEnable(timer1))
+#define STOPINTERRUPT1 (timerAlarmDisable(timer1))
+
+#define STARTINTERRUPT2 (timerAlarmEnable(timer2))
+#define STOPINTERRUPT2 (timerAlarmDisable(timer2))
 
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
@@ -30,12 +36,19 @@ Muster *pMuster;
  * Timer; Eventrtigger
  * ************************************************************************/
 hw_timer_t *timer1 = NULL;
+hw_timer_t *timer2 = NULL;
 bool eventtrigger;
-bool ntpSync; //TODO: ISR für Synchronisation mit NTP Server
+bool ntpSync;
+bool wifi_connection_possible = false;
 // ISR to set trigger
-void IRAM_ATTR onTimer()
+void IRAM_ATTR onTimer1()
 {
     eventtrigger = true;
+}
+
+void IRAM_ATTR onTimer2()
+{
+    ntpSync = true;
 }
 
 /* START SETUP ************************************************************/
@@ -56,6 +69,7 @@ void setup()
     {
         Serial.println("Werkseinstellungen werden geschrieben");
         settings.writeDataToPreferences();
+        ESP.restart();
     }
     else
     {
@@ -68,10 +82,12 @@ void setup()
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
     {
-        Serial.println("Initialisiere WiFi");
-        settings.startWifi();
-        //settings.startNtp();
-        settings.startOTA();
+        wifi_connection_possible = settings.startWifi();
+        if(wifi_connection_possible == true)
+        {
+            settings.startOTA();
+            pZeit->NtpTimeUpdate(1.0, 1);
+        }
     }
     else
     {
@@ -89,32 +105,29 @@ void setup()
     /***************************************************************************
      * Weitere Einstellungen und Initialisierungen
      **************************************************************************/
-    // Start der Funktionen für die LED-Ausgabe
-    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
-
-    //Anzeige Startmuster
     pMuster = new Muster();
-
-    // Zeitfunktionen
     pZeit = new Zeitmaster();
-    pZeit->setTimeDate(6, 0, 49, 15, 4, 45); // ToDo: Sollte gelöscht werden, wenn die NTP Zeit bzw. App Zeiteinstellung funktioniert
-
-
+    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
+    pLedausgabe->LedStartUp(settings.getStartPattern());
+    
+    
+    
     /***********************************************************************
      * Initialisierung des Timers
      **********************************************************************/
     // Time 1: 1/(80MHZ/80) = 1us and count up
     timer1 = timerBegin(0, 80, true);
+    timer2 = timerBegin(1, 80, true);
     // Attach onTimer function
-    timerAttachInterrupt(timer1, &onTimer, true);
+    timerAttachInterrupt(timer1, &onTimer1, true);
+    timerAttachInterrupt(timer2, &onTimer2, true);
     // Set alarm to 1000 ms and repeat it (true)
     timerAlarmWrite(timer1, 1*FACTOR_US_TO_S, true);
-    STOPINTERRUPT;
-    
+    timerAlarmWrite(timer2, NTP_TIMER_VALUE_SEC*FACTOR_US_TO_S, true);
 
-    
 
-    STARTINTERRUPT;
+    STARTINTERRUPT1;
+    STARTINTERRUPT2;
     // Ende der Setup
     Serial.println("--- Setup beendet ---");
 }
@@ -127,6 +140,7 @@ void loop()
     //Eventgetriggerte Ausgabe der Uhrzeit auf die LEDs (jede Sekunde)
     if (eventtrigger)
     {
+        pZeit->printZeitmasterTime();
         eventtrigger = false;
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
@@ -134,16 +148,23 @@ void loop()
         
     }
     
+    
     //OTA und NTP Sync bei validen WiFi Daten
-    if(settings.getWifiSettingsAvailable())
     {
+        if(WiFi.status() == WL_CONNECTED && wifi_connection_possible == true)
+        {
         if(ntpSync)
         {
             ntpSync = false;
-            settings.NtpTimeUpdate();
         }
         settings.handleOTA();
+        }
+        else if(wifi_connection_possible == true) //einmaliges Verbinden beim Start war erfolgreich, aber Verbindung unterwegs verloren
+        {
+            settings.WifiAutoReconnect();
+        }
     }
+    
     
     // Empfange Befehle aus der App
     if (SerialBT.available())

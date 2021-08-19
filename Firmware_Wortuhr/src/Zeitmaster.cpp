@@ -3,7 +3,15 @@
 /* Einbinden von Headerdateien */
 #include "Zeitmaster.h"
 
-/* Funktionen */
+/****************************************
+ * Definition Objekte
+ ***************************************/
+NTPtime myNTP("de.pool.ntp.org");
+
+/****************************************
+ * Definition der static Variablen
+ ***************************************/
+strDateTime dateTime;
 
 /***************************************************************************
  * Konstruktor der Klasse Zeitmaster
@@ -16,15 +24,15 @@ Zeitmaster::Zeitmaster()
     {
         while (1)
         {
-            Serial.println("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
+            _DEBUG_PRINTLN("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
             delay(3000);
         }
     }
 
     if (myRTCDS3231.lostPower())
     {
-        Serial.println("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
-        myRTCDS3231.adjust(DateTime(2020, 5, 4, 0, 0, 0));
+        _DEBUG_PRINTLN("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
+        myRTCDS3231.adjust(DateTime(20, 5, 4, 0, 0, 0));
     }
 }
 
@@ -64,76 +72,6 @@ void Zeitmaster::setTimeDate(timedate_t TimeDate)
 void Zeitmaster::setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, uint8_t Date, uint8_t Month, uint8_t Year)
 {
     myRTCDS3231.adjust( DateTime( Year, Month, Date, Hours, Minutes, Seconds ) );
-}
-
-/***************************************************************************
- * Schreiben der Sekunden im Zeit und Datums Struct
- * Übergabeparameter: Sekunden-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setSeconds(uint8_t Seconds)
-{
-    _TimeDate.seconds = Seconds;
-}
-
-/***************************************************************************
- * Schreiben der Minuten im Zeit und Datums Struct
- * Übergabeparameter: Minuten-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setMinutes(uint8_t Minutes)
-{
-    _TimeDate.minutes = Minutes;
-}
-
-/***************************************************************************
- * Schreiben der Stunden im Zeit und Datums Struct
- * Übergabeparameter: Stunden-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setHours(uint8_t Hours)
-{
-    _TimeDate.hours = Hours;
-}
-
-/***************************************************************************
- * Schreiben des Tags im Zeit und Datums Struct
- * Übergabeparameter: Tag-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setDate(uint8_t Date)
-{
-    _TimeDate.date = Date;
-}
-
-/***************************************************************************
- * Schreiben des Wochentags im Zeit und Datums Struct
- * Übergabeparameter: Wochentags-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setDayOfWeek(uint8_t DayOfWeek)
-{
-    _TimeDate.dayOfWeek = DayOfWeek;
-}
-
-/***************************************************************************
- * Schreiben des Monats im Zeit und Datums Struct
- * Übergabeparameter: Monats-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setMonth(uint8_t Month)
-{
-    _TimeDate.month = Month;
-}
-
-/***************************************************************************
- * Schreiben des Jahrs im Zeit und Datums Struct
- * Übergabeparameter: Jahres-Wert
- * Rückgabeparameter: kein
- **************************************************************************/
-void Zeitmaster::setYear(uint8_t Year)
-{
-    _TimeDate.year = Year;
 }
 
 /***************************************************************************
@@ -214,12 +152,12 @@ uint8_t Zeitmaster::getYear()
  **************************************************************************/
 void Zeitmaster::printZeitmasterTime(void)
 {
-    Serial.print("Uhrzeit: ");
-    Serial.print(myRTCDS3231.now().hour());
-    Serial.print(":");
-    Serial.print(myRTCDS3231.now().minute());
-    Serial.print(":");
-    Serial.println(myRTCDS3231.now().second());
+    _DEBUG_PRINT("Uhrzeit: ");
+    _DEBUG_PRINT(myRTCDS3231.now().hour());
+    _DEBUG_PRINT(":");
+    _DEBUG_PRINT(myRTCDS3231.now().minute());
+    _DEBUG_PRINT(":");
+    _DEBUG_PRINTLN(myRTCDS3231.now().second());
 }
 
 
@@ -231,10 +169,10 @@ void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
     {
         oldMinuteVal = myRTCDS3231.now().minute();
 
-        Serial.print("Uhrzeit: ");
-        Serial.print(myRTCDS3231.now().hour());
-        Serial.print(":");
-        Serial.println(myRTCDS3231.now().minute());
+        _DEBUG_PRINT("Uhrzeit: ");
+        _DEBUG_PRINT(myRTCDS3231.now().hour());
+        _DEBUG_PRINT(":");
+        _DEBUG_PRINTLN(myRTCDS3231.now().minute());
     }   
 }
 
@@ -249,4 +187,47 @@ bool Zeitmaster::timeTrigger()
         trigger = true;
     }
     return trigger;
+}
+
+void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
+{
+    uint8_t retry = 0;
+    bool time_new = false;
+    
+    if(DEBUG_ZEITMASTER == 1)
+    {
+        _DEBUG_PRINTLN("Zeitmaster.cpp - Aufruf NtpTimeUpdate");
+    }
+    
+    while(retry <= NTP_MAX_TIME_CONNECTING && time_new == false)
+    {
+        dateTime = myNTP.getNTPtime(timezone, daylightsaving);
+        if(dateTime.valid == true )
+        {
+            time_new = true;
+        }
+        delay(10);
+        retry++;
+    }
+    
+    if(retry <= NTP_MAX_TIME_CONNECTING)
+    {
+        if(DEBUG_ZEITMASTER == 1)
+        {
+            _DEBUG_PRINT("Uhrzeit vom NTP Server: ");
+            _DEBUG_PRINT(dateTime.hour);
+            _DEBUG_PRINT(":");
+            _DEBUG_PRINT(dateTime.minute);
+            _DEBUG_PRINT(":");
+            _DEBUG_PRINT(dateTime.second);
+            _DEBUG_PRINT(" Datum vom NTP Server: ");
+            _DEBUG_PRINT(dateTime.day);
+            _DEBUG_PRINT(".");
+            _DEBUG_PRINT(dateTime.month);
+            _DEBUG_PRINT(".");
+            _DEBUG_PRINTLN(dateTime.year);
+        }
+        setTimeDate((uint8_t)dateTime.hour, (uint8_t)dateTime.minute, (uint8_t)dateTime.second, (uint8_t)dateTime.day, (uint8_t)dateTime.month, (uint8_t)dateTime.year);
+    }
+    delay(500);
 }

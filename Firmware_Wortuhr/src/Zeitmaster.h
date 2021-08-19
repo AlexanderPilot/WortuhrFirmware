@@ -9,6 +9,9 @@
 /** Einbinden von relevanten Bibliotheken **/
 #include "Arduino.h"
 #include "RTClib.h"
+#include "NTPtimeESP.h"
+
+#define DEBUG_ZEITMASTER 0
 
 typedef struct {
       uint8_t seconds;
@@ -29,14 +32,6 @@ class Zeitmaster
         void setTimeDate(timedate_t TimeDate);
         void setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, uint8_t Date, uint8_t Month, uint8_t Year);
         
-        void setSeconds(uint8_t Seconds);
-        void setMinutes(uint8_t Minutes);
-        void setHours(uint8_t Hours);
-        void setDate(uint8_t Date);
-        void setDayOfWeek(uint8_t DayOfWeek);
-        void setMonth(uint8_t Month);
-        void setYear(uint8_t Year);
-        
         uint8_t getSeconds();
         uint8_t getMinutes();
         uint8_t getHours();
@@ -48,6 +43,8 @@ class Zeitmaster
         void printZeitmasterTime();
         void printZeitmasterTimeMinuteByMinute();
         bool timeTrigger();
+        
+        void NtpTimeUpdate(float timezone, int daylightsaving);
         
     private:
         timedate_t _TimeDate;

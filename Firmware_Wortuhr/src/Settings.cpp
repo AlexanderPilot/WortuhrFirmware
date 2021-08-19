@@ -10,7 +10,8 @@
  * Definition Objekte
  ***************************************/
 Preferences preferences; //Infos: https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/
-WebServer server(80); //Webserver für OTA Update
+WebServer server(80); //Webserver für OTA Update https://randomnerdtutorials.com/esp32-over-the-air-ota-programming/
+Zeitmaster *pSettingsZeit;
 
 /****************************************
  * Definition der static Variablen
@@ -109,7 +110,7 @@ Settings::Settings()
     _FadeMode = 0;
     _CornerStartLed = 0;
     _CornersClockwise = 1;
-    _StartPattern = 1;
+    _StartPattern = 0;
     _GmtTimeOffsetSec = 3600;
 }
 
@@ -412,7 +413,7 @@ bool Settings::allDataAvailable()
     {
         dataAvailable = true;
     }
-    if(DEBUG_SETTINGS == 1)
+    if(DEBUG_SETTINGS == 0)
     {
         Serial.print("Settings.cpp - ");
         Serial.println("Auswertung Daten in Preferences");
@@ -490,6 +491,7 @@ void Settings::loadDataFromPreferences()
         Serial.println(_SSID_Array);
         Serial.print("WiFi PW: ");
         Serial.println(_PW_Array);
+        Serial.println("");
     }
 }
 
@@ -534,8 +536,10 @@ void Settings::clearPreferences()
  * Übergabeparameter: kein
  * Rückgabeparameter: kein
  **************************************************************************/
-void Settings::startWifi()
+bool Settings::startWifi()
 {
+    uint8_t wifitimeout = 0;
+    bool wifi_ok = false;
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(WIFI_HOSTNAME);
     WiFi.begin(getWifiSSID(), getWifiPW());
@@ -543,27 +547,69 @@ void Settings::startWifi()
     {
         Serial.print("Connecting to SSID: ");
         Serial.print(getWifiSSID());
-        while (WiFi.status() != WL_CONNECTED)
+    }
+    while (WiFi.status() != WL_CONNECTED && wifitimeout < WIFI_MAX_TIME_CONNECTING)
+    {
+        if(DEBUG_SETTINGS == 1)
         {
             Serial.print('.');
-            delay(500);
         }
-        Serial.print("successful with IP: ");
-        Serial.println(WiFi.localIP());
+        delay(500);
+        wifitimeout++;
+        if(wifitimeout >= WIFI_MAX_TIME_CONNECTING)
+        {
+            if(DEBUG_SETTINGS == 1)
+            {
+                Serial.println("not possible. Check WiFi password. Continuing without WiFi.");
+            }
+            //TODO: bei Überschreiten einer Dauer soll Versuch sich mit WIFI zu verbinden abgebrochen werden und RM an App gesendet werden
+        }
     }
+    if(wifitimeout < WIFI_MAX_TIME_CONNECTING)
+    {
+        if(DEBUG_SETTINGS == 1)
+        {
+            Serial.print("successful with IP: ");
+            Serial.println(WiFi.localIP());
+        }
+        wifi_ok = true;
+    }
+    return wifi_ok;
 }
 
-/***************************************************************************
- * Starten der Uhrzeitabfrage über NTP
- * Übergabeparameter: kein
- * Rückgabeparameter: kein
- **************************************************************************/
-void Settings::startNtp()
+void getTime()
 {
-    WiFiUDP ntpUDP;
-    NTPClient timeClient(ntpUDP);
-    timeClient.begin();
-    timeClient.setTimeOffset(3600);
+    struct tm timeinfo;
+    if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+    }
+    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+    Serial.print("Day of week: ");
+    Serial.println(&timeinfo, "%A");
+    Serial.print("Month: ");
+    Serial.println(&timeinfo, "%B");
+    Serial.print("Day of Month: ");
+    Serial.println(&timeinfo, "%d");
+    Serial.print("Year: ");
+    Serial.println(&timeinfo, "%Y");
+    Serial.print("Hour: ");
+    Serial.println(&timeinfo, "%H");
+    Serial.print("Hour (12 hour format): ");
+    Serial.println(&timeinfo, "%I");
+    Serial.print("Minute: ");
+    Serial.println(&timeinfo, "%M");
+    Serial.print("Second: ");
+    Serial.println(&timeinfo, "%S");
+
+    Serial.println("Time variables");
+    char timeHour[3];
+    strftime(timeHour,3, "%H", &timeinfo);
+    Serial.println(timeHour);
+    char timeWeekDay[10];
+    strftime(timeWeekDay,10, "%A", &timeinfo);
+    Serial.println(timeWeekDay);
+    Serial.println();
 }
 
 /***************************************************************************
@@ -573,7 +619,12 @@ void Settings::startNtp()
  **************************************************************************/
 void Settings::startOTA()
 {
-
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Starting OTA Server: ");
+        Serial.print(SERVER_HOSTNAME);
+        Serial.println(".local");
+    }
 
 /*use mdns for host name resolution*/
   if (!MDNS.begin(SERVER_HOSTNAME)) //http://wordclock.local
@@ -584,7 +635,7 @@ void Settings::startOTA()
       delay(1000);
     }
   }
-  Serial.println("mDNS responder started");
+
   /*return index page which is stored in serverIndex */
   server.on("/", HTTP_GET, []()
   {
@@ -642,23 +693,7 @@ void Settings::startOTA()
  **************************************************************************/
 void Settings::WifiAutoReconnect()
 {
-    if(getWifiSettingsAvailable() == true)
-    {
-        if(WiFi.status() != WL_CONNECTED)
-        {
-            
-        }
-    }
-}
-
-/***************************************************************************
- * Automatischer Reconnect zum Wifi
- * Übergabeparameter: kein
- * Rückgabeparameter: kein
- **************************************************************************/
-void Settings::NtpTimeUpdate()
-{
-    
+    //TODO: Funktion erstellen
 }
 
 /***************************************************************************
@@ -690,13 +725,6 @@ void Settings::loadLanguageFromPreferences()
  **************************************************************************/
 void Settings::writeLanguageToPreferences(byte language)
 {
-    if(DEBUG_SETTINGS == 1)
-    {
-        Serial.print("Settings.cpp - ");
-        Serial.print("Schreibe Sprache ");
-        Serial.print(language);
-        Serial.println(" in die Preferences");
-    }
     preferences.begin("settings", false);
     preferences.putUChar("language", language);
     preferences.end();
