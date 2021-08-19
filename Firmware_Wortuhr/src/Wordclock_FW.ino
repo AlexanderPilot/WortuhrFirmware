@@ -31,6 +31,7 @@ Muster *pMuster;
  * ************************************************************************/
 hw_timer_t *timer1 = NULL;
 bool eventtrigger;
+bool ntpSync; //TODO: ISR für Synchronisation mit NTP Server
 // ISR to set trigger
 void IRAM_ATTR onTimer()
 {
@@ -63,11 +64,18 @@ void setup()
     }
     
     /***************************************************************************
-     * Initialisierung des WiFi Verbindung
+     * Initialisierung des WiFi Verbindung + NTP Server + Webserver für OTA
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
     {
+        Serial.println("Initialisiere WiFi");
         settings.startWifi();
+        //settings.startNtp();
+        settings.startOTA();
+    }
+    else
+    {
+        Serial.println("Keine Zugangsdaten für WiFi hinterlegt");
     }
     
     /***************************************************************************
@@ -119,13 +127,24 @@ void loop()
     //Eventgetriggerte Ausgabe der Uhrzeit auf die LEDs (jede Sekunde)
     if (eventtrigger)
     {
-        //pZeit->printZeitmasterTime();
+        eventtrigger = false;
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
         pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
-        eventtrigger = false;
+        
     }
-
+    
+    //OTA und NTP Sync bei validen WiFi Daten
+    if(settings.getWifiSettingsAvailable())
+    {
+        if(ntpSync)
+        {
+            ntpSync = false;
+            settings.NtpTimeUpdate();
+        }
+        settings.handleOTA();
+    }
+    
     // Empfange Befehle aus der App
     if (SerialBT.available())
     {
