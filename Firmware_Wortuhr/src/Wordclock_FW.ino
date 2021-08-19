@@ -62,7 +62,7 @@ void setup()
         Serial.println("Benutzerdefinierte Einstellungen werden gelesen");
         settings.loadDataFromPreferences();
     }
-    settings.setColor(0,0,255);
+    
     /***************************************************************************
      * Initialisierung des WiFi Verbindung + NTP Server + Webserver für OTA
      **********************************************************************/
@@ -71,9 +71,7 @@ void setup()
         Serial.println("Initialisiere WiFi");
         settings.startWifi();
         //settings.startNtp();
-        Serial.println("Initialisiere OTA Update");
         settings.startOTA();
-        Serial.println("OTA Server abgeschlossen");
     }
     else
     {
