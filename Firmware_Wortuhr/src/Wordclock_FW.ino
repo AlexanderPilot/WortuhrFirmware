@@ -4,6 +4,9 @@
  * by Alex P. and Vitali H.
  * 
  * 
+ * //TODO:
+ * Deaktivierung WLAN nach NTP Sync und Starten vor dem nächsten Sync
+ * 
  *****************************************************************************************************************************************************************************************/
 
 /***************************************************************************
@@ -13,8 +16,11 @@
 #include "LED_Ausgabe.h"
 #include "Muster.h"
 
-#define STARTINTERRUPT (timerAlarmEnable(timer1))
-#define STOPINTERRUPT (timerAlarmDisable(timer1))
+#define STARTINTERRUPT1 (timerAlarmEnable(timer1))
+#define STOPINTERRUPT1 (timerAlarmDisable(timer1))
+
+#define STARTINTERRUPT2 (timerAlarmEnable(timer2))
+#define STOPINTERRUPT2 (timerAlarmDisable(timer2))
 
 /***************************************************************************
  * Anlegen der Peripherie Instanzen
@@ -30,12 +36,18 @@ Muster *pMuster;
  * Timer; Eventrtigger
  * ************************************************************************/
 hw_timer_t *timer1 = NULL;
+hw_timer_t *timer2 = NULL;
 bool eventtrigger;
-bool ntpSync; //TODO: ISR für Synchronisation mit NTP Server
+bool ntpSync;
 // ISR to set trigger
-void IRAM_ATTR onTimer()
+void IRAM_ATTR onTimer1()
 {
     eventtrigger = true;
+}
+
+void IRAM_ATTR onTimer2()
+{
+    ntpSync = true;
 }
 
 /* START SETUP ************************************************************/
@@ -68,9 +80,9 @@ void setup()
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
     {
-        Serial.println("Initialisiere WiFi");
         settings.startWifi();
-        //settings.startNtp();
+        settings.startNtp();
+        pZeit->NtpTimeUpdate();
         settings.startOTA();
     }
     else
@@ -105,16 +117,17 @@ void setup()
      **********************************************************************/
     // Time 1: 1/(80MHZ/80) = 1us and count up
     timer1 = timerBegin(0, 80, true);
+    timer2 = timerBegin(1, 80, true);
     // Attach onTimer function
-    timerAttachInterrupt(timer1, &onTimer, true);
+    timerAttachInterrupt(timer1, &onTimer1, true);
+    timerAttachInterrupt(timer2, &onTimer2, true);
     // Set alarm to 1000 ms and repeat it (true)
     timerAlarmWrite(timer1, 1*FACTOR_US_TO_S, true);
-    STOPINTERRUPT;
-    
+    timerAlarmWrite(timer2, NTP_TIMER_VALUE_SEC*FACTOR_US_TO_S, true);
 
-    
 
-    STARTINTERRUPT;
+    STARTINTERRUPT1;
+    STARTINTERRUPT2;
     // Ende der Setup
     Serial.println("--- Setup beendet ---");
 }
@@ -127,6 +140,7 @@ void loop()
     //Eventgetriggerte Ausgabe der Uhrzeit auf die LEDs (jede Sekunde)
     if (eventtrigger)
     {
+        pZeit->printZeitmasterTime();
         eventtrigger = false;
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
@@ -140,7 +154,7 @@ void loop()
         if(ntpSync)
         {
             ntpSync = false;
-            settings.NtpTimeUpdate();
+            pZeit->NtpTimeUpdate();
         }
         settings.handleOTA();
     }
