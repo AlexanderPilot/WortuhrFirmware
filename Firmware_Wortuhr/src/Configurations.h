@@ -23,7 +23,10 @@
 #include "WiFi.h"
 #include "WS2812B.h"
 #include "time.h"
-//#include "NtpTime.h"
+#include <WiFiClient.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+#include <Update.h>
 #include "NTPClient.h"
 #include <WiFiUdp.h>
 #include "BluetoothSerial.h"
