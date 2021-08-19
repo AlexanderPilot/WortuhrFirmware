@@ -81,7 +81,11 @@ public:
      void clearPreferences();
      
      void startWifi();
+     void startNtp();
+     void startOTA();
      void WifiAutoReconnect();
+     void NtpTimeUpdate();
+     void handleOTA();
 
 private:
      void loadLanguageFromPreferences();
