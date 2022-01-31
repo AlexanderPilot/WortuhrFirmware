@@ -81,9 +81,10 @@ void setup()
     if(settings.getWifiSettingsAvailable() == true)
     {
         settings.startWifi();
-        settings.startNtp();
-        pZeit->NtpTimeUpdate();
         settings.startOTA();
+        //settings.startNtp();
+        //pZeit->NtpTimeUpdate();
+        
     }
     else
     {
@@ -154,7 +155,7 @@ void loop()
         if(ntpSync)
         {
             ntpSync = false;
-            pZeit->NtpTimeUpdate();
+            //pZeit->NtpTimeUpdate();
         }
         settings.handleOTA();
     }

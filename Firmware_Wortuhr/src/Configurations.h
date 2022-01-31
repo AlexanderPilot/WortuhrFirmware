@@ -22,7 +22,7 @@
  **************************************************************************/
 #include "WiFi.h"
 #include "WS2812B.h"
-#include "time.h"
+#include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
@@ -36,6 +36,7 @@
 #include <Arduino.h>
 #include "Zeitmaster.h"
 #include "Preferences.h"
+
 
 // Pin for LED control
 #define LED_PIN 26
@@ -89,7 +90,7 @@
 /***************************************************************************
  * WiFi Einstellungen
  **************************************************************************/
-#define WIFI_HOSTNAME "Wordclock"
+#define WIFI_HOSTNAME "wordclock"
 #define SERVER_HOSTNAME "wordclock"
 
 

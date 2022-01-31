@@ -10,7 +10,7 @@
  * Definition Objekte
  ***************************************/
 Preferences preferences; //Infos: https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/
-WebServer server(80); //Webserver für OTA Update
+WebServer server(80); //Webserver für OTA Update https://randomnerdtutorials.com/esp32-over-the-air-ota-programming/
 Zeitmaster *pSettingsZeit;
 
 /****************************************
@@ -619,7 +619,12 @@ void Settings::startNtp()
  **************************************************************************/
 void Settings::startOTA()
 {
-
+    if(DEBUG_SETTINGS == 1)
+    {
+        Serial.print("Starting OTA Server: ");
+        Serial.print(SERVER_HOSTNAME);
+        Serial.println(".local");
+    }
 
 /*use mdns for host name resolution*/
   if (!MDNS.begin(SERVER_HOSTNAME)) //http://wordclock.local
@@ -630,6 +635,7 @@ void Settings::startOTA()
       delay(1000);
     }
   }
+
   /*return index page which is stored in serverIndex */
   server.on("/", HTTP_GET, []()
   {
@@ -697,7 +703,7 @@ void Settings::WifiAutoReconnect()
 }
 
 /***************************************************************************
- * Automatischer Reconnect zum Wifi
+ * Update der Zeit vom NTP Server
  * Übergabeparameter: kein
  * Rückgabeparameter: kein
  **************************************************************************/
