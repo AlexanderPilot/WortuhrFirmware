@@ -69,7 +69,7 @@
 /***************************************************************************
  * WiFi Einstellungen
  **************************************************************************/
-#define WIFI_MAX_TIME_CONNECTING 20 //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
+#define WIFI_MAX_TIME_CONNECTING 10 //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * NTP Server Einstellungen
