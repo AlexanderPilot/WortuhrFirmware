@@ -46,7 +46,6 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
         for (i = (LENGTH_COMMAND_BUFFER - 3); i > 1; i--)
         {
             _AppBefehl[7 - i] = _AppBefehlBuffer[i];
-            //Serial.print(_AppBefehl[8 - i]);
         }
 
         switch (_AppBefehlBuffer[POS_COMMAND_SIGN])
@@ -344,15 +343,15 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
  **************************************************************************/
 void AppInterpreter::_CommSetDefaultSettings(char *Reset)
 {
-    if (Reset[0] == R && Reset [1] == E && Reset[2] == S && Reset[3] == E && Reset[4] == T)
+    if (Reset[0] == 'R' && Reset [1] == 'E' && Reset[2] == 'S' && Reset[3] == 'E' && Reset[4] == 'T')
     {
         if (DEBUG_APPINTERPRETER == 1)
         {
             Serial.print("AppInterpreter.cpp - ");
-            Serial.print("Reset auf Werkseinstellungen");
+            Serial.println("Reset auf Werkseinstellungen");
         }
-        //_interpretersettings.clearPreferences();
-        //ESP.restart();
+        _interpretersettings.clearPreferences();
+        ESP.restart();
     }
 }
 
