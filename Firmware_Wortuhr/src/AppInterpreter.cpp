@@ -344,13 +344,16 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
  **************************************************************************/
 void AppInterpreter::_CommSetDefaultSettings(char *Reset)
 {
-    if (DEBUG_APPINTERPRETER == 1)
+    if (Reset[0] == R && Reset [1] == E && Reset[2] == S && Reset[3] == E && Reset[4] == T)
     {
-        Serial.print("AppInterpreter.cpp - ");
-        Serial.print("Reset auf Werkseinstellungen");
+        if (DEBUG_APPINTERPRETER == 1)
+        {
+            Serial.print("AppInterpreter.cpp - ");
+            Serial.print("Reset auf Werkseinstellungen");
+        }
+        //_interpretersettings.clearPreferences();
+        //ESP.restart();
     }
-    //_interpretersettings.clearPreferences();
-    //ESP.restart();
 }
 
 /***************************************************************************
