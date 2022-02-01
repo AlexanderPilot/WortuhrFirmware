@@ -86,7 +86,7 @@ public:
     /****************************************
      * Initialisierungen
      ***************************************/
-     void startWifi();
+     bool startWifi();
      void startNtp();
      void startOTA();
      

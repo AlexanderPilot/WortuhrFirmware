@@ -536,8 +536,10 @@ void Settings::clearPreferences()
  * Übergabeparameter: kein
  * Rückgabeparameter: kein
  **************************************************************************/
-void Settings::startWifi()
+bool Settings::startWifi()
 {
+    uint8_t wifitimeout = 0;
+    bool wifi_ok = false;
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(WIFI_HOSTNAME);
     WiFi.begin(getWifiSSID(), getWifiPW());
@@ -546,19 +548,33 @@ void Settings::startWifi()
         Serial.print("Connecting to SSID: ");
         Serial.print(getWifiSSID());
     }
-    while (WiFi.status() != WL_CONNECTED)
+    while (WiFi.status() != WL_CONNECTED && wifitimeout < WIFI_MAX_TIME_CONNECTING)
     {
         if(DEBUG_SETTINGS == 1)
         {
             Serial.print('.');
         }
         delay(500);
+        wifitimeout++;
+        if(wifitimeout >= WIFI_MAX_TIME_CONNECTING)
+        {
+            if(DEBUG_SETTINGS == 1)
+            {
+                Serial.println("not possible. Check WiFi password. Continuing without WiFi.");
+            }
+            //TODO: bei Überschreiten einer Dauer soll Versuch sich mit WIFI zu verbinden abgebrochen werden und RM an App gesendet werden
+        }
     }
-    if(DEBUG_SETTINGS == 1)
+    if(wifitimeout < WIFI_MAX_TIME_CONNECTING)
     {
-        Serial.print("successful with IP: ");
-        Serial.println(WiFi.localIP());
+        if(DEBUG_SETTINGS == 1)
+        {
+            Serial.print("successful with IP: ");
+            Serial.println(WiFi.localIP());
+        }
+        wifi_ok = true;
     }
+    return wifi_ok;
 }
 
 void getTime()
@@ -741,13 +757,6 @@ void Settings::loadLanguageFromPreferences()
  **************************************************************************/
 void Settings::writeLanguageToPreferences(byte language)
 {
-    if(DEBUG_SETTINGS == 1)
-    {
-        Serial.print("Settings.cpp - ");
-        Serial.print("Schreibe Sprache ");
-        Serial.print(language);
-        Serial.println(" in die Preferences");
-    }
     preferences.begin("settings", false);
     preferences.putUChar("language", language);
     preferences.end();

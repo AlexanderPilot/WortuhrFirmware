@@ -68,6 +68,7 @@ void setup()
     {
         Serial.println("Werkseinstellungen werden geschrieben");
         settings.writeDataToPreferences();
+        ESP.restart();
     }
     else
     {
@@ -80,11 +81,14 @@ void setup()
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
     {
-        settings.startWifi();
-        settings.startOTA();
-        //settings.startNtp();
-        //pZeit->NtpTimeUpdate();
-        
+        boolean wifi_connection_possible = false;
+        wifi_connection_possible = settings.startWifi();
+        if(wifi_connection_possible == true)
+        {
+            settings.startOTA();
+            //settings.startNtp();
+            //pZeit->NtpTimeUpdate();
+        }
     }
     else
     {
@@ -163,6 +167,7 @@ void loop()
     // Empfange Befehle aus der App
     if (SerialBT.available())
     {
+        //Serial.println(SerialBT.read());
         appinterpreter.readCommandCharFromApp((char)SerialBT.read());
     }
 }
