@@ -27,7 +27,7 @@
 #define DE_H_DREI Matrix[8] |= 0b001111000000      //8
 #define DE_H_VIER Matrix[8] |= 0b000000011110      //8
 #define DE_H_SECHS Matrix[9] |= 0b011111000000     //9
-#define DE_H_ELF Matrix[9] |= 0b000000001110       //9
+#define DE_H_ELF Matrix[9] |= 0b000000000111       //9
 #define DE_H_ZWOELF Matrix[10] |= 0b111110000000   //10
 #define DE_H_ZEHN Matrix[10] |= 0b000000111100     //10
 #define DE_H_NEUN Matrix[11] |= 0b011110000000     //11
