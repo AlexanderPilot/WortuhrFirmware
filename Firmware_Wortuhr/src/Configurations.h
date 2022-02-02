@@ -67,16 +67,6 @@
 #define PRINT_SEPARATOR_LONG "--------------------------------------------------"
 
 /***************************************************************************
- * WiFi Einstellungen
- **************************************************************************/
-#define WIFI_MAX_TIME_CONNECTING 10 //max. Dauer, die gewartet wird bis Verbindungsaufbau abgebrochen wird
-
-/***************************************************************************
- * NTP Server Einstellungen
- **************************************************************************/
-#define NTP_SERVER_NAME "pool.ntp.org"
-
-/***************************************************************************
  * Bluetooth Einstellungen
  **************************************************************************/
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
@@ -92,7 +82,13 @@
  **************************************************************************/
 #define WIFI_HOSTNAME "wordclock"
 #define SERVER_HOSTNAME "wordclock"
+#define WIFI_MAX_TIME_CONNECTING 10 //max. Anzahl an 500ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
+/***************************************************************************
+ * NTP Server Einstellungen
+ **************************************************************************/
+#define NTP_SERVER_NAME "de.pool.ntp.org"
+#define NTP_MAX_TIME_CONNECTING 50 //max. Anzahl an 10ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * Spracheinstellungen
@@ -153,5 +149,5 @@
  * Timer Interrupt Einstellungen
  **************************************************************************/
 //#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
-#define NTP_TIMER_VALUE_SEC 60 //für Testzwecke
+#define NTP_TIMER_VALUE_SEC 60 //TODO: für Testzweckegewählt, final größeren Wert
 #define FACTOR_US_TO_S 1000000
