@@ -39,6 +39,7 @@ hw_timer_t *timer1 = NULL;
 hw_timer_t *timer2 = NULL;
 bool eventtrigger;
 bool ntpSync;
+bool wifi_connection_possible = false;
 // ISR to set trigger
 void IRAM_ATTR onTimer1()
 {
@@ -81,13 +82,11 @@ void setup()
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
     {
-        boolean wifi_connection_possible = false;
         wifi_connection_possible = settings.startWifi();
         if(wifi_connection_possible == true)
         {
             settings.startOTA();
-            //settings.startNtp();
-            //pZeit->NtpTimeUpdate();
+            pZeit->NtpTimeUpdate(1.0, 1);
         }
     }
     else
@@ -106,17 +105,11 @@ void setup()
     /***************************************************************************
      * Weitere Einstellungen und Initialisierungen
      **************************************************************************/
-    // Start der Funktionen für die LED-Ausgabe
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
-
-    //Anzeige Startmuster
     pMuster = new Muster();
-
-    // Zeitfunktionen
     pZeit = new Zeitmaster();
-    pZeit->setTimeDate(6, 0, 49, 15, 4, 45); // ToDo: Sollte gelöscht werden, wenn die NTP Zeit bzw. App Zeiteinstellung funktioniert
-
-
+    
+    
     /***********************************************************************
      * Initialisierung des Timers
      **********************************************************************/
@@ -150,24 +143,31 @@ void loop()
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
         pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
-        
     }
     
+    
     //OTA und NTP Sync bei validen WiFi Daten
-    if(settings.getWifiSettingsAvailable())
+    if(settings.getWifiSettingsAvailable() == true)
     {
-        if(ntpSync)
+        if(WiFi.status() == WL_CONNECTED && wifi_connection_possible == true)
         {
-            ntpSync = false;
-            //pZeit->NtpTimeUpdate();
+            if(ntpSync)
+            {
+                ntpSync = false;
+                pZeit->NtpTimeUpdate(1.0, 1);
+            }
+            settings.handleOTA();
         }
-        settings.handleOTA();
+        else if(wifi_connection_possible == true) //einmaliges Verbinden beim Start war erfolgreich, aber Verbindung unterwegs verloren
+        {
+            settings.WifiAutoReconnect();
+        }
     }
+
     
     // Empfange Befehle aus der App
     if (SerialBT.available())
     {
-        //Serial.println(SerialBT.read());
         appinterpreter.readCommandCharFromApp((char)SerialBT.read());
     }
 }
