@@ -13,9 +13,16 @@ byte _packetBuffer[ NTP_PACKET_SIZE];
 static const uint8_t _monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 float _timeZone=0.0;
-String _NTPserver="";
 
-// NTPserver is the name of the NTPserver
+NTPtime::NTPtime(String NTPserver)
+{
+	_NTPserver = NTPserver;
+	_sendPhase = true;
+	_sentTime  = 0;
+	_sendInterval = SEND_INTRVL_DEFAULT * SEC_TO_MS;
+	_recvTimeout = RECV_TIMEOUT_DEFAULT * SEC_TO_MS;
+}
+
 
 bool NTPtime::setSendInterval(unsigned long _sendInterval_) {
 	bool retVal = false;
@@ -37,16 +44,10 @@ bool NTPtime::setRecvTimeout(unsigned long _recvTimeout_) {
 	return retVal;  
 }
 
-NTPtime::NTPtime(String NTPserver) {
-	_NTPserver = NTPserver;
-	_sendPhase = true;
-	_sentTime  = 0;
-	_sendInterval = SEND_INTRVL_DEFAULT * SEC_TO_MS;
-	_recvTimeout = RECV_TIMEOUT_DEFAULT * SEC_TO_MS;
-}
-
-void NTPtime::printDateTime(strDateTime _dateTime) {
-	if (_dateTime.valid) {
+void NTPtime::printDateTime(strDateTime _dateTime)
+{
+	if (_dateTime.valid)
+	{
 		Serial.print(_dateTime.year);
 		Serial.print( "-");
 		Serial.print(_dateTime.month);
@@ -63,11 +64,14 @@ void NTPtime::printDateTime(strDateTime _dateTime) {
 		Serial.print(_dateTime.second);
 		Serial.print( "S ");
 		Serial.println();
-	} else {
-#ifdef DEBUG_ON
-		Serial.println("Invalid time !!!");
-		Serial.println("");
-#endif    
+	}
+	else
+	{
+		if(DEBUG_NTPTIME == 1)
+		{
+			Serial.println("Invalid time !!!");
+			Serial.println("");
+		}
 	}
 }
 
@@ -214,22 +218,26 @@ strDateTime NTPtime::getNTPtime(float _timeZone, int _DayLightSaving) {
 	_dateTime.valid = false;
 	unsigned long _currentTimeStamp;
 
-	if (_sendPhase) {
-		if (_sentTime && ((millis() - _sentTime) < _sendInterval)) {
+	if (_sendPhase)
+	{
+		if (_sentTime && ((millis() - _sentTime) < _sendInterval))
+		{
 			return _dateTime;
 		}
 
 		_sendPhase = false;
 		UDPNTPClient.begin(1337); // Port for NTP receive
 
-#ifdef DEBUG_ON
+
 		IPAddress _timeServerIP;
 		WiFi.hostByName(_NTPserver.c_str(), _timeServerIP);
-		Serial.println();
-		Serial.println(_timeServerIP);
-		Serial.println("Sending NTP packet");
-#endif
-
+		if(DEBUG_NTPTIME == 1)
+		{
+			Serial.print("IP Adresse NTP Server: ");
+			Serial.print(_timeServerIP);
+			Serial.println(" -> Sending NTP packet");
+		}
+		
 		memset(_packetBuffer, 0, NTP_PACKET_SIZE);
 		_packetBuffer[0] = 0b11100011; // LI, Version, Mode
 		_packetBuffer[1] = 0;          // Stratum, or type of clock
@@ -244,31 +252,41 @@ strDateTime NTPtime::getNTPtime(float _timeZone, int _DayLightSaving) {
 		UDPNTPClient.endPacket();
 
 		_sentTime = millis();
-	} else {
+	}
+	else
+	{
 		cb = UDPNTPClient.parsePacket();
-		if (cb == 0) {
+		if (cb == 0)
+		{
 			if ((millis() - _sentTime) > _recvTimeout) {
 				_sendPhase = true;
 				_sentTime = 0;
 			}
-		} else {
-#ifdef DEBUG_ON
-			Serial.print("NTP packet received, length=");
-			Serial.println(cb);
-#endif
-
+		}
+		else
+		{
+			if(DEBUG_NTPTIME == 1)
+			{
+				Serial.print("NTP packet received, length=");
+				Serial.println(cb);
+			}
+			
 			UDPNTPClient.read(_packetBuffer, NTP_PACKET_SIZE); // read the packet into the buffer
 			unsigned long highWord = word(_packetBuffer[40], _packetBuffer[41]);
 			unsigned long lowWord = word(_packetBuffer[42], _packetBuffer[43]);
 			unsigned long secsSince1900 = highWord << 16 | lowWord;
 			const unsigned long seventyYears = 2208988800UL;
 			_unixTime = secsSince1900 - seventyYears;
-			if (secsSince1900 > 0) {
+			if (secsSince1900 > 0)
+			{
 				_currentTimeStamp = adjustTimeZone(_unixTime, _timeZone, _DayLightSaving);
 				_dateTime = ConvertUnixTimestamp(_currentTimeStamp);
 				_dateTime.valid = true;
-			} else
-			_dateTime.valid = false;
+			}
+			else
+			{
+				_dateTime.valid = false;
+			}
 
 			_sendPhase = true;
 		}

@@ -10,6 +10,8 @@
 #include "Arduino.h"
 #include "Configurations.h"
 
+#define DEBUG_NTPTIME 1
+
 struct strDateTime
 {
   byte hour;
@@ -36,6 +38,7 @@ class NTPtime {
     unsigned long _sentTime;
     unsigned long _sendInterval;
     unsigned long _recvTimeout;
+    String _NTPserver;
 
     strDateTime ConvertUnixTimestamp( unsigned long _tempTimeStamp);
     boolean summerTime(unsigned long _timeStamp );
