@@ -613,22 +613,6 @@ void getTime()
 }
 
 /***************************************************************************
- * Starten der Uhrzeitabfrage über NTP
- * Übergabeparameter: kein
- * Rückgabeparameter: kein
- **************************************************************************/
-void Settings::startNtp()
-{
-    //Konfiguration des NTP Servers
-    configTime(_GmtTimeOffsetSec, 3600, NTP_SERVER_NAME);
-    if(DEBUG_SETTINGS == 1)
-    {
-        Serial.println("Konfiguration NTP Server eingerichtet");
-    }
-    delay(500);
-}
-
-/***************************************************************************
  * Starten des Over The Air Update Servers
  * Übergabeparameter: kein
  * Rückgabeparameter: kein
@@ -709,23 +693,7 @@ void Settings::startOTA()
  **************************************************************************/
 void Settings::WifiAutoReconnect()
 {
-    if(getWifiSettingsAvailable() == true)
-    {
-        if(WiFi.status() != WL_CONNECTED)
-        {
-            
-        }
-    }
-}
-
-/***************************************************************************
- * Update der Zeit vom NTP Server
- * Übergabeparameter: kein
- * Rückgabeparameter: kein
- **************************************************************************/
-void Settings::NtpTimeUpdate()
-{
-    
+    //TODO: Funktion erstellen
 }
 
 /***************************************************************************
