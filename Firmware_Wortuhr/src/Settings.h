@@ -87,14 +87,12 @@ public:
      * Initialisierungen
      ***************************************/
      bool startWifi();
-     void startNtp();
      void startOTA();
      
      /****************************************
      * WiFi Funktionen (Reconnect + NTP + OTP)
      ***************************************/
      void WifiAutoReconnect();
-     void NtpTimeUpdate();
      void handleOTA();
 
 private:
