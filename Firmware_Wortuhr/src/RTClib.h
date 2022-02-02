@@ -82,7 +82,7 @@ public:
       @brief  Return the year.
       @return Year (range: 2000--2099).
   */
-  uint16_t year() const { y; }
+  uint16_t year() const { return y; }
   /*!
       @brief  Return the month.
       @return Month number (1--12).
