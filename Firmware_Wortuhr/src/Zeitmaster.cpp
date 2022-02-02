@@ -3,7 +3,15 @@
 /* Einbinden von Headerdateien */
 #include "Zeitmaster.h"
 
-/* Funktionen */
+/****************************************
+ * Definition Objekte
+ ***************************************/
+NTPtime myNTP("de.pool.ntp.org");
+
+/****************************************
+ * Definition der static Variablen
+ ***************************************/
+strDateTime dateTime;
 
 /***************************************************************************
  * Konstruktor der Klasse Zeitmaster
@@ -181,15 +189,43 @@ bool Zeitmaster::timeTrigger()
     return trigger;
 }
 
-void Zeitmaster::NtpTimeUpdate()
+void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
 {
-    struct tm timeinfo;
-    Serial.println("NTP Sync");
-    //Abholen der aktuellen Uhrzeit vom NTP Server
-    if(!getLocalTime(&timeinfo))
+    uint8_t retry = 0;
+    bool time_new = false;
+    
+    while(retry <= NTP_MAX_TIME_CONNECTING && time_new == false)
     {
-        Serial.println("Failed to obtain time");
-        return;
+        dateTime = myNTP.getNTPtime(timezone, daylightsaving);
+        if(dateTime.valid == true )
+        {
+            time_new = true;
+            Serial.print("");
+        }
+        delay(10);
+        retry++;
     }
-    setTimeDate(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year);
+    
+    if(retry <= NTP_MAX_TIME_CONNECTING)
+    {
+        if(DEBUG_ZEITMASTER == 1)
+        {
+            Serial.print("Uhrzeit vom NTP Server: ");
+            Serial.print(dateTime.hour);
+            Serial.print(":");
+            Serial.print(dateTime.minute);
+            Serial.print(":");
+            Serial.print(dateTime.second);
+            Serial.print(" Datum vom NTP Server: ");
+            Serial.print(dateTime.day);
+            Serial.print(".");
+            Serial.print(dateTime.month);
+            Serial.print(".");
+            Serial.println(dateTime.year);
+        }
+        retry = 0; //TODO: prüfen ob das hier benötigt wird
+        //FIXME: korrekte Zeit vom NTP wird nicht aus RTC übernommen
+        setTimeDate((uint8_t)dateTime.hour, (uint8_t)dateTime.minute, (uint8_t)dateTime.second, (uint8_t)dateTime.day, (uint8_t)dateTime.month, (uint8_t)dateTime.year);
+    }
+    delay(500);
 }
