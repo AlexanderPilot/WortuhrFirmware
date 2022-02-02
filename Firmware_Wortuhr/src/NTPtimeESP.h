@@ -39,6 +39,7 @@ class NTPtime {
     unsigned long _sendInterval;
     unsigned long _recvTimeout;
     String _NTPserver;
+    float _timeZone;
 
     strDateTime ConvertUnixTimestamp( unsigned long _tempTimeStamp);
     boolean summerTime(unsigned long _timeStamp );
