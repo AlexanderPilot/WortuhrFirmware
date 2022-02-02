@@ -70,7 +70,7 @@ class TimeSpan;
 class DateTime {
 public:
   DateTime(uint32_t t = SECONDS_FROM_1970_TO_2000);
-  DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour = 0,
+  DateTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0,
            uint8_t min = 0, uint8_t sec = 0);
   DateTime(const DateTime &copy);
   DateTime(const char *date, const char *time);
@@ -82,7 +82,7 @@ public:
       @brief  Return the year.
       @return Year (range: 2000--2099).
   */
-  uint16_t year() const { return 2000 + yOff; }
+  uint16_t year() const { y; }
   /*!
       @brief  Return the month.
       @return Month number (1--12).
@@ -169,7 +169,7 @@ public:
   bool operator!=(const DateTime &right) const { return !(*this == right); }
 
 protected:
-  uint8_t yOff; ///< Year offset from 2000
+  uint8_t y;    ///< Year offset from 2000
   uint8_t m;    ///< Month 1-12
   uint8_t d;    ///< Day 1-31
   uint8_t hh;   ///< Hours 0-23
