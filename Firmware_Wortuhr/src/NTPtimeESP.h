@@ -10,7 +10,7 @@
 #include "Arduino.h"
 #include "Configurations.h"
 
-#define DEBUG_NTPTIME 1
+#define DEBUG_NTPTIME 0
 
 struct strDateTime
 {
