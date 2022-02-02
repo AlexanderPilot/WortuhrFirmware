@@ -32,7 +32,7 @@ Zeitmaster::Zeitmaster()
     if (myRTCDS3231.lostPower())
     {
         Serial.println("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
-        myRTCDS3231.adjust(DateTime(2020, 5, 4, 0, 0, 0));
+        myRTCDS3231.adjust(DateTime(20, 5, 4, 0, 0, 0));
     }
 }
 
@@ -194,13 +194,17 @@ void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
     uint8_t retry = 0;
     bool time_new = false;
     
+    if(DEBUG_ZEITMASTER == 1)
+    {
+        Serial.println("Zeitmaster.cpp - Aufruf NtpTimeUpdate");
+    }
+    
     while(retry <= NTP_MAX_TIME_CONNECTING && time_new == false)
     {
         dateTime = myNTP.getNTPtime(timezone, daylightsaving);
         if(dateTime.valid == true )
         {
             time_new = true;
-            Serial.print("");
         }
         delay(10);
         retry++;
@@ -223,8 +227,6 @@ void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
             Serial.print(".");
             Serial.println(dateTime.year);
         }
-        retry = 0; //TODO: prüfen ob das hier benötigt wird
-        //FIXME: korrekte Zeit vom NTP wird nicht aus RTC übernommen
         setTimeDate((uint8_t)dateTime.hour, (uint8_t)dateTime.minute, (uint8_t)dateTime.second, (uint8_t)dateTime.day, (uint8_t)dateTime.month, (uint8_t)dateTime.year);
     }
     delay(500);
