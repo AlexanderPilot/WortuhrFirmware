@@ -110,7 +110,7 @@ Settings::Settings()
     _FadeMode = 0;
     _CornerStartLed = 0;
     _CornersClockwise = 1;
-    _StartPattern = 1;
+    _StartPattern = 0;
     _GmtTimeOffsetSec = 3600;
 }
 
