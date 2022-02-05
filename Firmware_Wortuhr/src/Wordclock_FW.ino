@@ -105,12 +105,11 @@ void setup()
     /***************************************************************************
      * Weitere Einstellungen und Initialisierungen
      **************************************************************************/
-    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
     pMuster = new Muster();
     pZeit = new Zeitmaster();
-    
-    settings.setStartPattern(1);
+    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
     pLedausgabe->LedStartUp(settings.getStartPattern());
+    
     
     
     /***********************************************************************
