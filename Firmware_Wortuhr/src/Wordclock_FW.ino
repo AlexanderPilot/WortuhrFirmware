@@ -110,6 +110,7 @@ void setup()
     pZeit = new Zeitmaster();
     
     settings.setStartPattern(1);
+    pLedausgabe->LedStartUp(settings.getStartPattern());
     
     
     /***********************************************************************
