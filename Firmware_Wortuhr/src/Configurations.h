@@ -49,9 +49,9 @@
 /***************************************************************************
  * Debug Botschaften aktivieren/deaktivieren
  **************************************************************************/
-#define DEBUG_PRINT
+#define DEBUG_PRINT 0
 
-#ifdef DEBUG_PRINT
+#if DEBUG_PRINT == 1
 #define _DEBUG_BEGIN(x) Serial.begin(x);
 #define _DEBUG_PRINT(x) Serial.print(x);
 #define _DEBUG_PRINTLN(x) Serial.println(x);

@@ -19,21 +19,21 @@ strDateTime dateTime;
  * Rückgabeparameter: kein
  **************************************************************************/
 Zeitmaster::Zeitmaster()
-{/*
+{
     if ( ! myRTCDS3231.begin() )
     {
         while (1)
         {
-            Serial.println("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
+            _DEBUG_PRINTLN("RTC ist nicht vorhanden oder funktioniert nicht richtig!\nAusführung des Programms wird beendet.");
             delay(3000);
         }
     }
 
     if (myRTCDS3231.lostPower())
     {
-        Serial.println("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
+        _DEBUG_PRINTLN("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
         myRTCDS3231.adjust(DateTime(20, 5, 4, 0, 0, 0));
-    }*/
+    }
 }
 
 /***************************************************************************
@@ -152,12 +152,12 @@ uint8_t Zeitmaster::getYear()
  **************************************************************************/
 void Zeitmaster::printZeitmasterTime(void)
 {
-    Serial.print("Uhrzeit: ");
-    Serial.print(myRTCDS3231.now().hour());
-    Serial.print(":");
-    Serial.print(myRTCDS3231.now().minute());
-    Serial.print(":");
-    Serial.println(myRTCDS3231.now().second());
+    _DEBUG_PRINT("Uhrzeit: ");
+    _DEBUG_PRINT(myRTCDS3231.now().hour());
+    _DEBUG_PRINT(":");
+    _DEBUG_PRINT(myRTCDS3231.now().minute());
+    _DEBUG_PRINT(":");
+    _DEBUG_PRINTLN(myRTCDS3231.now().second());
 }
 
 
@@ -169,10 +169,10 @@ void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
     {
         oldMinuteVal = myRTCDS3231.now().minute();
 
-        Serial.print("Uhrzeit: ");
-        Serial.print(myRTCDS3231.now().hour());
-        Serial.print(":");
-        Serial.println(myRTCDS3231.now().minute());
+        _DEBUG_PRINT("Uhrzeit: ");
+        _DEBUG_PRINT(myRTCDS3231.now().hour());
+        _DEBUG_PRINT(":");
+        _DEBUG_PRINTLN(myRTCDS3231.now().minute());
     }   
 }
 
@@ -196,7 +196,7 @@ void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
     
     if(DEBUG_ZEITMASTER == 1)
     {
-        Serial.println("Zeitmaster.cpp - Aufruf NtpTimeUpdate");
+        _DEBUG_PRINTLN("Zeitmaster.cpp - Aufruf NtpTimeUpdate");
     }
     
     while(retry <= NTP_MAX_TIME_CONNECTING && time_new == false)
@@ -214,18 +214,18 @@ void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
     {
         if(DEBUG_ZEITMASTER == 1)
         {
-            Serial.print("Uhrzeit vom NTP Server: ");
-            Serial.print(dateTime.hour);
-            Serial.print(":");
-            Serial.print(dateTime.minute);
-            Serial.print(":");
-            Serial.print(dateTime.second);
-            Serial.print(" Datum vom NTP Server: ");
-            Serial.print(dateTime.day);
-            Serial.print(".");
-            Serial.print(dateTime.month);
-            Serial.print(".");
-            Serial.println(dateTime.year);
+            _DEBUG_PRINT("Uhrzeit vom NTP Server: ");
+            _DEBUG_PRINT(dateTime.hour);
+            _DEBUG_PRINT(":");
+            _DEBUG_PRINT(dateTime.minute);
+            _DEBUG_PRINT(":");
+            _DEBUG_PRINT(dateTime.second);
+            _DEBUG_PRINT(" Datum vom NTP Server: ");
+            _DEBUG_PRINT(dateTime.day);
+            _DEBUG_PRINT(".");
+            _DEBUG_PRINT(dateTime.month);
+            _DEBUG_PRINT(".");
+            _DEBUG_PRINTLN(dateTime.year);
         }
         setTimeDate((uint8_t)dateTime.hour, (uint8_t)dateTime.minute, (uint8_t)dateTime.second, (uint8_t)dateTime.day, (uint8_t)dateTime.month, (uint8_t)dateTime.year);
     }
