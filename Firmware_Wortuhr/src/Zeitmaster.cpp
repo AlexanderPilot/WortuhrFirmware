@@ -19,7 +19,7 @@ strDateTime dateTime;
  * Rückgabeparameter: kein
  **************************************************************************/
 Zeitmaster::Zeitmaster()
-{
+{/*
     if ( ! myRTCDS3231.begin() )
     {
         while (1)
@@ -33,7 +33,7 @@ Zeitmaster::Zeitmaster()
     {
         Serial.println("RTC Batterie ist ausgefallen oder nicht vorhanden. Die Zeit wird auf Default (00:00:00) eingestellt. Bitte Batterie prüfen bzw. einbauen.\n");
         myRTCDS3231.adjust(DateTime(20, 5, 4, 0, 0, 0));
-    }
+    }*/
 }
 
 /***************************************************************************

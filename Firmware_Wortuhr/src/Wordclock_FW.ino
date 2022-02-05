@@ -109,6 +109,8 @@ void setup()
     pMuster = new Muster();
     pZeit = new Zeitmaster();
     
+    settings.setStartPattern(1);
+    
     
     /***********************************************************************
      * Initialisierung des Timers
