@@ -178,16 +178,15 @@ void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
 
 bool Zeitmaster::timeTrigger()
 {
-    bool trigger = false;
     static uint8_t oldMinuteVal = 61;
-
-    if( oldMinuteVal != myRTCDS3231.now().minute() )
-    {
-        oldMinuteVal = myRTCDS3231.now().minute();
-        trigger = true;
-    }
+    
+    uint8_t currentMinuteVal = myRTCDS3231.now().minute();
+    
+    bool trigger = (oldMinuteVal != currentMinuteVal);
+    oldMinuteVal = currentMinuteVal;
     return trigger;
 }
+
 
 void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
 {
