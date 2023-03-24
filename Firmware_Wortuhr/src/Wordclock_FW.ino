@@ -78,6 +78,14 @@ void setup()
     }
     
     /***************************************************************************
+     * Weitere Einstellungen und Initialisierungen
+     **************************************************************************/
+    pMuster = new Muster();
+    pZeit = new Zeitmaster();
+    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
+    pLedausgabe->LedStartUp(settings.getStartPattern());
+    
+    /***************************************************************************
      * Initialisierung des WiFi Verbindung + NTP Server + Webserver für OTA
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
@@ -101,15 +109,6 @@ void setup()
     {
         Serial.println("An error occurred initializing Bluetooth");
     }
-
-    /***************************************************************************
-     * Weitere Einstellungen und Initialisierungen
-     **************************************************************************/
-    pMuster = new Muster();
-    pZeit = new Zeitmaster();
-    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
-    pLedausgabe->LedStartUp(settings.getStartPattern());
-    
     
     
     /***********************************************************************
@@ -155,6 +154,7 @@ void loop()
         {
         if(ntpSync)
         {
+            pZeit->NtpTimeUpdate(1.0, 1);
             ntpSync = false;
         }
         settings.handleOTA();
