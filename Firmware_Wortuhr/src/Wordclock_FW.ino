@@ -108,7 +108,7 @@ void setup()
     pMuster = new Muster();
     pZeit = new Zeitmaster();
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
-    pLedausgabe->LedStartUp(settings.getStartPattern());
+    //pLedausgabe->LedStartUp(settings.getStartPattern());
     
     
     
@@ -144,7 +144,7 @@ void loop()
         eventtrigger = false;
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
-        pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
+        //pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
         
     }
     
