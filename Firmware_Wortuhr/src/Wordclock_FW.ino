@@ -150,12 +150,14 @@ void loop()
     
     
     //OTA und NTP Sync bei validen WiFi Daten
+     if(settings.getWifiSettingsAvailable())
     {
         if(WiFi.status() == WL_CONNECTED && wifi_connection_possible == true)
         {
         if(ntpSync)
         {
             ntpSync = false;
+            pZeit->NtpTimeUpdate(1.0, 1);
         }
         settings.handleOTA();
         }
