@@ -11,7 +11,7 @@
 /** Einbinden von relevanten Bibliotheken **/
 #include "Configurations.h"
 
-#define DEBUG_SETTINGS 1
+#define DEBUG_SETTINGS 0
 
 class Settings
 {

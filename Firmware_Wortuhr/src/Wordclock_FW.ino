@@ -86,7 +86,6 @@ void setup()
         if(wifi_connection_possible == true)
         {
             settings.startOTA();
-            pZeit->NtpTimeUpdate(1.0, 1);
         }
     }
     else
@@ -107,9 +106,14 @@ void setup()
      **************************************************************************/
     pMuster = new Muster();
     pZeit = new Zeitmaster();
+    Serial.println("NTP Abruf gestartet");
+    if(wifi_connection_possible == true)
+    {
+        pZeit->NtpTimeUpdate(1.0, 1);
+    }
+    Serial.println("NTP Abruf erfolgt");
     pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
     //pLedausgabe->LedStartUp(settings.getStartPattern());
-    
     
     
     /***********************************************************************
@@ -156,6 +160,7 @@ void loop()
         {
         if(ntpSync)
         {
+            pZeit->NtpTimeUpdate(1.0, 1); //TODO: NTP Update prüfen
             ntpSync = false;
             pZeit->NtpTimeUpdate(1.0, 1);
         }

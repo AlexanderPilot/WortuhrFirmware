@@ -413,7 +413,7 @@ bool Settings::allDataAvailable()
     {
         dataAvailable = true;
     }
-    if(DEBUG_SETTINGS == 0)
+    if(DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.println("Auswertung Daten in Preferences");
