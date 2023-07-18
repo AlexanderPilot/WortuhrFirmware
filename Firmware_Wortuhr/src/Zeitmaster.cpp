@@ -20,7 +20,7 @@ strDateTime dateTime;
  **************************************************************************/
 Zeitmaster::Zeitmaster()
 {
-    if ( ! myRTCDS3231.begin() )
+    if (!myRTCDS3231.begin())
     {
         while (1)
         {
@@ -44,12 +44,12 @@ Zeitmaster::Zeitmaster()
 timedate_t Zeitmaster::getTimeDate()
 {
     // TODO: Wochentag fehlt
-    _TimeDate.year      =   myRTCDS3231.now().year();
-    _TimeDate.month     =   myRTCDS3231.now().month();
-    _TimeDate.date      =   myRTCDS3231.now().day();
-    _TimeDate.hours     =   myRTCDS3231.now().hour();
-    _TimeDate.minutes   =   myRTCDS3231.now().minute();
-    _TimeDate.seconds   =   myRTCDS3231.now().second();
+    _TimeDate.year = myRTCDS3231.now().year();
+    _TimeDate.month = myRTCDS3231.now().month();
+    _TimeDate.date = myRTCDS3231.now().day();
+    _TimeDate.hours = myRTCDS3231.now().hour();
+    _TimeDate.minutes = myRTCDS3231.now().minute();
+    _TimeDate.seconds = myRTCDS3231.now().second();
 
     return _TimeDate;
 }
@@ -61,7 +61,7 @@ timedate_t Zeitmaster::getTimeDate()
  **************************************************************************/
 void Zeitmaster::setTimeDate(timedate_t TimeDate)
 {
-    myRTCDS3231.adjust( DateTime( TimeDate.year, TimeDate.month, TimeDate.date, TimeDate.hours, TimeDate.minutes, TimeDate.seconds ) );
+    myRTCDS3231.adjust(DateTime(TimeDate.year, TimeDate.month, TimeDate.date, TimeDate.hours, TimeDate.minutes, TimeDate.seconds));
 }
 
 /***************************************************************************
@@ -71,7 +71,7 @@ void Zeitmaster::setTimeDate(timedate_t TimeDate)
  **************************************************************************/
 void Zeitmaster::setTimeDate(uint8_t Hours, uint8_t Minutes, uint8_t Seconds, uint8_t Date, uint8_t Month, uint8_t Year)
 {
-    myRTCDS3231.adjust( DateTime( Year, Month, Date, Hours, Minutes, Seconds ) );
+    myRTCDS3231.adjust(DateTime(Year, Month, Date, Hours, Minutes, Seconds));
 }
 
 /***************************************************************************
@@ -121,7 +121,7 @@ uint8_t Zeitmaster::getDate()
  **************************************************************************/
 uint8_t Zeitmaster::getDayOfWeek()
 {
-    //TODO: Auslesen des Wochentags
+    // TODO: Auslesen des Wochentags
     return _TimeDate.dayOfWeek;
 }
 
@@ -160,12 +160,11 @@ void Zeitmaster::printZeitmasterTime(void)
     _DEBUG_PRINTLN(myRTCDS3231.now().second());
 }
 
-
 void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
 {
     static uint8_t oldMinuteVal = 61;
 
-    if( oldMinuteVal != myRTCDS3231.now().minute() )
+    if (oldMinuteVal != myRTCDS3231.now().minute())
     {
         oldMinuteVal = myRTCDS3231.now().minute();
 
@@ -173,45 +172,44 @@ void Zeitmaster::printZeitmasterTimeMinuteByMinute(void)
         _DEBUG_PRINT(myRTCDS3231.now().hour());
         _DEBUG_PRINT(":");
         _DEBUG_PRINTLN(myRTCDS3231.now().minute());
-    }   
+    }
 }
 
 bool Zeitmaster::timeTrigger()
 {
     static uint8_t oldMinuteVal = 61;
-    
+
     uint8_t currentMinuteVal = myRTCDS3231.now().minute();
-    
+
     bool trigger = (oldMinuteVal != currentMinuteVal);
     oldMinuteVal = currentMinuteVal;
     return trigger;
 }
 
-
 void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
 {
     uint8_t retry = 0;
     bool time_new = false;
-    
-    if(DEBUG_ZEITMASTER == 1)
+
+    if (DEBUG_ZEITMASTER == 1)
     {
         _DEBUG_PRINTLN("Zeitmaster.cpp - Aufruf NtpTimeUpdate");
     }
-    
-    while(retry <= NTP_MAX_TIME_CONNECTING && time_new == false)
+
+    while (retry <= NTP_MAX_TIME_CONNECTING && time_new == false)
     {
         dateTime = myNTP.getNTPtime(timezone, daylightsaving);
-        if(dateTime.valid == true )
+        if (dateTime.valid == true)
         {
             time_new = true;
         }
         delay(10);
         retry++;
     }
-    
-    if(retry <= NTP_MAX_TIME_CONNECTING)
+
+    if (retry <= NTP_MAX_TIME_CONNECTING)
     {
-        if(DEBUG_ZEITMASTER == 1)
+        if (DEBUG_ZEITMASTER == 1)
         {
             _DEBUG_PRINT("Uhrzeit vom NTP Server: ");
             _DEBUG_PRINT(dateTime.hour);
@@ -230,7 +228,7 @@ void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
     }
     else
     {
-        if(DEBUG_ZEITMASTER == 1)
+        if (DEBUG_ZEITMASTER == 1)
         {
             _DEBUG_PRINTLN("Zeitmaster.cpp - Aufruf NtpTimeUpdate fehlgeschlagen");
         }

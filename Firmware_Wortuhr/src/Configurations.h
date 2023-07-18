@@ -9,9 +9,9 @@
 
 /***************************************************************************
  * Versionierung der Wortuhr
- * 
+ *
  * Version 1.0 wird vergeben,sobald die Wortuhr initial funktioniert
- * 
+ *
  * Versionshistorie:
  * v1.0 Erstinbetriebnahme der Wortuhr
  **************************************************************************/
@@ -36,7 +36,6 @@
 #include <Arduino.h>
 #include "Zeitmaster.h"
 #include "Preferences.h"
-
 
 // Pin for LED control
 #define LED_PIN 26
@@ -82,13 +81,13 @@
  **************************************************************************/
 #define WIFI_HOSTNAME "wordclock"
 #define SERVER_HOSTNAME "wordclock"
-#define WIFI_MAX_TIME_CONNECTING 10 //max. Anzahl an 500ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
+#define WIFI_MAX_TIME_CONNECTING 10 // max. Anzahl an 500ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * NTP Server Einstellungen
  **************************************************************************/
 #define NTP_SERVER_NAME "de.pool.ntp.org"
-#define NTP_MAX_TIME_CONNECTING 50 //max. Anzahl an 10ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
+#define NTP_MAX_TIME_CONNECTING 50 // max. Anzahl an 10ms delays, die gewartet wird bis Verbindungsaufbau abgebrochen wird
 
 /***************************************************************************
  * Spracheinstellungen
@@ -138,8 +137,8 @@
 #define LEDSTRIP_PIN 32
 #define LED_NUM 144
 #define STARTPATTERN_DELAY 50
-#define NUM_COLUMN 12 //0-11 für die Zählweise
-#define NUM_ROW 12    //0-11 für die Zählweise
+#define NUM_COLUMN 12 // 0-11 für die Zählweise
+#define NUM_ROW 12    // 0-11 für die Zählweise
 #define LED_EINE_MIN 146
 #define LED_ZWEI_MIN 147
 #define LED_DREI_MIN 144
@@ -148,6 +147,6 @@
 /***************************************************************************
  * Timer Interrupt Einstellungen
  **************************************************************************/
-//#define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
-#define NTP_TIMER_VALUE_SEC 60 //TODO: für Testzweckegewählt, final größeren Wert
+// #define NTP_TIMER_VALUE_SEC 3600 //Aufruf der ISR und damit Synchronisation der Uhrzeit mit NTP Server alle Stunde
+#define NTP_TIMER_VALUE_SEC 60 // TODO: für Testzweckegewählt, final größeren Wert
 #define FACTOR_US_TO_S 1000000

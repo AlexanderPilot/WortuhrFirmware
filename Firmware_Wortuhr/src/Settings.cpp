@@ -9,8 +9,8 @@
 /****************************************
  * Definition Objekte
  ***************************************/
-Preferences preferences; //Infos: https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/
-WebServer server(80); //Webserver für OTA Update https://randomnerdtutorials.com/esp32-over-the-air-ota-programming/
+Preferences preferences; // Infos: https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/
+WebServer server(80);    // Webserver für OTA Update https://randomnerdtutorials.com/esp32-over-the-air-ota-programming/
 Zeitmaster *pSettingsZeit;
 
 /****************************************
@@ -24,78 +24,80 @@ byte Settings::_CornerStartLed;
 boolean Settings::_CornersClockwise;
 byte Settings::_StartPattern;
 uint16_t Settings::_GmtTimeOffsetSec;
-char Settings::_SSID_Array[32] = "OnLine"; // FIXME: nach Test OTA und NTP wieder Löschen
+char Settings::_SSID_Array[32] = "OnLine";   // FIXME: nach Test OTA und NTP wieder Löschen
 char Settings::_PW_Array[64] = "Br8#Pojg56"; // FIXME: nach Test OTA und NTP wieder Löschen
 
 /* Style */
 String style =
-"<style>#file-input,input{width:100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}"
-"input{background:#f1f1f1;border:0;padding:0 15px}body{background:#3498db;font-family:sans-serif;font-size:14px;color:#777}"
-"#file-input{padding:0;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer}"
-"#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#3498db;width:0%;height:10px}"
-"form{background:#fff;max-width:258px;margin:75px auto;padding:30px;border-radius:5px;text-align:center}"
-".btn{background:#3498db;color:#fff;cursor:pointer}</style>";
+    "<style>#file-input,input{width:100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}"
+    "input{background:#f1f1f1;border:0;padding:0 15px}body{background:#3498db;font-family:sans-serif;font-size:14px;color:#777}"
+    "#file-input{padding:0;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer}"
+    "#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#3498db;width:0%;height:10px}"
+    "form{background:#fff;max-width:258px;margin:75px auto;padding:30px;border-radius:5px;text-align:center}"
+    ".btn{background:#3498db;color:#fff;cursor:pointer}</style>";
 
 /* Login page */
-String loginIndex = 
-"<form name=loginForm>"
-"<h1>Wordclock Firmware Update</h1>"
-"<input name=userid placeholder='User ID'> "
-"<input name=pwd placeholder=Password type=Password> "
-"<input type=submit onclick=check(this.form) class=btn value=Login></form>"
-"<script>"
-"function check(form) {"
-"if(form.userid.value=='admin' && form.pwd.value=='admin')"
-"{window.open('/serverIndex')}"
-"else"
-"{alert('Error Password or Username')}"
-"}"
-"</script>" + style;
- 
+String loginIndex =
+    "<form name=loginForm>"
+    "<h1>Wordclock Firmware Update</h1>"
+    "<input name=userid placeholder='User ID'> "
+    "<input name=pwd placeholder=Password type=Password> "
+    "<input type=submit onclick=check(this.form) class=btn value=Login></form>"
+    "<script>"
+    "function check(form) {"
+    "if(form.userid.value=='admin' && form.pwd.value=='admin')"
+    "{window.open('/serverIndex')}"
+    "else"
+    "{alert('Error Password or Username')}"
+    "}"
+    "</script>" +
+    style;
+
 /* Server Index Page */
-String serverIndex = 
-"<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>"
-"<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>"
-"<input type='file' name='update' id='file' onchange='sub(this)' style=display:none>"
-"<label id='file-input' for='file'>   Choose file...</label>"
-"<input type='submit' class=btn value='Update'>"
-"<br><br>"
-"<div id='prg'></div>"
-"<br><div id='prgbar'><div id='bar'></div></div><br></form>"
-"<script>"
-"function sub(obj){"
-"var fileName = obj.value.split('\\\\');"
-"document.getElementById('file-input').innerHTML = '   '+ fileName[fileName.length-1];"
-"};"
-"$('form').submit(function(e){"
-"e.preventDefault();"
-"var form = $('#upload_form')[0];"
-"var data = new FormData(form);"
-"$.ajax({"
-"url: '/update',"
-"type: 'POST',"
-"data: data,"
-"contentType: false,"
-"processData:false,"
-"xhr: function() {"
-"var xhr = new window.XMLHttpRequest();"
-"xhr.upload.addEventListener('progress', function(evt) {"
-"if (evt.lengthComputable) {"
-"var per = evt.loaded / evt.total;"
-"$('#prg').html('progress: ' + Math.round(per*100) + '%');"
-"$('#bar').css('width',Math.round(per*100) + '%');"
-"}"
-"}, false);"
-"return xhr;"
-"},"
-"success:function(d, s) {"
-"console.log('success!') "
-"},"
-"error: function (a, b, c) {"
-"}"
-"});"
-"});"
-"</script>" + style;
+String serverIndex =
+    "<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>"
+    "<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>"
+    "<input type='file' name='update' id='file' onchange='sub(this)' style=display:none>"
+    "<label id='file-input' for='file'>   Choose file...</label>"
+    "<input type='submit' class=btn value='Update'>"
+    "<br><br>"
+    "<div id='prg'></div>"
+    "<br><div id='prgbar'><div id='bar'></div></div><br></form>"
+    "<script>"
+    "function sub(obj){"
+    "var fileName = obj.value.split('\\\\');"
+    "document.getElementById('file-input').innerHTML = '   '+ fileName[fileName.length-1];"
+    "};"
+    "$('form').submit(function(e){"
+    "e.preventDefault();"
+    "var form = $('#upload_form')[0];"
+    "var data = new FormData(form);"
+    "$.ajax({"
+    "url: '/update',"
+    "type: 'POST',"
+    "data: data,"
+    "contentType: false,"
+    "processData:false,"
+    "xhr: function() {"
+    "var xhr = new window.XMLHttpRequest();"
+    "xhr.upload.addEventListener('progress', function(evt) {"
+    "if (evt.lengthComputable) {"
+    "var per = evt.loaded / evt.total;"
+    "$('#prg').html('progress: ' + Math.round(per*100) + '%');"
+    "$('#bar').css('width',Math.round(per*100) + '%');"
+    "}"
+    "}, false);"
+    "return xhr;"
+    "},"
+    "success:function(d, s) {"
+    "console.log('success!') "
+    "},"
+    "error: function (a, b, c) {"
+    "}"
+    "});"
+    "});"
+    "</script>" +
+    style;
 
 /****************************************
  * Konstruktor mit Standardeinstellungen
@@ -121,7 +123,7 @@ Settings::Settings()
  **************************************************************************/
 void Settings::setLanguage(byte Language)
 {
-    if(_Language != Language)
+    if (_Language != Language)
     {
         writeLanguageToPreferences(Language);
         loadLanguageFromPreferences();
@@ -145,7 +147,7 @@ byte Settings::getLanguage()
  **************************************************************************/
 void Settings::setBrightnessPercent(byte Brightness)
 {
-    if(_Brightness != map(Brightness, 0, 100, 0, 255))
+    if (_Brightness != map(Brightness, 0, 100, 0, 255))
     {
         writeBrightnessToPreferences(map(Brightness, 0, 100, 0, 255));
         loadBrightnessFromPreferences();
@@ -174,7 +176,7 @@ void Settings::setColor(pixel_t color)
         Serial.print("Settings.cpp - ");
         Serial.println("Übergabe der Farbe - color");
     }
-    if((_Color.red != color.red) || (_Color.green != color.green) || (_Color.blue != color.blue))
+    if ((_Color.red != color.red) || (_Color.green != color.green) || (_Color.blue != color.blue))
     {
         writeColorToPreferences(color);
         loadColorFromPreferences();
@@ -188,7 +190,7 @@ void Settings::setColor(pixel_t color)
  **************************************************************************/
 void Settings::setColor(byte red, byte green, byte blue)
 {
-    if((_Color.red != red) || (_Color.green != green) || (_Color.blue != blue))
+    if ((_Color.red != red) || (_Color.green != green) || (_Color.blue != blue))
     {
         writeColorToPreferences(red, green, blue);
         loadColorFromPreferences();
@@ -212,7 +214,7 @@ pixel_t Settings::getColor()
  **************************************************************************/
 void Settings::setFadeMode(byte FadeMode)
 {
-    if(_FadeMode != FadeMode)
+    if (_FadeMode != FadeMode)
     {
         writeFadeModeToPreferences(FadeMode);
         loadFadeModeFromPreferences();
@@ -236,12 +238,11 @@ byte Settings::getFadeMode()
  **************************************************************************/
 void Settings::setCornerStartLed(byte CornerStartLed)
 {
-    if(_CornerStartLed != CornerStartLed)
+    if (_CornerStartLed != CornerStartLed)
     {
         writeCornerStartLedToPreferences(CornerStartLed);
         loadCornerStartLedFromPreferences();
     }
-    
 }
 
 /***************************************************************************
@@ -261,7 +262,7 @@ byte Settings::getCornerStartLed()
  **************************************************************************/
 void Settings::setCornersClockwise(boolean CornersClockwise)
 {
-    if(_CornersClockwise != CornersClockwise)
+    if (_CornersClockwise != CornersClockwise)
     {
         writeCornerClockwiseToPreferences(CornersClockwise);
         loadCornerClockwiseFromPreferences();
@@ -285,7 +286,7 @@ boolean Settings::getCornersClockwise()
  **************************************************************************/
 void Settings::setStartPattern(byte StartPattern)
 {
-    if(_StartPattern != StartPattern)
+    if (_StartPattern != StartPattern)
     {
         writeStartpatternToPreferences(StartPattern);
         loadStartpatternFromPreferences();
@@ -309,7 +310,7 @@ byte Settings::getStartPattern()
  **************************************************************************/
 void Settings::setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec)
 {
-    if(_GmtTimeOffsetSec != GmtTimeOffsetSec)
+    if (_GmtTimeOffsetSec != GmtTimeOffsetSec)
     {
         writeGmtOffsetToPreferences(GmtTimeOffsetSec);
         loadGmtOffsetFromPreferences();
@@ -336,22 +337,22 @@ bool Settings::getWifiSettingsAvailable()
     bool wifiavailable = false;
     loadSsidFromPreferences();
     loadPasswordFromPreferences();
-    if(strlen(_SSID_Array) != 0 && strlen(_PW_Array) != 0)
+    if (strlen(_SSID_Array) != 0 && strlen(_PW_Array) != 0)
     {
         wifiavailable = true;
     }
     return wifiavailable;
 }
 
-void Settings::setWifiSSID(char* ssid)
+void Settings::setWifiSSID(char *ssid)
 {
     uint8_t i = 0;
-    while(*(ssid+i) != '\n')
+    while (*(ssid + i) != '\n')
     {
-        _SSID_Array[i] = *(ssid+i);
+        _SSID_Array[i] = *(ssid + i);
         i++;
     }
-    while(i<64)
+    while (i < 64)
     {
         _SSID_Array[i] = '\0';
         i++;
@@ -362,12 +363,12 @@ void Settings::setWifiSSID(char* ssid)
 void Settings::setWifiPW(char *pw)
 {
     uint8_t i = 0;
-    while(*(pw+i) != '\n')
+    while (*(pw + i) != '\n')
     {
-        _PW_Array[i] = *(pw+i);
+        _PW_Array[i] = *(pw + i);
         i++;
     }
-    while(i<64)
+    while (i < 64)
     {
         _PW_Array[i] = '\0';
         i++;
@@ -380,7 +381,7 @@ void Settings::setWifiPW(char *pw)
  * Übergabeparameter: kein, da der Wert direkt aus der Klassenvariable gelesen wird
  * Rückgabeparameter: char* auf Array mit WiFi SSID
  **************************************************************************/
-char* Settings::getWifiSSID()
+char *Settings::getWifiSSID()
 {
     return _SSID_Array;
 }
@@ -390,11 +391,10 @@ char* Settings::getWifiSSID()
  * Übergabeparameter: kein, da der Wert direkt aus der Klassenvariable gelesen wird
  * Rückgabeparameter: char* auf Array mit WiFi Passwort
  **************************************************************************/
-char* Settings::getWifiPW()
+char *Settings::getWifiPW()
 {
     return _PW_Array;
 }
-
 
 /***************************************************************************
  * Prüfen ob Einstellungen in Prefrences vorhanden sind
@@ -405,15 +405,15 @@ bool Settings::allDataAvailable()
 {
     bool dataAvailable = false;
     preferences.begin("settings", false);
-    //prüfen ob alle relevanten Keys angelegt sind
-    if(preferences.isKey("language") && preferences.isKey("brightness") && preferences.isKey("colorred") && \
-        preferences.isKey("colorgreen") && preferences.isKey("colorblue") &&  preferences.isKey("fademode") && \
-         preferences.isKey("cornerstartled") && preferences.isKey("cornerclockwise") && preferences.isKey("startpattern") && \
-          preferences.isKey("gmtoffset") && preferences.isKey("wifissid") && preferences.isKey("wifipw"))
+    // prüfen ob alle relevanten Keys angelegt sind
+    if (preferences.isKey("language") && preferences.isKey("brightness") && preferences.isKey("colorred") &&
+        preferences.isKey("colorgreen") && preferences.isKey("colorblue") && preferences.isKey("fademode") &&
+        preferences.isKey("cornerstartled") && preferences.isKey("cornerclockwise") && preferences.isKey("startpattern") &&
+        preferences.isKey("gmtoffset") && preferences.isKey("wifissid") && preferences.isKey("wifipw"))
     {
         dataAvailable = true;
     }
-    if(DEBUG_SETTINGS == 1)
+    if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.println("Auswertung Daten in Preferences");
@@ -464,7 +464,7 @@ void Settings::loadDataFromPreferences()
     this->loadGmtOffsetFromPreferences();
     this->loadSsidFromPreferences();
     this->loadPasswordFromPreferences();
-    if(DEBUG_SETTINGS == 1)
+    if (DEBUG_SETTINGS == 1)
     {
         Serial.println("Geladene Einstellungen:");
         Serial.print("Sprache: ");
@@ -521,7 +521,7 @@ void Settings::writeDataToPreferences()
  **************************************************************************/
 void Settings::clearPreferences()
 {
-    if(DEBUG_SETTINGS == 1)
+    if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.println("Löschen der Daten in Preferences");
@@ -543,31 +543,31 @@ bool Settings::startWifi()
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(WIFI_HOSTNAME);
     WiFi.begin(getWifiSSID(), getWifiPW());
-    if(DEBUG_SETTINGS == 1)
+    if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Connecting to SSID: ");
         Serial.print(getWifiSSID());
     }
     while (WiFi.status() != WL_CONNECTED && wifitimeout < WIFI_MAX_TIME_CONNECTING)
     {
-        if(DEBUG_SETTINGS == 1)
+        if (DEBUG_SETTINGS == 1)
         {
             Serial.print('.');
         }
         delay(500);
         wifitimeout++;
-        if(wifitimeout >= WIFI_MAX_TIME_CONNECTING)
+        if (wifitimeout >= WIFI_MAX_TIME_CONNECTING)
         {
-            if(DEBUG_SETTINGS == 1)
+            if (DEBUG_SETTINGS == 1)
             {
                 Serial.println("not possible. Check WiFi password. Continuing without WiFi.");
             }
-            //TODO: bei Überschreiten einer Dauer soll Versuch sich mit WIFI zu verbinden abgebrochen werden und RM an App gesendet werden
+            // TODO: bei Überschreiten einer Dauer soll Versuch sich mit WIFI zu verbinden abgebrochen werden und RM an App gesendet werden
         }
     }
-    if(wifitimeout < WIFI_MAX_TIME_CONNECTING)
+    if (wifitimeout < WIFI_MAX_TIME_CONNECTING)
     {
-        if(DEBUG_SETTINGS == 1)
+        if (DEBUG_SETTINGS == 1)
         {
             Serial.print("successful with IP: ");
             Serial.println(WiFi.localIP());
@@ -580,9 +580,10 @@ bool Settings::startWifi()
 void getTime()
 {
     struct tm timeinfo;
-    if(!getLocalTime(&timeinfo)){
-    Serial.println("Failed to obtain time");
-    return;
+    if (!getLocalTime(&timeinfo))
+    {
+        Serial.println("Failed to obtain time");
+        return;
     }
     Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
     Serial.print("Day of week: ");
@@ -604,10 +605,10 @@ void getTime()
 
     Serial.println("Time variables");
     char timeHour[3];
-    strftime(timeHour,3, "%H", &timeinfo);
+    strftime(timeHour, 3, "%H", &timeinfo);
     Serial.println(timeHour);
     char timeWeekDay[10];
-    strftime(timeWeekDay,10, "%A", &timeinfo);
+    strftime(timeWeekDay, 10, "%A", &timeinfo);
     Serial.println(timeWeekDay);
     Serial.println();
 }
@@ -619,71 +620,70 @@ void getTime()
  **************************************************************************/
 void Settings::startOTA()
 {
-    if(DEBUG_SETTINGS == 1)
+    if (DEBUG_SETTINGS == 1)
     {
         Serial.print("Starting OTA Server: ");
         Serial.print(SERVER_HOSTNAME);
         Serial.println(".local");
     }
 
-/*use mdns for host name resolution*/
-  if (!MDNS.begin(SERVER_HOSTNAME)) //http://wordclock.local
-  { 
-    Serial.println("Error setting up MDNS responder!");
-    while (1)
+    /*use mdns for host name resolution*/
+    if (!MDNS.begin(SERVER_HOSTNAME)) // http://wordclock.local
     {
-      delay(1000);
+        Serial.println("Error setting up MDNS responder!");
+        while (1)
+        {
+            delay(1000);
+        }
     }
-  }
 
-  /*return index page which is stored in serverIndex */
-  server.on("/", HTTP_GET, []()
-  {
+    /*return index page which is stored in serverIndex */
+    server.on("/", HTTP_GET, []()
+              {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/html", loginIndex);
-  });
-  server.on("/serverIndex", HTTP_GET, []()
-  {
+    server.send(200, "text/html", loginIndex); });
+    server.on("/serverIndex", HTTP_GET, []()
+              {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/html", serverIndex);
-  });
-  /*handling uploading firmware file */
-  server.on("/update", HTTP_POST, []()
-  {
+    server.send(200, "text/html", serverIndex); });
+    /*handling uploading firmware file */
+    server.on(
+        "/update", HTTP_POST, []()
+        {
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart();
-  }, []()
-  {
-    HTTPUpload& upload = server.upload();
-    if (upload.status == UPLOAD_FILE_START)
-    {
-      Serial.printf("Update: %s\n", upload.filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) //start with max available size
-      {
-        Update.printError(Serial);
-      }
-    }
-    else if (upload.status == UPLOAD_FILE_WRITE) /* flashing firmware to ESP*/
-    {
-      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
-      {
-        Update.printError(Serial);
-      }
-    }
-    else if (upload.status == UPLOAD_FILE_END)
-    {
-      if (Update.end(true)) //true to set the size to the current progress
-      {
-        Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
-      }
-      else
-      {
-        Update.printError(Serial);
-      }
-    }
-  });
-  server.begin();
+    ESP.restart(); },
+        []()
+        {
+            HTTPUpload &upload = server.upload();
+            if (upload.status == UPLOAD_FILE_START)
+            {
+                Serial.printf("Update: %s\n", upload.filename.c_str());
+                if (!Update.begin(UPDATE_SIZE_UNKNOWN)) // start with max available size
+                {
+                    Update.printError(Serial);
+                }
+            }
+            else if (upload.status == UPLOAD_FILE_WRITE) /* flashing firmware to ESP*/
+            {
+                if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
+                {
+                    Update.printError(Serial);
+                }
+            }
+            else if (upload.status == UPLOAD_FILE_END)
+            {
+                if (Update.end(true)) // true to set the size to the current progress
+                {
+                    Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+                }
+                else
+                {
+                    Update.printError(Serial);
+                }
+            }
+        });
+    server.begin();
 }
 
 /***************************************************************************
@@ -693,7 +693,7 @@ void Settings::startOTA()
  **************************************************************************/
 void Settings::WifiAutoReconnect()
 {
-    //TODO: Funktion erstellen
+    // TODO: Funktion erstellen
 }
 
 /***************************************************************************
@@ -933,7 +933,7 @@ void Settings::loadSsidFromPreferences()
  * Übergabeparameter: SSID Name
  * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
  **************************************************************************/
-void Settings::writeSsidToPreferences(char* ssid)
+void Settings::writeSsidToPreferences(char *ssid)
 {
     preferences.begin("settings", false);
     preferences.putBytes("wifissid", ssid, 32);
@@ -957,7 +957,7 @@ void Settings::loadPasswordFromPreferences()
  * Übergabeparameter: Passwort
  * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
  **************************************************************************/
-void Settings::writePasswordToPreferences(char* password)
+void Settings::writePasswordToPreferences(char *password)
 {
     preferences.begin("settings", false);
     preferences.putBytes("wifipw", password, 32);

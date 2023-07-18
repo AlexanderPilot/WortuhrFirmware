@@ -14,23 +14,23 @@ AppInterpreter::AppInterpreter()
  *  |-----------------+---------------------+-----------------+
  *  | "X"             | # X X X X X X       | '$\n' oder '$\t |
  *  |-----------------+---------------------+-----------------|
- *  
+ *
  *  Details in der Befehlsliste
-*/
+ */
 
 /***************************************************************************
  * Zusammenfügen der einzelnen übertragenen char aus der App in Befehlsbuffer
  * Übergabeparameter: char aus der seriellen BT Übertragung
  * Rückgabe: uint8_t zur Anzeige ob Befehl aktiv war oder nicht
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::readCommandCharFromApp(char CommandChar)
 {
     // static Variablen müssen initialisiert werden
-    static char _AppBefehlBuffer[] = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'}; //9 Elemente
-    char _AppBefehl[] = {'0', '0', '0', '0', '0', '0', '0'};                             //6 Elemente
+    static char _AppBefehlBuffer[] = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'}; // 9 Elemente
+    char _AppBefehl[] = {'0', '0', '0', '0', '0', '0', '0'};                             // 6 Elemente
     uint8_t i;
 
-    //Befüllung des Ringbuffers (kopieren von vorne nach hinten, beginnend am Ende)
+    // Befüllung des Ringbuffers (kopieren von vorne nach hinten, beginnend am Ende)
     for (i = (LENGTH_COMMAND_BUFFER - 1); i > 0; i--)
     {
         _AppBefehlBuffer[i] = _AppBefehlBuffer[i - 1];
@@ -42,7 +42,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
     // Prüfe, ob ein befehl anliegt
     if ((_AppBefehlBuffer[POS_SIGN_STARTCOMMAND] == SIGN_STARTCOMMAND) && (_AppBefehlBuffer[POS_SIGN_ENDCOMMAND] == SIGN_ENDCOMMAND) && ((_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL) || (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_CONTINUE)))
     {
-        //Erstellung lokale Kopie für Befehle inkl Drehung der Orientierung
+        // Erstellung lokale Kopie für Befehle inkl Drehung der Orientierung
         for (i = (LENGTH_COMMAND_BUFFER - 3); i > 1; i--)
         {
             _AppBefehl[7 - i] = _AppBefehlBuffer[i];
@@ -143,7 +143,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
  * Funktion aus dem App-Befehl die Farbe zu setzen
  * Übergabeparameter: Array mit dem entsprechenden Befehl
  * Rückgabe: kein
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::_CommSetColor(char *Farbe)
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -159,7 +159,7 @@ void AppInterpreter::_CommSetColor(char *Farbe)
 
     pixel_t AppColor;
 
-    //Auslesen der Farbe
+    // Auslesen der Farbe
     AppColor.red = _hexcharToUint8_t(*Farbe) * 16 + _hexcharToUint8_t(*(Farbe + 1));
     AppColor.green = _hexcharToUint8_t(*(Farbe + 2)) * 16 + _hexcharToUint8_t(*(Farbe + 3));
     AppColor.blue = _hexcharToUint8_t(*(Farbe + 4)) * 16 + _hexcharToUint8_t(*(Farbe + 5));
@@ -174,7 +174,7 @@ void AppInterpreter::_CommSetColor(char *Farbe)
         _DEBUG_PRINT(" blau: ");
         _DEBUG_PRINTLN(AppColor.blue);
     }
-    //Schrieben der Farbe in die Einstellungen
+    // Schrieben der Farbe in die Einstellungen
     _interpretersettings.setColor(AppColor);
 }
 
@@ -182,7 +182,7 @@ void AppInterpreter::_CommSetColor(char *Farbe)
  * Funktion aus dem App-Befehl die Helligkeit zu setzen
  * Übergabeparameter: Array mit dem entsprechenden Befehl
  * Rückgabe: kein
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::_CommSetBrightness(char *Helligkeit)
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -198,20 +198,20 @@ void AppInterpreter::_CommSetBrightness(char *Helligkeit)
 
     uint8_t AppBrightness;
 
-    //Auslesen der Helligkeit
+    // Auslesen der Helligkeit
     AppBrightness = _hexcharToUint8_t(*Helligkeit) * 100 + _hexcharToUint8_t(*(Helligkeit + 1)) * 10 + _hexcharToUint8_t(*(Helligkeit + 2));
     if (DEBUG_APPINTERPRETER == 1)
     {
         _DEBUG_PRINT("Helligkeit: ");
         _DEBUG_PRINT(AppBrightness);
     }
-    //Verwerfen des versendeten Appwerts bei Wert außerhalb des Wertebereichs
+    // Verwerfen des versendeten Appwerts bei Wert außerhalb des Wertebereichs
     if (AppBrightness > 100)
     {
         AppBrightness = _interpretersettings.getBrightnessPercent();
     }
 
-    //Schreiben der Helligkeit in die Einstellungen
+    // Schreiben der Helligkeit in die Einstellungen
     _interpretersettings.setBrightnessPercent(AppBrightness);
 }
 
@@ -219,7 +219,7 @@ void AppInterpreter::_CommSetBrightness(char *Helligkeit)
  * Funktion aus dem App-Befehl die Uhrzeit zu setzen
  * Übergabeparameter: Array mit dem entsprechenden Befehl
  * Rückgabe: kein
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::_CommSetTime(char *Uhrzeit)
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -240,16 +240,16 @@ void AppInterpreter::_CommSetTime(char *Uhrzeit)
     uint8_t AppMonth;
     uint8_t AppYear;
 
-    //Auslesen Stunden
+    // Auslesen Stunden
     AppHours = _hexcharToUint8_t(*Uhrzeit) * 10 + _hexcharToUint8_t(*(Uhrzeit + 1));
 
-    //Auslesen Minuten
+    // Auslesen Minuten
     AppMinutes = _hexcharToUint8_t(*(Uhrzeit + 2)) * 10 + _hexcharToUint8_t(*(Uhrzeit + 3));
 
-    //Auslesen Sekunden
+    // Auslesen Sekunden
     AppSeconds = _hexcharToUint8_t(*(Uhrzeit + 4)) * 10 + _hexcharToUint8_t(*(Uhrzeit + 5));
 
-    //Verwerfen der versendeten Appwerte bei Werten außerhalb des Wertebereichs
+    // Verwerfen der versendeten Appwerte bei Werten außerhalb des Wertebereichs
     if ((AppHours > 23) || (AppMinutes > 59) || (AppSeconds > 59))
     {
         AppHours = _interpreterzeitmaster->getHours();
@@ -257,12 +257,12 @@ void AppInterpreter::_CommSetTime(char *Uhrzeit)
         AppSeconds = _interpreterzeitmaster->getSeconds();
     }
 
-    //Auslesen der bereits enthaltenen Datumsinformation
+    // Auslesen der bereits enthaltenen Datumsinformation
     AppDate = _interpreterzeitmaster->getDate();
     AppMonth = _interpreterzeitmaster->getMonth();
     AppYear = _interpreterzeitmaster->getYear();
 
-    //Schreiben der Uhrzeit auf die Echtzeituhr
+    // Schreiben der Uhrzeit auf die Echtzeituhr
     _interpreterzeitmaster->setTimeDate(AppHours, AppMinutes, AppSeconds, AppDate, AppMonth, AppYear);
 }
 
@@ -270,7 +270,7 @@ void AppInterpreter::_CommSetTime(char *Uhrzeit)
  * Funktion aus dem App-Befehl verschiedene Funktionen zu auszulösen //TODO
  * Übergabeparameter: Array mit dem entsprechenden Befehl
  * Rückgabe: kein
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::_CommSetMisc(char *Misc)
 {
     if (DEBUG_APPINTERPRETER == 1)
@@ -284,24 +284,24 @@ void AppInterpreter::_CommSetMisc(char *Misc)
  * Funktion aus dem App-Befehl die WiFi SSID zu setzen
  * Übergabeparameter: Array mit dem entsprechenden Befehl; Information ob weiterer Befehl folgt
  * Rückgabe: kein
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::_CommSetSSID(char *partialSSID, bool continueCommand)
 {
-    //char SSID[32] = "OnLine";
+    // char SSID[32] = "OnLine";
     if (DEBUG_APPINTERPRETER == 1)
     {
         _DEBUG_PRINT("AppInterpreter.cpp - ");
         _DEBUG_PRINT("WIFI SSID schreiben");
     }
     //_interpretersettings.setWifiSSID(SSID);
-    //TODO: programm function
+    // TODO: programm function
 }
 
 /***************************************************************************
  * Funktion aus dem App-Befehl das WiFi Passwort zu setzen
  * Übergabeparameter: Array mit dem entsprechenden Befehl; Information ob weiterer Befehl folgt
  * Rückgabe: kein
-***************************************************************************/
+ ***************************************************************************/
 void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
 {
     static char PWchar;
@@ -320,11 +320,11 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
         _DEBUG_PRINTLN(continueCommand);
     }
 
-    //Array wird befüllt
+    // Array wird befüllt
     PW[counter] = PWchar;
     counter++;
 
-    //sobald Array befüllt  ist, wird die Einstellung geschrieben
+    // sobald Array befüllt  ist, wird die Einstellung geschrieben
     if (continueCommand == false)
     {
         PW[counter] = '\n';
@@ -343,7 +343,7 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
  **************************************************************************/
 void AppInterpreter::_CommSetDefaultSettings(char *Reset)
 {
-    if (Reset[0] == 'R' && Reset [1] == 'E' && Reset[2] == 'S' && Reset[3] == 'E' && Reset[4] == 'T')
+    if (Reset[0] == 'R' && Reset[1] == 'E' && Reset[2] == 'S' && Reset[3] == 'E' && Reset[4] == 'T')
     {
         if (DEBUG_APPINTERPRETER == 1)
         {
@@ -359,17 +359,17 @@ void AppInterpreter::_CommSetDefaultSettings(char *Reset)
  * Rückgabe des entschlüsselten PW oder SSID characters
  * Übergabeparameter: pointer auf übergebenes Array
  * Rückgabe: entschlüsselter char
-***************************************************************************/
+ ***************************************************************************/
 char AppInterpreter::_getDecryptedChar(char *c, uint8_t i)
 {
     return *(c + i);
 }
 
 /***************************************************************************
-     * Serielle Ausgabe des Befehls
-     * Übergabeparameter: pointer auf Beginn des Buffer-Arrays
-     * Rückgabe: kein
-***************************************************************************/
+ * Serielle Ausgabe des Befehls
+ * Übergabeparameter: pointer auf Beginn des Buffer-Arrays
+ * Rückgabe: kein
+ ***************************************************************************/
 void AppInterpreter::_justSendTheFoundStringToSerial(char *p)
 {
     uint8_t i;
@@ -390,7 +390,7 @@ void AppInterpreter::_loadSettingsFromUC()
         _DEBUG_PRINT("AppInterpreter.cpp - ");
         _DEBUG_PRINT("Abrufen der Einstellungen vom Mikrocontroller - TBD");
     }
-    //TODO: Funktionsaufruf
+    // TODO: Funktionsaufruf
 }
 
 byte AppInterpreter::_getLanguage()

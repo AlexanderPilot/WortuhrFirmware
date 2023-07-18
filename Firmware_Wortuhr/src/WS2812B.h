@@ -3,7 +3,6 @@
  *
  **************************************************************************/
 
-
 /* Vermeidung Doppeldefinitionen */
 #pragma once
 
@@ -17,12 +16,12 @@
 /**
  * @brief A data type representing the color of a pixel.
  */
-typedef struct {
-      uint8_t red;
-      uint8_t green;
-      uint8_t blue;
+typedef struct
+{
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
 } pixel_t;
-
 
 /**
  * @brief Driver for WS2812/NeoPixel data.
@@ -45,22 +44,24 @@ typedef struct {
  * ws2812.show();
  * @endcode
  */
-class WS2812 {
-    public:
-        WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel=RMT_CHANNEL_0);
-        void show();
-        void setColorOrder(char *order);
-        void setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
-        void setPixel(uint16_t index, pixel_t color);
-        void setAllPixels(uint8_t red, uint8_t green, uint8_t blue);
-        void setAllPixels(pixel_t color);
-        void clear();
-        uint16_t getPixelCount();
-        virtual ~WS2812();
-    private:
-        char          *colorOrder;
-        uint16_t       pixelCount;
-        rmt_channel_t  channel;
-        rmt_item32_t  *items;
-        pixel_t       *pixels;
+class WS2812
+{
+public:
+    WS2812(gpio_num_t gpioNum, uint16_t pixelCount, int channel = RMT_CHANNEL_0);
+    void show();
+    void setColorOrder(char *order);
+    void setPixel(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
+    void setPixel(uint16_t index, pixel_t color);
+    void setAllPixels(uint8_t red, uint8_t green, uint8_t blue);
+    void setAllPixels(pixel_t color);
+    void clear();
+    uint16_t getPixelCount();
+    virtual ~WS2812();
+
+private:
+    char *colorOrder;
+    uint16_t pixelCount;
+    rmt_channel_t channel;
+    rmt_item32_t *items;
+    pixel_t *pixels;
 };
