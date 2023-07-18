@@ -78,6 +78,14 @@ void setup()
     }
     
     /***************************************************************************
+     * Weitere Einstellungen und Initialisierungen
+     **************************************************************************/
+    pMuster = new Muster();
+    pZeit = new Zeitmaster();
+    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
+    pLedausgabe->LedStartUp(settings.getStartPattern());
+    
+    /***************************************************************************
      * Initialisierung des WiFi Verbindung + NTP Server + Webserver für OTA
      **********************************************************************/
     if(settings.getWifiSettingsAvailable() == true)
@@ -86,6 +94,7 @@ void setup()
         if(wifi_connection_possible == true)
         {
             settings.startOTA();
+            pZeit->NtpTimeUpdate(1.0, 1);
         }
     }
     else
@@ -100,20 +109,6 @@ void setup()
     {
         Serial.println("An error occurred initializing Bluetooth");
     }
-
-    /***************************************************************************
-     * Weitere Einstellungen und Initialisierungen
-     **************************************************************************/
-    pMuster = new Muster();
-    pZeit = new Zeitmaster();
-    Serial.println("NTP Abruf gestartet");
-    if(wifi_connection_possible == true)
-    {
-        pZeit->NtpTimeUpdate(1.0, 1);
-    }
-    Serial.println("NTP Abruf erfolgt");
-    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
-    //pLedausgabe->LedStartUp(settings.getStartPattern());
     
     
     /***********************************************************************
@@ -148,21 +143,19 @@ void loop()
         eventtrigger = false;
         pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
         pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
-        //pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
+        pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
         
     }
     
     
     //OTA und NTP Sync bei validen WiFi Daten
-     if(settings.getWifiSettingsAvailable())
     {
         if(WiFi.status() == WL_CONNECTED && wifi_connection_possible == true)
         {
         if(ntpSync)
         {
-            pZeit->NtpTimeUpdate(1.0, 1); //TODO: NTP Update prüfen
-            ntpSync = false;
             pZeit->NtpTimeUpdate(1.0, 1);
+            ntpSync = false;
         }
         settings.handleOTA();
         }
