@@ -74,6 +74,13 @@ public:
 
      void setWifiPW(char *Password);
      char *getWifiPW();
+     
+         /****************************************
+     * Modi der Anzeige
+     ***************************************/
+    
+     void setClockMode(byte ClockMode);
+     byte getClockMode();
 
     /****************************************
      * Preferences
@@ -127,6 +134,9 @@ private:
      void loadPasswordFromPreferences();
      void writePasswordToPreferences(char* password);
      
+     void loadClockModeFromPreferences();
+     void writeClockModeToPreferences(byte clockmode);
+     
      /****************************************
      * interne Variablen
      ***************************************/
@@ -140,5 +150,6 @@ private:
      static uint16_t _GmtTimeOffsetSec;
      static char _SSID_Array[32];
      static char _PW_Array[64];
+     static byte _ClockMode;
 };
 #endif /* SETTINGS_H */

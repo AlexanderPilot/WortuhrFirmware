@@ -26,6 +26,7 @@ byte Settings::_StartPattern;
 uint16_t Settings::_GmtTimeOffsetSec;
 char Settings::_SSID_Array[32] = "OnLine"; // FIXME: nach Test OTA und NTP wieder Löschen
 char Settings::_PW_Array[64] = "Br8#Pojg56"; // FIXME: nach Test OTA und NTP wieder Löschen
+byte Settings::_ClockMode;
 
 /* Style */
 String style =
@@ -395,6 +396,29 @@ char* Settings::getWifiPW()
     return _PW_Array;
 }
 
+/***************************************************************************
+ * Setter Funktion für Setzen des Uhr-Modus (Uhr, Gaming, ..)
+ * Übergabeparameter: Modus
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::setClockMode(byte ClockMode)
+{
+    if(_ClockMode != ClockMode)
+    {
+        writeClockModeToPreferences(ClockMode);
+        loadClockModeFromPreferences();
+    }
+}
+
+/***************************************************************************
+ * Getter Funktion fürs Auslesen des Uhr-Modus (Uhr, Gaming, ..)
+ * Übergabeparameter: kein
+ * Rückgabeparameter: Uhr-Modus
+ **************************************************************************/
+byte Settings::getClockMode()
+{
+    return _ClockMode;
+}
 
 /***************************************************************************
  * Prüfen ob Einstellungen in Prefrences vorhanden sind
@@ -409,7 +433,7 @@ bool Settings::allDataAvailable()
     if(preferences.isKey("language") && preferences.isKey("brightness") && preferences.isKey("colorred") && \
         preferences.isKey("colorgreen") && preferences.isKey("colorblue") &&  preferences.isKey("fademode") && \
          preferences.isKey("cornerstartled") && preferences.isKey("cornerclockwise") && preferences.isKey("startpattern") && \
-          preferences.isKey("gmtoffset") && preferences.isKey("wifissid") && preferences.isKey("wifipw"))
+          preferences.isKey("gmtoffset") && preferences.isKey("wifissid") && preferences.isKey("wifipw") && preferences.isKey("clockmode"))
     {
         dataAvailable = true;
     }
@@ -442,6 +466,8 @@ bool Settings::allDataAvailable()
         Serial.println(preferences.isKey("wifissid"));
         Serial.print("WiFi Passwort: ");
         Serial.println(preferences.isKey("wifipw"));
+        Serial.print("Uhr-Modus: ");
+        Serial.println(preferences.isKey("clockmode"));
     }
     preferences.end();
     return dataAvailable;
@@ -464,6 +490,7 @@ void Settings::loadDataFromPreferences()
     this->loadGmtOffsetFromPreferences();
     this->loadSsidFromPreferences();
     this->loadPasswordFromPreferences();
+    this->loadClockModeFromPreferences();
     if(DEBUG_SETTINGS == 1)
     {
         Serial.println("Geladene Einstellungen:");
@@ -491,6 +518,8 @@ void Settings::loadDataFromPreferences()
         Serial.println(_SSID_Array);
         Serial.print("WiFi PW: ");
         Serial.println(_PW_Array);
+        Serial.print("Uhr-Modus: ");
+        Serial.println(_ClockMode);
         Serial.println("");
     }
 }
@@ -510,8 +539,9 @@ void Settings::writeDataToPreferences()
     this->writeCornerClockwiseToPreferences(_CornersClockwise);
     this->writeStartpatternToPreferences(_StartPattern);
     this->writeGmtOffsetToPreferences(_GmtTimeOffsetSec);
-    this->writePasswordToPreferences(_PW_Array);
     this->writeSsidToPreferences(_SSID_Array);
+    this->writePasswordToPreferences(_PW_Array);
+    this->writeClockModeToPreferences(_ClockMode);
 }
 
 /***************************************************************************
@@ -961,5 +991,29 @@ void Settings::writePasswordToPreferences(char* password)
 {
     preferences.begin("settings", false);
     preferences.putBytes("wifipw", password, 32);
+    preferences.end();
+}
+
+/***************************************************************************
+ * Auslesen des Uhr-Modus aus Preferences
+ * Übergabeparameter: kein, da die Werte direkt aus den Preferences gelesen werden
+ * Rückgabeparameter: kein, da die Werte direkt in die Klassenvariable _ClockMode gespeichert werden
+ **************************************************************************/
+void Settings::loadClockModeFromPreferences()
+{
+    preferences.begin("settings", true);
+    _ClockMode = preferences.getUChar("clockmode");
+    preferences.end();
+}
+
+/***************************************************************************
+ * Schreiben des Uhr-Modus in Preferences
+ * Übergabeparameter: Uhr-Modus
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::writeClockModeToPreferences(byte clockmode)
+{
+    preferences.begin("settings", false);
+    preferences.putUChar("clockmode", clockmode);
     preferences.end();
 }

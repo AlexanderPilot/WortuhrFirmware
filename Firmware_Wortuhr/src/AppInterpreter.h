@@ -4,7 +4,7 @@
 #include "Configurations.h"
 #include "Settings.h"
 
-#define DEBUG_APPINTERPRETER 0
+#define DEBUG_APPINTERPRETER 1
 
 class AppInterpreter
 {
@@ -27,10 +27,11 @@ private:
      void _CommSetMisc(char *Misc);
      void _CommSetSSID(char *partialSSID, bool continueCommand);
      void _CommSetPW(char *partialPW, bool continueCommand);
+     void _CommSetClockMode(char *ClockMode);
      void _CommSetDefaultSettings(char *Reset);
      char _getDecryptedChar(char *c, uint8_t i);
      void _justSendTheFoundStringToSerial(char *p);
-
+    
      /****************************************
       * Einstellungen vom Mikrocontroller lesen
      ***************************************/
@@ -43,6 +44,7 @@ private:
      bool _getCornersClockwise();
      byte _getStartPattern();
      uint16_t _getGmtTimeOffsetSec();
+     byte _getClockMode();
 
      /****************************************
       * Einstellungen auf Mikrocontroller setzen
@@ -57,6 +59,7 @@ private:
      void _setWifiPW(char *Password);
      void _setStartPattern(byte StartPattern);
      void _setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+     void _setClockMode(byte ClockMode);
 
      /****************************************
       * Hilfsfunktionen für Datenkonvertierung
