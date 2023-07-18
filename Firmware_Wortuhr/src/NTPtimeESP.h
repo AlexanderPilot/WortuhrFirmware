@@ -25,25 +25,26 @@ struct strDateTime
   boolean valid;
 };
 
-class NTPtime {
-  public:
-    NTPtime(String NTPtime);
-    strDateTime getNTPtime(float _timeZone, int _DayLightSaving);
-    void printDateTime(strDateTime _dateTime);
-    bool setSendInterval(unsigned long _sendInterval);  // in seconds
-    bool setRecvTimeout(unsigned long _recvTimeout);    // in seconds
+class NTPtime
+{
+public:
+  NTPtime(String NTPtime);
+  strDateTime getNTPtime(float _timeZone, int _DayLightSaving);
+  void printDateTime(strDateTime _dateTime);
+  bool setSendInterval(unsigned long _sendInterval); // in seconds
+  bool setRecvTimeout(unsigned long _recvTimeout);   // in seconds
 
-  private:
-    bool _sendPhase;
-    unsigned long _sentTime;
-    unsigned long _sendInterval;
-    unsigned long _recvTimeout;
-    String _NTPserver;
-    float _timeZone;
+private:
+  bool _sendPhase;
+  unsigned long _sentTime;
+  unsigned long _sendInterval;
+  unsigned long _recvTimeout;
+  String _NTPserver;
+  float _timeZone;
 
-    strDateTime ConvertUnixTimestamp( unsigned long _tempTimeStamp);
-    boolean summerTime(unsigned long _timeStamp );
-    boolean daylightSavingTime(unsigned long _timeStamp);
-    unsigned long adjustTimeZone(unsigned long _timeStamp, float _timeZone, int _DayLightSavingSaving);
-    WiFiUDP UDPNTPClient;
+  strDateTime ConvertUnixTimestamp(unsigned long _tempTimeStamp);
+  boolean summerTime(unsigned long _timeStamp);
+  boolean daylightSavingTime(unsigned long _timeStamp);
+  unsigned long adjustTimeZone(unsigned long _timeStamp, float _timeZone, int _DayLightSavingSaving);
+  WiFiUDP UDPNTPClient;
 };

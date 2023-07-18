@@ -9,18 +9,18 @@
 class AppInterpreter
 {
 public:
-     //Konstruktor
+     // Konstruktor
      AppInterpreter();
 
      /****************************************
-     * App Befehle einlesen
-     ***************************************/
+      * App Befehle einlesen
+      ***************************************/
      void readCommandCharFromApp(char CommandChar);
 
 private:
      /****************************************
-     * Ansteuerbefehle aus der App
-     ***************************************/
+      * Ansteuerbefehle aus der App
+      ***************************************/
      void _CommSetColor(char *Farbe);
      void _CommSetBrightness(char *Helligkeit);
      void _CommSetTime(char *Uhrzeit);
@@ -33,7 +33,7 @@ private:
 
      /****************************************
       * Einstellungen vom Mikrocontroller lesen
-     ***************************************/
+      ***************************************/
      void _loadSettingsFromUC();
      byte _getLanguage();
      byte _getBrightnessPercent();
@@ -46,7 +46,7 @@ private:
 
      /****************************************
       * Einstellungen auf Mikrocontroller setzen
-     ***************************************/
+      ***************************************/
      void _setLanguage(byte Language);
      void _setBrightnessPercent(byte Brightness);
      void _setColor(pixel_t color);
@@ -60,7 +60,7 @@ private:
 
      /****************************************
       * Hilfsfunktionen für Datenkonvertierung
-     ***************************************/
+      ***************************************/
      byte _convertVarToByte(uint32_t ArrayData);
      bool _convertVarToBool(uint32_t ArrayData);
      uint16_t _convertVarToUint16(uint32_t ArrayData);
