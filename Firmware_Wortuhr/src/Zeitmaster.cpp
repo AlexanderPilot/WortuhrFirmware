@@ -229,5 +229,12 @@ void Zeitmaster::NtpTimeUpdate(float timezone, int daylightsaving)
         }
         setTimeDate((uint8_t)dateTime.hour, (uint8_t)dateTime.minute, (uint8_t)dateTime.second, (uint8_t)dateTime.day, (uint8_t)dateTime.month, (uint8_t)dateTime.year);
     }
+    else
+    {
+        if(DEBUG_ZEITMASTER == 1)
+        {
+            _DEBUG_PRINTLN("Zeitmaster.cpp - Aufruf NtpTimeUpdate fehlgeschlagen");
+        }
+    }
     delay(500);
 }
