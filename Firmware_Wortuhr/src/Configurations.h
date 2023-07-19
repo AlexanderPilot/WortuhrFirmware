@@ -125,6 +125,9 @@
 #define SIGN_RESET_TO_DEFAULT 'Q'
 #define CONV_VERSION 2
 
+#define MODE_CLOCK 0
+#define MODE_GAMING 1
+
 /***************************************************************************
  * I2C Einstellungen
  **************************************************************************/

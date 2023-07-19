@@ -113,6 +113,7 @@ Settings::Settings()
     _CornersClockwise = 1;
     _StartPattern = 0;
     _GmtTimeOffsetSec = 3600;
+    _ClockMode = 0;
 }
 
 /***************************************************************************

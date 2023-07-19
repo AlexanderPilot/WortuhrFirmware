@@ -355,10 +355,22 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
  ***************************************/
 void AppInterpreter::_CommSetClockMode(char *ClockMode)
 {
+    byte AppClockMode;
+    AppClockMode = ClockMode[0];
+    //FIXME: remove when app command is corrected
+    if (AppClockMode == 102)
+    {
+        AppClockMode = 0; //rot = Uhrmodus
+    }
+    if (AppClockMode == 48)
+    {
+        AppClockMode = 1; //blau = Gamemodus
+    }
     //TODO: Funktionsaufruf um Modes zu schalten
     //Mode 0 = Uhr, Mode 1 = Gaming
-    Serial.println("Befehl kam an:");
-    Serial.println(ClockMode)
+    Serial.print("Befehl kam an: ");
+    Serial.println(AppClockMode);
+    _interpretersettings.setClockMode(AppClockMode);
 }
 
 /***************************************************************************
