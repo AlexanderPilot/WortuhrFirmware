@@ -36,6 +36,7 @@
 #include <Arduino.h>
 #include "Zeitmaster.h"
 #include "Preferences.h"
+#include "Gaming.h"
 
 
 // Pin for LED control
@@ -127,6 +128,15 @@
 
 #define MODE_CLOCK 0
 #define MODE_GAMING 1
+#define SIGN_GAME_UP 'U'
+#define SIGN_GAME_DOWN 'D'
+#define SIGN_GAME_LEFT 'L'
+#define SIGN_GAME_RIGHT 'R'
+#define SIGN_GAME_ENTER 'E'
+#define MODE_GAMING_MENU 0
+#define MODE_GAMING_SNAKE 1
+
+#define MAX_SNAKE_LENGTH 255
 
 /***************************************************************************
  * I2C Einstellungen

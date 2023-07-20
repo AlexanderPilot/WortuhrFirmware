@@ -31,6 +31,7 @@ AppInterpreter appinterpreter;
 LED_Ausgabe *pLedausgabe;
 Zeitmaster *pZeit;
 Muster *pMuster;
+Gaming *pGaming;
 
 /***************************************************************************
  * Timer; Eventrtigger
@@ -149,6 +150,9 @@ void loop()
     else if (settings.getClockMode() == MODE_GAMING)
     {
         pLedausgabe->LedStartUp(1);
+        delay(200);
+        pLedausgabe->LedStartUp(0);
+        pGaming->Snake();
     }
 
     // OTA und NTP Sync bei validen WiFi Daten
