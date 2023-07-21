@@ -2,11 +2,11 @@
  * Wordclock Software
  * created: 01.02.2019
  * by Alex P. and Vitali H.
- * 
- * 
+ *
+ *
  * //TODO:
  * Deaktivierung WLAN nach NTP Sync und Starten vor dem nächsten Sync
- * 
+ *
  *****************************************************************************************************************************************************************************************/
 
 /***************************************************************************
@@ -31,6 +31,7 @@ AppInterpreter appinterpreter;
 LED_Ausgabe *pLedausgabe;
 Zeitmaster *pZeit;
 Muster *pMuster;
+Gaming *pGaming;
 
 /***************************************************************************
  * Timer; Eventrtigger
@@ -40,6 +41,7 @@ hw_timer_t *timer2 = NULL;
 bool eventtrigger;
 bool ntpSync;
 bool wifi_connection_possible = false;
+bool oncedone = false;
 // ISR to set trigger
 void IRAM_ATTR onTimer1()
 {
@@ -61,11 +63,11 @@ void setup()
     delay(100);
     Serial.println();
     Serial.println("--- Setup gestartet ---");
-    
+
     /***************************************************************************
      * Initialisierung Preferences und Einstellungen
      **************************************************************************/
-    if(settings.allDataAvailable() == false)
+    if (settings.allDataAvailable() == false)
     {
         Serial.println("Werkseinstellungen werden geschrieben");
         settings.writeDataToPreferences();
@@ -76,14 +78,22 @@ void setup()
         Serial.println("Benutzerdefinierte Einstellungen werden gelesen");
         settings.loadDataFromPreferences();
     }
-    
+
+    /***************************************************************************
+     * Weitere Einstellungen und Initialisierungen
+     **************************************************************************/
+    pMuster = new Muster();
+    pZeit = new Zeitmaster();
+    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
+    pLedausgabe->LedStartUp(settings.getStartPattern());
+
     /***************************************************************************
      * Initialisierung des WiFi Verbindung + NTP Server + Webserver für OTA
      **********************************************************************/
-    if(settings.getWifiSettingsAvailable() == true)
+    if (settings.getWifiSettingsAvailable() == true)
     {
         wifi_connection_possible = settings.startWifi();
-        if(wifi_connection_possible == true)
+        if (wifi_connection_possible == true)
         {
             settings.startOTA();
             pZeit->NtpTimeUpdate(1.0, 1);
@@ -93,7 +103,7 @@ void setup()
     {
         Serial.println("Keine Zugangsdaten für WiFi hinterlegt");
     }
-    
+
     /***************************************************************************
      * Initialisierung Bluetooth Kommunikation
      **************************************************************************/
@@ -102,16 +112,6 @@ void setup()
         Serial.println("An error occurred initializing Bluetooth");
     }
 
-    /***************************************************************************
-     * Weitere Einstellungen und Initialisierungen
-     **************************************************************************/
-    pMuster = new Muster();
-    pZeit = new Zeitmaster();
-    pLedausgabe = new LED_Ausgabe((gpio_num_t)LED_PIN, 144);
-    pLedausgabe->LedStartUp(settings.getStartPattern());
-    
-    
-    
     /***********************************************************************
      * Initialisierung des Timers
      **********************************************************************/
@@ -122,9 +122,8 @@ void setup()
     timerAttachInterrupt(timer1, &onTimer1, true);
     timerAttachInterrupt(timer2, &onTimer2, true);
     // Set alarm to 1000 ms and repeat it (true)
-    timerAlarmWrite(timer1, 1*FACTOR_US_TO_S, true);
-    timerAlarmWrite(timer2, NTP_TIMER_VALUE_SEC*FACTOR_US_TO_S, true);
-
+    timerAlarmWrite(timer1, 1 * FACTOR_US_TO_S, true);
+    timerAlarmWrite(timer2, NTP_TIMER_VALUE_SEC * FACTOR_US_TO_S, true);
 
     STARTINTERRUPT1;
     STARTINTERRUPT2;
@@ -133,39 +132,50 @@ void setup()
 }
 
 /*************************************************************************************************************************
- * 
-**************************************************************************************************************************/
+ *
+ **************************************************************************************************************************/
 void loop()
 {
-    //Eventgetriggerte Ausgabe der Uhrzeit auf die LEDs (jede Sekunde)
-    if (eventtrigger)
+    if (settings.getClockMode() == MODE_CLOCK)
     {
-        pZeit->printZeitmasterTime();
-        eventtrigger = false;
-        pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
-        pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
-        pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
+        // Eventgetriggerte Ausgabe der Uhrzeit auf die LEDs (jede Sekunde)
+        if (eventtrigger)
+        {
+            pZeit->printZeitmasterTime();
+            eventtrigger = false;
+            pMuster->setTimeMatrix(pMuster->getTimeMatrixFut(), pZeit->getHours(), pZeit->getMinutes());
+            pMuster->setSimpleTimeNoEffects(pMuster->getTimeMatrixFut(), pMuster->getArbsMatrix(), settings.getColor());
+            pLedausgabe->setPixelToColorMatrix(pMuster->getArbsMatrix());
+        }
+    }
+    else if (settings.getClockMode() == MODE_GAMING)
+    {
+        if(oncedone != true)
+        {
+            Serial.println("Game Mode entered");
+            pGaming->Snake();
+            oncedone = true;
+        }
         
     }
-    
-    
-    //OTA und NTP Sync bei validen WiFi Daten
+
+    // OTA und NTP Sync bei validen WiFi Daten
     {
-        if(WiFi.status() == WL_CONNECTED && wifi_connection_possible == true)
+        if (WiFi.status() == WL_CONNECTED && wifi_connection_possible == true)
         {
-        if(ntpSync)
-        {
-            ntpSync = false;
+            if (ntpSync)
+            {
+                pZeit->NtpTimeUpdate(1.0, 1);
+                ntpSync = false;
+            }
+            settings.handleOTA();
         }
-        settings.handleOTA();
-        }
-        else if(wifi_connection_possible == true) //einmaliges Verbinden beim Start war erfolgreich, aber Verbindung unterwegs verloren
+        else if (wifi_connection_possible == true) // einmaliges Verbinden beim Start war erfolgreich, aber Verbindung unterwegs verloren
         {
             settings.WifiAutoReconnect();
         }
     }
-    
-    
+
     // Empfange Befehle aus der App
     if (SerialBT.available())
     {

@@ -19,8 +19,7 @@
 */
 /**************************************************************************/
 
-#ifndef _RTCLIB_H_
-#define _RTCLIB_H_
+#pragma once
 
 #include <Arduino.h>
 class TimeSpan;
@@ -392,5 +391,3 @@ protected:
   static uint32_t lastMicros; ///< micros() value corresponding to the last full
                               ///< second of Unix time
 };
-
-#endif // _RTCLIB_H_

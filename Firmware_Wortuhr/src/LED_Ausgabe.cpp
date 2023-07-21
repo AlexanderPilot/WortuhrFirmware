@@ -3,7 +3,6 @@
  *
  **************************************************************************/
 
-
 /* Einbinden von Headerdateien */
 #include "LED_Ausgabe.h"
 
@@ -13,174 +12,173 @@ Settings _LEDsettings;
 
 LED_Ausgabe::LED_Ausgabe(gpio_num_t gpioNum, uint16_t pixelCount)
 {
-    _strip = new WS2812(gpioNum,pixelCount,0);
+    _strip = new WS2812(gpioNum, pixelCount, 0);
 }
 
 void LED_Ausgabe::LedStartUp(uint8_t Startpattern)
 {
-    if(DEBUG_LEDAUSGABE == 1)
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINT("Startmusters Version ");
     }
-    
-    switch(Startpattern)
+
+    switch (Startpattern)
     {
-        case 0:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - alle LEDs ausschalten");
-            }
-            _strip->clear();
+    case 0:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - alle LEDs ausschalten");
+        }
+        _strip->clear();
+        _strip->show();
+        break;
+
+    case 1:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - alle LEDs rot");
+        }
+        _strip->setAllPixels(255, 0, 0);
+        _strip->show();
+        break;
+
+    case 2:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - alle LEDs gruen");
+        }
+        _strip->setAllPixels(0, 255, 0);
+        _strip->show();
+        break;
+
+    case 3:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - alle LEDs blau");
+        }
+        _strip->setAllPixels(0, 0, 255);
+        _strip->show();
+        break;
+
+    case 4:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - LEDs nacheinander einschalten und dann nacheinander wieder ausschalten in aktueller Farbe");
+        }
+
+        for (auto i = 0; i < _strip->getPixelCount(); i++)
+        {
+            this->_setPixel(i, _LEDsettings.getColor());
             _strip->show();
-            break;
-
-        case 1:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - alle LEDs rot");
-            }
-            _strip->setAllPixels(255,0,0);
+            delay(STARTPATTERN_DELAY);
+        }
+        for (auto i = 0; i < _strip->getPixelCount(); i++)
+        {
+            this->_setPixel(i, 0, 0, 0);
             _strip->show();
-            break;
+            delay(STARTPATTERN_DELAY);
+        }
+        break;
 
-        case 2:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - alle LEDs gruen");
-            }
-            _strip->setAllPixels(0,255,0);
+    case 5:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - Zufallsmuster statisch");
+        }
+        for (auto i = 0; i < _strip->getPixelCount(); i++)
+        {
+            this->_setPixel(i, random(255), random(255), random(255));
+        }
+        _strip->show();
+        break;
+
+    case 6:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - Zufallsmuster laufend");
+        }
+        for (auto i = 0; i < _strip->getPixelCount(); i++)
+        {
+            this->_setPixel(i, random(255), random(255), random(255));
             _strip->show();
-            break;
-
-        case 3:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - alle LEDs blau");
-            }
-            _strip->setAllPixels(0,0,255);
+            delay(STARTPATTERN_DELAY);
+        }
+        break;
+    case 7:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - MADE BY VH AS in aktueller Farbe");
+            this->_setPixel(24, _LEDsettings.getColor()); // M
+            this->_setPixel(25, _LEDsettings.getColor()); // A
+            this->_setPixel(26, _LEDsettings.getColor()); // D
+            this->_setPixel(27, _LEDsettings.getColor()); // E
+            this->_setPixel(53, _LEDsettings.getColor()); // B
+            this->_setPixel(54, _LEDsettings.getColor()); // Y
+            this->_setPixel(72, _LEDsettings.getColor()); // V
+            this->_setPixel(73, _LEDsettings.getColor()); // H
+            this->_setPixel(78, _LEDsettings.getColor()); // A
+            this->_setPixel(79, _LEDsettings.getColor()); // S
             _strip->show();
-            break;
-
-        case 4:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - LEDs nacheinander einschalten und dann nacheinander wieder ausschalten in aktueller Farbe");
-            }
-            
-            for (auto i=0; i<_strip->getPixelCount(); i++)
-            {
-                this->_setPixel(i, _LEDsettings.getColor());
-                _strip->show();
-                delay(STARTPATTERN_DELAY);
-            }
-            for (auto i=0; i<_strip->getPixelCount(); i++)
-            {
-                this->_setPixel(i,0,0,0);
-                _strip->show();
-                delay(STARTPATTERN_DELAY);
-            }
-            break;
-
-        case 5:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - Zufallsmuster statisch");
-            }
-            for (auto i=0; i<_strip->getPixelCount(); i++)
-            {
-                this->_setPixel(i,random(255),random(255),random(255));
-            }
-            _strip->show();
-            break;
-
-        case 6:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - Zufallsmuster laufend");
-            }
-            for (auto i=0; i<_strip->getPixelCount(); i++)
-            {
-                this->_setPixel(i,random(255),random(255),random(255));
-                _strip->show();
-                delay(STARTPATTERN_DELAY);
-            }
-            break;
-        case 7:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - MADE BY VH AS in aktueller Farbe");
-                this->_setPixel(24,_LEDsettings.getColor()); //M
-                this->_setPixel(25,_LEDsettings.getColor()); //A
-                this->_setPixel(26,_LEDsettings.getColor()); //D
-                this->_setPixel(27,_LEDsettings.getColor()); //E
-                this->_setPixel(53,_LEDsettings.getColor()); //B
-                this->_setPixel(54,_LEDsettings.getColor()); //Y
-                this->_setPixel(72,_LEDsettings.getColor()); //V
-                this->_setPixel(73,_LEDsettings.getColor()); //H
-                this->_setPixel(78,_LEDsettings.getColor()); //A
-                this->_setPixel(79,_LEDsettings.getColor()); //S
-                _strip->show();
-            }
-            break;
-        case 8:
-            if(DEBUG_LEDAUSGABE == 1)
-            {
-                _DEBUG_PRINT(Startpattern);
-                _DEBUG_PRINTLN(" - TBD");
-            }
-            break;
-        default:
-            break;
+        }
+        break;
+    case 8:
+        if (DEBUG_LEDAUSGABE == 1)
+        {
+            _DEBUG_PRINT(Startpattern);
+            _DEBUG_PRINTLN(" - TBD");
+        }
+        break;
+    default:
+        break;
     }
 }
 
-
 void LED_Ausgabe::setPixelToMatrix(byte index)
 {
-    if(DEBUG_LEDAUSGABE == 1)
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINT("LED Nummer ");
         _DEBUG_PRINT(index);
         _DEBUG_PRINTLN(" wird gesetzt");
     }
-    
+
     this->_setPixel(index, _LEDsettings.getColor());
     //_strip->show();
 }
 
 /***************************************************************************
-     * Setzt gesamte Matrix inkl Farbdefinitionen auf die Ausgabe
-     * Übergabeparameter: pixel_t Matrix[12][12];
-     * Rückgabe: kein
-***************************************************************************/
-void LED_Ausgabe::setPixelToColorMatrix( pixel_t *Matrix )
+ * Setzt gesamte Matrix inkl Farbdefinitionen auf die Ausgabe
+ * Übergabeparameter: pixel_t Matrix[12][12];
+ * Rückgabe: kein
+ ***************************************************************************/
+void LED_Ausgabe::setPixelToColorMatrix(pixel_t *Matrix)
 {
     int cLed = 0, hp;
-    pixel_t mPixel = {0,0,0};
-    _strip->setAllPixels(0,0,0);
-    for(int j = 0; j < 12; j++)
+    pixel_t mPixel = {0, 0, 0};
+    _strip->setAllPixels(0, 0, 0);
+    for (int j = 0; j < 12; j++)
     {
-        for(int i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)
         {
-            if( j%2 )
+            if (j % 2)
             {
-                hp = (11-i);
+                hp = (11 - i);
             }
             else
             {
                 hp = i;
             }
-            mPixel = *(Matrix + 12*j + hp);
+            mPixel = *(Matrix + 12 * j + hp);
             _strip->setPixel(cLed, mPixel.red, mPixel.green, mPixel.blue);
             cLed++;
         }
@@ -188,26 +186,26 @@ void LED_Ausgabe::setPixelToColorMatrix( pixel_t *Matrix )
     _strip->show();
 }
 /***************************************************************************
-     * Gibt die Farbe einer bestimmten Zelle zurück
-     * Übergabeparameter: pixel_t Matrix[12][12]; x-Position und y-Position
-     * Rückgabe: Farbe einer gestimmten LED
-***************************************************************************/
-pixel_t getColorFromMatrix( pixel_t Matrix[12][12], int first, int second )
+ * Gibt die Farbe einer bestimmten Zelle zurück
+ * Übergabeparameter: pixel_t Matrix[12][12]; x-Position und y-Position
+ * Rückgabe: Farbe einer gestimmten LED
+ ***************************************************************************/
+pixel_t getColorFromMatrix(pixel_t Matrix[12][12], int first, int second)
 {
     return Matrix[first][second];
 }
 /***************************************************************************
-     * Nur zum Testen von RGB - wird später nicht mehr gebraucht
-***************************************************************************/
+ * Nur zum Testen von RGB - wird später nicht mehr gebraucht
+ ***************************************************************************/
 void LED_Ausgabe::setPixelTestT()
 {
-    _strip->setAllPixels(0,30,0);
+    _strip->setAllPixels(0, 30, 0);
     _strip->show();
     delay(1000);
-    _strip->setAllPixels(30,0,0);
+    _strip->setAllPixels(30, 0, 0);
     _strip->show();
     delay(1000);
-    _strip->setAllPixels(0,0,30);
+    _strip->setAllPixels(0, 0, 30);
     _strip->show();
     delay(1000);
 }
@@ -215,29 +213,11 @@ void LED_Ausgabe::setPixelTestT()
 void LED_Ausgabe::setPixelToMatrix(byte index, byte red, byte green, byte blue)
 {
     this->_setPixel(index, red, green, blue);
-    //_strip->show();  
-}
-
-void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, byte blue)
-{
-    if(DEBUG_LEDAUSGABE == 1)
-    {
-        _DEBUG_PRINT("LED_Ausgabe.cpp - ");
-        _DEBUG_PRINT("Pixel");
-        _DEBUG_PRINT(" xpos: ");
-        _DEBUG_PRINT(xPos);
-        _DEBUG_PRINT(" ypos: ");
-        _DEBUG_PRINT(yPos);
-        _DEBUG_PRINTLN(" wird gesetzt");
-    }
-    
-    this->_setPixel(xPos, yPos, red, green, blue);
     //_strip->show();
 }
-
 void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos)
 {
-    if(DEBUG_LEDAUSGABE == 1)
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINT("Pixel");
@@ -247,74 +227,106 @@ void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos)
         _DEBUG_PRINT(yPos);
         _DEBUG_PRINTLN(" wird gesetzt");
     }
-    
+
     this->_setPixel(xPos, yPos, _LEDsettings.getColor());
+    //_strip->show();
+}
+void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, pixel_t color)
+{
+    if (DEBUG_LEDAUSGABE == 1)
+    {
+        _DEBUG_PRINT("LED_Ausgabe.cpp - ");
+        _DEBUG_PRINT("Pixel");
+        _DEBUG_PRINT(" xpos: ");
+        _DEBUG_PRINT(xPos);
+        _DEBUG_PRINT(" ypos: ");
+        _DEBUG_PRINT(yPos);
+        _DEBUG_PRINTLN(" wird gesetzt");
+    }
+
+    this->_setPixel(xPos, yPos, color);
+    //_strip->show();
+}
+void LED_Ausgabe::setPixelToMatrix(byte xPos, byte yPos, byte red, byte green, byte blue)
+{
+    if (DEBUG_LEDAUSGABE == 1)
+    {
+        _DEBUG_PRINT("LED_Ausgabe.cpp - ");
+        _DEBUG_PRINT("Pixel");
+        _DEBUG_PRINT(" xpos: ");
+        _DEBUG_PRINT(xPos);
+        _DEBUG_PRINT(" ypos: ");
+        _DEBUG_PRINT(yPos);
+        _DEBUG_PRINTLN(" wird gesetzt");
+    }
+
+    this->_setPixel(xPos, yPos, red, green, blue);
     //_strip->show();
 }
 
 void LED_Ausgabe::setMatrixToLEDs(word Matrix[12])
 {
-    
-    if(DEBUG_LEDAUSGABE == 1)
+
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINTLN("Berechnung der zu setzenden LEDs aus Matrix");
     }
-    
-    for(byte yPos = 0; yPos <= (NUM_COLUMN-1); yPos++)         //Zeilen durchzählen
+
+    for (byte yPos = 0; yPos <= (NUM_COLUMN - 1); yPos++) // Zeilen durchzählen
     {
-        for(byte xPos = 0; xPos <= (NUM_COLUMN-1); xPos++)      //Spalten durchzählen
+        for (byte xPos = 0; xPos <= (NUM_COLUMN - 1); xPos++) // Spalten durchzählen
         {
-            if( Matrix[yPos] & ( 1 << xPos ) )
+            if (Matrix[yPos] & (1 << xPos))
             {
-                  //Bit in der Matrix ist eine 1 -> LED an
-                  this->_setPixel( (NUM_COLUMN-1)-xPos, yPos, _LEDsettings.getColor() ); 
+                // Bit in der Matrix ist eine 1 -> LED an
+                this->_setPixel((NUM_COLUMN - 1) - xPos, yPos, _LEDsettings.getColor());
             }
             else
             {
-                  this->_setPixel( (NUM_COLUMN-1)-xPos, yPos, 0,0,0 ); 
+                this->_setPixel((NUM_COLUMN - 1) - xPos, yPos, 0, 0, 0);
             }
         }
     }
-     //Eck-LEDs umsetzen
-    if((Matrix[12] & 0b0001) == 0b0001) 
+    // Eck-LEDs umsetzen
+    if ((Matrix[12] & 0b0001) == 0b0001)
     {
-        //Bit in der Matrix ist eine 1 -> LED an
+        // Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_EINE_MIN, _LEDsettings.getColor());
     }
     else
     {
-        this->_setPixel(LED_EINE_MIN, 0,0,0);
+        this->_setPixel(LED_EINE_MIN, 0, 0, 0);
     }
-      
-    if((Matrix[12] & 0b0010) == 0b0010)
+
+    if ((Matrix[12] & 0b0010) == 0b0010)
     {
-        //Bit in der Matrix ist eine 1 -> LED an
+        // Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_ZWEI_MIN, _LEDsettings.getColor());
     }
     else
     {
-        this->_setPixel(LED_ZWEI_MIN, 0,0,0);
+        this->_setPixel(LED_ZWEI_MIN, 0, 0, 0);
     }
 
-    if((Matrix[12] & 0b0100) == 0b0100)
+    if ((Matrix[12] & 0b0100) == 0b0100)
     {
-        //Bit in der Matrix ist eine 1 -> LED an
+        // Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_DREI_MIN, _LEDsettings.getColor());
     }
     else
     {
-        this->_setPixel(LED_DREI_MIN, 0,0,0);
+        this->_setPixel(LED_DREI_MIN, 0, 0, 0);
     }
 
-    if((Matrix[12] & 0b1000) == 0b1000)
+    if ((Matrix[12] & 0b1000) == 0b1000)
     {
-        //Bit in der Matrix ist eine 1 -> LED an
+        // Bit in der Matrix ist eine 1 -> LED an
         this->_setPixel(LED_VIER_MIN, _LEDsettings.getColor());
     }
     else
     {
-        this->_setPixel(LED_VIER_MIN, 0,0,0);
+        this->_setPixel(LED_VIER_MIN, 0, 0, 0);
     }
 }
 
@@ -331,17 +343,17 @@ void LED_Ausgabe::showLEDs()
 
 void LED_Ausgabe::MatrixToMatrixFade(word MatrixIst[12], word MatrixSoll[12])
 {
-    if(DEBUG_LEDAUSGABE == 1)
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("TBD ");
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINTLN("Auswahl des LED Uebergangs (Wechsel, Ueberblenden, Fade");
     }
     byte FadeMode = 1;
-    //Auslesen des Übergangsmodus aus den Settings
-    switch(_LEDsettings.getFadeMode())
-    switch(FadeMode)
-    {
+    // Auslesen des Übergangsmodus aus den Settings
+    switch (_LEDsettings.getFadeMode())
+        switch (FadeMode)
+        {
         case 0:
             break;
         case 1:
@@ -352,8 +364,7 @@ void LED_Ausgabe::MatrixToMatrixFade(word MatrixIst[12], word MatrixSoll[12])
             break;
         default:
             break;
-    }
-    
+        }
 }
 
 uint16_t LED_Ausgabe::getPixelCount()
@@ -367,24 +378,23 @@ uint16_t LED_Ausgabe::getPixelCount()
 void LED_Ausgabe::_setPixel(byte xPos, byte yPos, byte red, byte green, byte blue)
 {
     pixel_t color;
-    
+
     color.red = red;
     color.green = green;
     color.blue = blue;
-    
-    if(yPos%2 == 0) //"gerade" Zeilenzahl (0, 2, 4, 6, 8, 10)
+
+    if (yPos % 2 == 0) //"gerade" Zeilenzahl (0, 2, 4, 6, 8, 10)
     {
-        if(DEBUG_LEDAUSGABE == 1)
+        if (DEBUG_LEDAUSGABE == 1)
         {
             _DEBUG_PRINT("LED_Ausgabe.cpp - ");
             _DEBUG_PRINTLN("gerade Zeile");
         }
         this->_setPixel(xPos + (yPos * NUM_COLUMN), color);
-        
     }
-    else //ungerade Zeilenzahl (1, 3, 5, 7, 9, 11)
+    else // ungerade Zeilenzahl (1, 3, 5, 7, 9, 11)
     {
-        if(DEBUG_LEDAUSGABE == 1)
+        if (DEBUG_LEDAUSGABE == 1)
         {
             _DEBUG_PRINT("LED_Ausgabe.cpp - ");
             _DEBUG_PRINTLN("ungerade Zeile");
@@ -392,21 +402,21 @@ void LED_Ausgabe::_setPixel(byte xPos, byte yPos, byte red, byte green, byte blu
         this->_setPixel((yPos * NUM_COLUMN) + NUM_COLUMN - xPos - 1, color);
     }
 }
- 
- void LED_Ausgabe::_setPixel(byte xPos, byte yPos, pixel_t color) 
+
+void LED_Ausgabe::_setPixel(byte xPos, byte yPos, pixel_t color)
 {
-    if(yPos%2 == 0) //"gerade" Zeilenzahl (0, 2, 4, 6, 8, 10)
+    if (yPos % 2 == 0) //"gerade" Zeilenzahl (0, 2, 4, 6, 8, 10)
     {
-        if(DEBUG_LEDAUSGABE == 1)
+        if (DEBUG_LEDAUSGABE == 1)
         {
             _DEBUG_PRINT("LED_Ausgabe.cpp - ");
             _DEBUG_PRINTLN("gerade Zeile");
         }
         this->_setPixel(xPos + (yPos * NUM_COLUMN), color);
     }
-    else //ungerade Zeilenzahl (1, 3, 5, 7, 9, 11)
+    else // ungerade Zeilenzahl (1, 3, 5, 7, 9, 11)
     {
-        if(DEBUG_LEDAUSGABE == 1)
+        if (DEBUG_LEDAUSGABE == 1)
         {
             _DEBUG_PRINT("LED_Ausgabe.cpp - ");
             _DEBUG_PRINTLN("ungerade Zeile");
@@ -418,12 +428,12 @@ void LED_Ausgabe::_setPixel(byte xPos, byte yPos, byte red, byte green, byte blu
 void LED_Ausgabe::_setPixel(byte LEDnum, byte red, byte green, byte blue)
 {
     pixel_t color;
-    
+
     color.red = red;
     color.green = green;
     color.blue = blue;
-    
-    if(DEBUG_LEDAUSGABE == 1)
+
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINT("LED Nummer: ");
@@ -434,11 +444,11 @@ void LED_Ausgabe::_setPixel(byte LEDnum, byte red, byte green, byte blue)
 
 void LED_Ausgabe::_setPixel(byte LEDnum, pixel_t color)
 {
-    if(DEBUG_LEDAUSGABE == 1)
+    if (DEBUG_LEDAUSGABE == 1)
     {
         _DEBUG_PRINT("LED_Ausgabe.cpp - ");
         _DEBUG_PRINT("LED Nummer: ");
         _DEBUG_PRINTLN(LEDnum);
     }
-   _strip->setPixel(LEDnum, color);
+    _strip->setPixel(LEDnum, color);
 }

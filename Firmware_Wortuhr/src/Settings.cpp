@@ -26,6 +26,7 @@ byte Settings::_StartPattern;
 uint16_t Settings::_GmtTimeOffsetSec;
 char Settings::_SSID_Array[32] = "OnLine"; // FIXME: nach Test OTA und NTP wieder Löschen
 char Settings::_PW_Array[64] = "Br8#Pojg56"; // FIXME: nach Test OTA und NTP wieder Löschen
+byte _ClockMode;
 
 /* Style */
 String style =
@@ -112,6 +113,7 @@ Settings::Settings()
     _CornersClockwise = 1;
     _StartPattern = 0;
     _GmtTimeOffsetSec = 3600;
+    _ClockMode = 0;
 }
 
 /***************************************************************************
@@ -395,6 +397,28 @@ char* Settings::getWifiPW()
     return _PW_Array;
 }
 
+/***************************************************************************
+ * Setter Funktion für Setzen des Uhr-Modus (Uhr, Gaming, ..)
+ * Übergabeparameter: Modus
+ * Rückgabeparameter: kein, da die Werte direkt in den Preferences abgelegt werden
+ **************************************************************************/
+void Settings::setClockMode(byte ClockMode)
+{
+    if(_ClockMode != ClockMode)
+    {
+        _ClockMode = ClockMode;
+    }
+}
+
+/***************************************************************************
+ * Getter Funktion fürs Auslesen des Uhr-Modus (Uhr, Gaming, ..)
+ * Übergabeparameter: kein
+ * Rückgabeparameter: Uhr-Modus
+ **************************************************************************/
+byte Settings::getClockMode()
+{
+    return _ClockMode;
+}
 
 /***************************************************************************
  * Prüfen ob Einstellungen in Prefrences vorhanden sind
@@ -413,7 +437,7 @@ bool Settings::allDataAvailable()
     {
         dataAvailable = true;
     }
-    if(DEBUG_SETTINGS == 0)
+    if(DEBUG_SETTINGS == 1)
     {
         Serial.print("Settings.cpp - ");
         Serial.println("Auswertung Daten in Preferences");
@@ -510,8 +534,8 @@ void Settings::writeDataToPreferences()
     this->writeCornerClockwiseToPreferences(_CornersClockwise);
     this->writeStartpatternToPreferences(_StartPattern);
     this->writeGmtOffsetToPreferences(_GmtTimeOffsetSec);
-    this->writePasswordToPreferences(_PW_Array);
     this->writeSsidToPreferences(_SSID_Array);
+    this->writePasswordToPreferences(_PW_Array);
 }
 
 /***************************************************************************

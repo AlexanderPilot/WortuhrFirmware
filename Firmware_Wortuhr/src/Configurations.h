@@ -32,10 +32,11 @@
 #include "Settings.h"
 #include "LED_Ausgabe.h"
 #include "AppInterpreter.h"
-#include "Muster.h"
+//#include "Muster.h"
 #include <Arduino.h>
 #include "Zeitmaster.h"
 #include "Preferences.h"
+#include "Gaming.h"
 
 
 // Pin for LED control
@@ -121,8 +122,21 @@
 #define SIGN_CORNERSCLOCKWISE 'F'
 #define SIGN_STARTPATTERN 'G'
 #define SIGN_GMTOFFSET 'H'
+#define SIGN_CLOCKMODE 'M'
 #define SIGN_RESET_TO_DEFAULT 'Q'
 #define CONV_VERSION 2
+
+#define MODE_CLOCK 0
+#define MODE_GAMING 1
+#define SIGN_GAME_UP 'U'
+#define SIGN_GAME_DOWN 'D'
+#define SIGN_GAME_LEFT 'L'
+#define SIGN_GAME_RIGHT 'R'
+#define SIGN_GAME_ENTER 'E'
+#define MODE_GAMING_MENU 0
+#define MODE_GAMING_SNAKE 1
+
+#define MAX_SNAKE_LENGTH 255
 
 /***************************************************************************
  * I2C Einstellungen
@@ -138,7 +152,7 @@
 #define LEDSTRIP_PIN 32
 #define LED_NUM 144
 #define STARTPATTERN_DELAY 50
-#define NUM_COLUMN 12 //0-11 für die Zählweise
+#define NUM_COLUMN 12 //0-11 für die Zählweise //TODO: FIXME: wieder auf 12 umstellen
 #define NUM_ROW 12    //0-11 für die Zählweise
 #define LED_EINE_MIN 146
 #define LED_ZWEI_MIN 147

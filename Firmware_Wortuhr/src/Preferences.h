@@ -11,8 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _PREFERENCES_H_
-#define _PREFERENCES_H_
+#pragma once
 
 #include "Arduino.h"
 
@@ -73,5 +72,3 @@ class Preferences {
         size_t getBytes(const char* key, void * buf, size_t maxLen);
         size_t freeEntries();
 };
-
-#endif

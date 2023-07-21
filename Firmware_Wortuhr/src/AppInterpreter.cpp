@@ -90,7 +90,7 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
                 _CommSetSSID(_AppBefehl, false);
             }
             break;
-        case SIGN_COLOR: // Auswerten der Farbe
+        case 12: // Auswerten der Farbe //FIXME: wieder auf SIGN_COLOR zurücksetzen
             if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
             {
                 if (DEBUG_APPINTERPRETER == 1)
@@ -121,6 +121,17 @@ void AppInterpreter::readCommandCharFromApp(char CommandChar)
                     _justSendTheFoundStringToSerial(_AppBefehlBuffer);
                 }
                 _CommSetTime(_AppBefehl);
+            }
+            break;
+        case SIGN_COLOR: // Auswerten der Farbe //FIXME: wieder auf SIGN_CLOCKMODE zurücksetzen
+            if (_AppBefehlBuffer[POS_SIGN_END] == SIGN_END_ALL)
+            {
+                if (DEBUG_APPINTERPRETER == 1)
+                {
+                    _DEBUG_PRINT("AppInterpreter.cpp - Uhr-Modus erkannt ");
+                    _justSendTheFoundStringToSerial(_AppBefehlBuffer);
+                }
+                _CommSetClockMode(_AppBefehl);
             }
             break;
         case SIGN_RESET_TO_DEFAULT: // Auswerten der Zeit
@@ -334,6 +345,32 @@ void AppInterpreter::_CommSetPW(char *partialPW, bool continueCommand)
         }
         _interpretersettings.setWifiPW(PW);
     }
+}
+
+
+/****************************************
+ * Modus der Uhr wechseln (Uhr/Gaming/..)
+ * Übergabeparameter: Array mit dem entsprechenden Befehl
+ * Rückgabe: kein
+ ***************************************/
+void AppInterpreter::_CommSetClockMode(char *ClockMode)
+{
+    byte AppClockMode;
+    AppClockMode = ClockMode[0];
+    //FIXME: remove when app command is corrected
+    if (AppClockMode == 102)
+    {
+        AppClockMode = 0; //rot = Uhrmodus
+    }
+    if (AppClockMode == 48)
+    {
+        AppClockMode = 1; //blau = Gamemodus
+    }
+    //TODO: Funktionsaufruf um Modes zu schalten
+    //Mode 0 = Uhr, Mode 1 = Gaming
+    Serial.print("Befehl kam an: ");
+    Serial.println(AppClockMode);
+    _interpretersettings.setClockMode(AppClockMode);
 }
 
 /***************************************************************************
