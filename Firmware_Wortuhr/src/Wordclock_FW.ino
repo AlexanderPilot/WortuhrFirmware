@@ -41,6 +41,7 @@ hw_timer_t *timer2 = NULL;
 bool eventtrigger;
 bool ntpSync;
 bool wifi_connection_possible = false;
+bool oncedone = false;
 // ISR to set trigger
 void IRAM_ATTR onTimer1()
 {
@@ -149,10 +150,13 @@ void loop()
     }
     else if (settings.getClockMode() == MODE_GAMING)
     {
-        pLedausgabe->LedStartUp(1);
-        delay(200);
-        pLedausgabe->LedStartUp(0);
-        pGaming->Snake();
+        if(oncedone != true)
+        {
+            Serial.println("Game Mode entered");
+            pGaming->Snake();
+            oncedone = true;
+        }
+        
     }
 
     // OTA und NTP Sync bei validen WiFi Daten

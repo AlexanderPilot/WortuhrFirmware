@@ -32,7 +32,7 @@
 #include "Settings.h"
 #include "LED_Ausgabe.h"
 #include "AppInterpreter.h"
-#include "Muster.h"
+//#include "Muster.h"
 #include <Arduino.h>
 #include "Zeitmaster.h"
 #include "Preferences.h"
@@ -152,7 +152,7 @@
 #define LEDSTRIP_PIN 32
 #define LED_NUM 144
 #define STARTPATTERN_DELAY 50
-#define NUM_COLUMN 12 //0-11 für die Zählweise
+#define NUM_COLUMN 12 //0-11 für die Zählweise //TODO: FIXME: wieder auf 12 umstellen
 #define NUM_ROW 12    //0-11 für die Zählweise
 #define LED_EINE_MIN 146
 #define LED_ZWEI_MIN 147

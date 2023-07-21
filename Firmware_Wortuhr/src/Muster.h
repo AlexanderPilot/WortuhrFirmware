@@ -6,12 +6,12 @@
 class Muster
 {
     private:
-        pixel_t IstMatrix[12][12];
-        pixel_t SollMatrix[12][12];
-        pixel_t ArbsMatrix[12][12];
+        pixel_t IstMatrix[NUM_COLUMN][NUM_ROW];
+        pixel_t SollMatrix[NUM_COLUMN][NUM_ROW];
+        pixel_t ArbsMatrix[NUM_COLUMN][NUM_ROW];
 
-        uint8_t TimeMatrixAct[12][12];
-        uint8_t TimeMatrixFut[12][12];
+        uint8_t TimeMatrixAct[NUM_COLUMN][NUM_ROW];
+        uint8_t TimeMatrixFut[NUM_COLUMN][NUM_ROW];
 
 
         // Funktionen nur zum Debuggen:

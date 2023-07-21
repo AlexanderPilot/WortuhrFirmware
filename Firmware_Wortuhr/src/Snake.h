@@ -2,12 +2,12 @@
 
 #include "Arduino.h"
 #include "Configurations.h"
+#include "LED_Ausgabe.h"
 
 class Snake
 {
   unsigned long previousMillis;
   uint8_t interval;
-  uint8_t startIndex;
   pixel_t snakeColor;
   pixel_t fruitColor;
   uint32_t count10ms;

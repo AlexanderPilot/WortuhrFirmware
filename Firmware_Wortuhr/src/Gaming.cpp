@@ -1,6 +1,6 @@
 #include "Gaming.h"
 
-Snake _gamingSnake;
+Snake *_gamingSnake;
 
 Gaming::Gaming()
 {
@@ -9,5 +9,5 @@ Gaming::Gaming()
 
 void Gaming::Snake()
 {
-    _gamingSnake.setup();
+    _gamingSnake->setup();
 }

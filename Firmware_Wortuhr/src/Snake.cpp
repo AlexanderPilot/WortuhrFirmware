@@ -1,13 +1,12 @@
 #include "Snake.h"
 
-LED_Ausgabe _snakeLedausgabe;
+LED_Ausgabe *_snakeLedausgabe;
 
 Snake::Snake()
 {
     previousMillis = 0;
     interval = 250;
     snakeLength = 1;
-    startIndex = 0;
     snakeColor = {255, 255, 255};
     fruitColor = {0, 0, 0};
     count10ms = 0;
@@ -16,12 +15,12 @@ Snake::Snake()
 
 void Snake::setup()
 {
-    snakeX[0] = NUM_COLUMN / 2;
+    /*snakeX[0] = NUM_COLUMN / 2;
     snakeY[0] = NUM_ROW / 2;
 
     makeFruit();
     drawFruit();
-    FillSnakeWithColour();
+    FillSnakeWithColour();*/
 }
 
 boolean Snake::loop()
@@ -36,7 +35,7 @@ boolean Snake::loop()
         {
             leds(i) = CRGB::Black;
         }
-        /*if (ScrollingMsg.UpdateText() == -1)
+        if (ScrollingMsg.UpdateText() == -1)
         {
         ScrollingMsg.SetText((unsigned char *)txtSnake, sizeof(txtSnake) - 1);
         }
@@ -48,7 +47,7 @@ boolean Snake::loop()
     else
     {
         // FastLED.clear();*/
-    _snakeLedausgabe.clearLEDs();
+    _snakeLedausgabe->clearLEDs();
     drawFruit();
     FillSnakeWithColour();
     /*        if (currentMillis - previousMillis >= interval)
@@ -111,7 +110,7 @@ void Snake::makeFruit()
 
 void Snake::drawFruit()
 {
-    _snakeLedausgabe.setPixelToMatrix(fruitX, fruitY, fruitColor);
+    _snakeLedausgabe->setPixelToMatrix(fruitX, fruitY, fruitColor);
 }
 
 void Snake::nextStep()
@@ -153,7 +152,7 @@ void Snake::nextStep()
      {
          //currentInput = NONE;
          //TODO: Bildschirm kurz rot aufleuchten lassen, ggfs mehrfach blinken
-         _snakeLedausgabe.clearLEDs();
+         _snakeLedausgabe->clearLEDs();
          paused = true;
          //TODO: spielstand anzeigen
          //sprintf((char *)txtSnake, "   SCORE %u   ", snakeLength - 1);
@@ -210,6 +209,6 @@ void Snake::FillSnakeWithColour()
     uint8_t i = 0;
     for (i = 0; i < snakeLength; i++)
     {
-        _snakeLedausgabe.setPixelToMatrix(snakeX[i], snakeY[i], snakeColor);
+        _snakeLedausgabe->setPixelToMatrix(snakeX[i], snakeY[i], snakeColor);
     }
 }

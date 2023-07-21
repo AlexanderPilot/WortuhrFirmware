@@ -4,9 +4,7 @@
  **************************************************************************/
 
 /** Vermeidung Doppeldefinitionen **/
-//#pragma once
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#pragma once
 
 /** Einbinden von relevanten Bibliotheken **/
 #include "Configurations.h"
@@ -16,57 +14,57 @@
 class Settings
 {
 public:
-    Settings();
+     Settings();
 
-    /****************************************
-         * Sprache
-         ***************************************/
-    void setLanguage(byte Language);
-    byte getLanguage();
+     /****************************************
+      * Sprache
+      ***************************************/
+     void setLanguage(byte Language);
+     byte getLanguage();
 
-    /****************************************
-         * LED Helligkeit
-         ***************************************/
-    void setBrightnessPercent(byte Brightness);
-    byte getBrightnessPercent();
+     /****************************************
+      * LED Helligkeit
+      ***************************************/
+     void setBrightnessPercent(byte Brightness);
+     byte getBrightnessPercent();
 
-    /****************************************
-         * LED Farbe
-         ***************************************/
-    void setColor(pixel_t color);
-    void setColor(byte red, byte green, byte blue);
-    pixel_t getColor();
+     /****************************************
+      * LED Farbe
+      ***************************************/
+     void setColor(pixel_t color);
+     void setColor(byte red, byte green, byte blue);
+     pixel_t getColor();
 
-    /****************************************
-         * LED Übergänge
-         ***************************************/
-    void setFadeMode(byte fadeMode);
-    byte getFadeMode();
+     /****************************************
+      * LED Übergänge
+      ***************************************/
+     void setFadeMode(byte fadeMode);
+     byte getFadeMode();
 
-    /****************************************
-         * Eck-LEDs
-         ***************************************/
-    void setCornerStartLed(byte CornerStartLed);
-    byte getCornerStartLed();
+     /****************************************
+      * Eck-LEDs
+      ***************************************/
+     void setCornerStartLed(byte CornerStartLed);
+     byte getCornerStartLed();
 
-    void setCornersClockwise(boolean Clockwise);
-    boolean getCornersClockwise();
+     void setCornersClockwise(boolean Clockwise);
+     boolean getCornersClockwise();
 
-    /****************************************
-     * Starmuster
-     ***************************************/
-    void setStartPattern(byte StartPattern);
-    byte getStartPattern();
+     /****************************************
+      * Starmuster
+      ***************************************/
+     void setStartPattern(byte StartPattern);
+     byte getStartPattern();
 
-    /****************************************
-     * Offset zur GMT Zeit
-     ***************************************/
-    void setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
-    uint16_t getGmtTimeOffsetSec();
-    
-    /****************************************
-     * WLAN SSID und Passwort
-     ***************************************/
+     /****************************************
+      * Offset zur GMT Zeit
+      ***************************************/
+     void setGmtTimeOffsetSec(uint16_t GmtTimeOffsetSec);
+     uint16_t getGmtTimeOffsetSec();
+
+     /****************************************
+      * WLAN SSID und Passwort
+      ***************************************/
      bool getWifiSettingsAvailable();
 
      void setWifiSSID(char *Ssid);
@@ -74,72 +72,69 @@ public:
 
      void setWifiPW(char *Password);
      char *getWifiPW();
-     
-         /****************************************
-     * Modi der Anzeige
-     ***************************************/
-    
+
+     /****************************************
+      * Modi der Anzeige
+      ***************************************/
+
      void setClockMode(byte ClockMode);
      byte getClockMode();
 
-    /****************************************
-     * Preferences
-     ***************************************/
+     /****************************************
+      * Preferences
+      ***************************************/
      bool allDataAvailable();
      void loadDataFromPreferences();
      void writeDataToPreferences();
      void clearPreferences();
 
-    /****************************************
-     * Initialisierungen
-     ***************************************/
+     /****************************************
+      * Initialisierungen
+      ***************************************/
      bool startWifi();
      void startOTA();
-     
+
      /****************************************
-     * WiFi Funktionen (Reconnect + NTP + OTP)
-     ***************************************/
+      * WiFi Funktionen (Reconnect + NTP + OTP)
+      ***************************************/
      void WifiAutoReconnect();
      void handleOTA();
 
 private:
      void loadLanguageFromPreferences();
      void writeLanguageToPreferences(byte language);
-     
+
      void loadBrightnessFromPreferences();
      void writeBrightnessToPreferences(byte brightness);
-     
+
      void loadColorFromPreferences();
      void writeColorToPreferences(pixel_t color);
      void writeColorToPreferences(byte red, byte green, byte blue);
-     
+
      void loadFadeModeFromPreferences();
      void writeFadeModeToPreferences(byte fademode);
-     
+
      void loadCornerStartLedFromPreferences();
      void writeCornerStartLedToPreferences(byte cornerstartled);
-     
+
      void loadCornerClockwiseFromPreferences();
      void writeCornerClockwiseToPreferences(bool cornersclockwise);
-     
+
      void loadStartpatternFromPreferences();
      void writeStartpatternToPreferences(byte startpattern);
-     
+
      void loadGmtOffsetFromPreferences();
      void writeGmtOffsetToPreferences(uint16_t gmtoffset);
-     
+
      void loadSsidFromPreferences();
-     void writeSsidToPreferences(char* ssid);
-     
+     void writeSsidToPreferences(char *ssid);
+
      void loadPasswordFromPreferences();
-     void writePasswordToPreferences(char* password);
-     
-     void loadClockModeFromPreferences();
-     void writeClockModeToPreferences(byte clockmode);
-     
+     void writePasswordToPreferences(char *password);
+
      /****************************************
-     * interne Variablen
-     ***************************************/
+      * interne Variablen
+      ***************************************/
      static byte _Language;
      static byte _Brightness;
      static pixel_t _Color;
@@ -150,6 +145,4 @@ private:
      static uint16_t _GmtTimeOffsetSec;
      static char _SSID_Array[32];
      static char _PW_Array[64];
-     static byte _ClockMode;
 };
-#endif /* SETTINGS_H */
